@@ -611,6 +611,7 @@ function validateContact() {
   const firstname = document.getElementById('firstname').value.trim();
   const email = document.getElementById('email').value.trim();
   const phone = document.getElementById('phone').value.trim();
+  const contactConsent = document.getElementById('contact-consent').checked;
 
   let isValid = true;
 
@@ -632,13 +633,22 @@ function validateContact() {
     emailGroup.classList.remove('error');
   }
 
-  // Validate phone
+  // Validate phone (now required)
   const phoneGroup = document.getElementById('phone').parentElement;
-  if (phone && !validatePhone(phone)) {
+  if (!phone || !validatePhone(phone)) {
     phoneGroup.classList.add('error');
     isValid = false;
   } else {
     phoneGroup.classList.remove('error');
+  }
+
+  // Validate contact consent checkbox
+  const consentGroup = document.getElementById('contact-consent').parentElement.parentElement;
+  if (!contactConsent) {
+    consentGroup.classList.add('error');
+    isValid = false;
+  } else {
+    consentGroup.classList.remove('error');
   }
 
   if (isValid) {
@@ -646,6 +656,7 @@ function validateContact() {
       firstname,
       email,
       phone,
+      contactConsent,
     };
   }
 
@@ -656,6 +667,9 @@ function validateContact() {
 function clearFormErrors() {
   document.querySelectorAll('.form-group.error').forEach((group) => {
     group.classList.remove('error');
+  });
+  document.querySelectorAll('.checkbox-group.selected').forEach((group) => {
+    group.classList.remove('selected');
   });
 }
 
@@ -876,6 +890,36 @@ function setupOptionListeners() {
   });
 }
 
+// Setup checkbox listener for contact consent
+function setupCheckboxListener() {
+  const checkbox = document.getElementById('contact-consent');
+  const checkboxGroup = checkbox?.parentElement;
+
+  if (!checkbox || !checkboxGroup) {
+    return;
+  }
+
+  checkbox.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      checkboxGroup.classList.add('selected');
+    } else {
+      checkboxGroup.classList.remove('selected');
+    }
+  });
+
+  // Allow clicking on the group to toggle the checkbox
+  checkboxGroup.addEventListener('click', (e) => {
+    if (e.target !== checkbox) {
+      checkbox.click();
+    }
+  });
+
+  // Restore checked state if already selected
+  if (checkbox.checked) {
+    checkboxGroup.classList.add('selected');
+  }
+}
+
 // Initialize Supabase client
 function initSupabase() {
   if (typeof supabaseClientInstance === 'undefined') {
@@ -960,6 +1004,7 @@ function init() {
 
   showScreen(state.currentScreen);
   setupOptionListeners();
+  setupCheckboxListener();
 
   btnNext.addEventListener('click', handleNext);
   btnBack.addEventListener('click', handleBack);

@@ -254,6 +254,55 @@
       margin-top: var(--spacing-xs);
     }
 
+    /* Checkbox styling */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-top: var(--spacing-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .checkbox-group:hover {
+      border-color: var(--terracotta-light);
+      background-color: rgba(196, 105, 74, 0.05);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--terracotta);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .checkbox-group label {
+      cursor: pointer;
+      font-size: var(--font-size-base);
+      color: var(--text);
+      margin: 0;
+      flex: 1;
+    }
+
+    .checkbox-group.selected {
+      border-color: var(--terracotta);
+      background-color: rgba(156, 74, 46, 0.08);
+    }
+
+    .checkbox-highlight {
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    .form-group.error .checkbox-group {
+      border-color: #dc2626;
+    }
+
     /* Navigation buttons */
     .questionnaire-navigation {
       display: flex;
@@ -657,10 +706,17 @@
           </div>
 
           <div class="form-group">
-            <label for="phone">Téléphone</label>
-            <input type="tel" id="phone" name="phone" placeholder="+41 XX XXX XX XX">
-            <div class="optional-text">Format: +41 XXXXXXXXX (optionnel)</div>
-            <div class="error-message">Format de téléphone invalide</div>
+            <label for="phone">Téléphone *</label>
+            <input type="tel" id="phone" name="phone" placeholder="+41 XX XXX XX XX" required>
+            <div class="error-message">Veuillez entrer un numéro de téléphone valide</div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="contact-consent" name="contact-consent" required>
+              <label for="contact-consent">Je souhaite être recontacté par un conseiller FINMA et j'accepte de recevoir un appel dans <span class="checkbox-highlight">moins de 24h</span> *</label>
+            </div>
+            <div class="error-message">Vous devez accepter d'être recontacté pour continuer</div>
           </div>
         </form>
       </div>
