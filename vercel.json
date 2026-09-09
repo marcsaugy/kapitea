@@ -1,6 +1,12 @@
 {
   "buildCommand": "",
   "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/quiz",
+      "destination": "/questionnaire.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
