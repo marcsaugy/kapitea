@@ -5,6 +5,14 @@
     {
       "source": "/quiz",
       "destination": "/questionnaire.html"
+    },
+    {
+      "source": "/calculateur",
+      "destination": "/calculateur.html"
+    },
+    {
+      "source": "/merci",
+      "destination": "/merci.html"
     }
   ],
   "headers": [
