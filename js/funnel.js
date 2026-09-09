@@ -36,6 +36,18 @@ const initialState = {
     Q_TYPE_ACTIFS: null,
     Q_NOTAIRE: null,
     Q_PROJET: null,
+    // Divorce segment
+    Q_MONTANT_DIVORCE: 150000,
+    Q_STATUT_PROCEDURE: null,
+    Q_PROJET_DIVORCE: null,
+    // Real Estate segment (vente_maison)
+    Q_MONTANT_VENTE: 300000,
+    Q_REINVESTISSEMENT: null,
+    Q_DELAI_VENTE: null,
+    // Business segment (vente_entreprise)
+    Q_MONTANT_CESSION: 500000,
+    Q_ROLE_CESSION: null,
+    Q_STATUT_CESSION: null,
     // Shared
     Q_CONTACT: {
       firstname: '',
@@ -77,7 +89,7 @@ function saveState() {
 function detectNiche() {
   const params = new URLSearchParams(window.location.search);
   const niche = params.get('niche');
-  if (niche === 'lpp' || niche === 'heritage') {
+  if (['lpp', 'heritage', 'divorce', 'vente_maison', 'vente_entreprise'].includes(niche)) {
     state.segment = niche;
   } else {
     console.warn('Unknown niche or missing niche parameter:', niche);
@@ -92,6 +104,12 @@ function calculateScore(state) {
     return calculateScoreLPP(state);
   } else if (state.segment === 'heritage') {
     return calculateScoreHeritage(state);
+  } else if (state.segment === 'divorce') {
+    return calculateScoreDivorce(state);
+  } else if (state.segment === 'vente_maison') {
+    return calculateScoreVenteMaison(state);
+  } else if (state.segment === 'vente_entreprise') {
+    return calculateScoreVenteEntreprise(state);
   }
   return {
     score_valeur: 0,
@@ -168,6 +186,112 @@ function calculateScoreHeritage(state) {
   };
 }
 
+// Calculate score for Divorce segment
+function calculateScoreDivorce(state) {
+  const montant = state.answers.Q_MONTANT_DIVORCE;
+  let score_valeur = 20;
+
+  if (montant >= 100000 && montant < 300000) {
+    score_valeur = 50;
+  } else if (montant >= 300000 && montant < 600000) {
+    score_valeur = 75;
+  } else if (montant >= 600000) {
+    score_valeur = 100;
+  }
+
+  // For divorce, urgence is based on Q_PROJET_DIVORCE
+  const projetMap = {
+    precise_plan: 80,
+    general_direction: 50,
+    no_idea: 30,
+  };
+  const score_urgence = projetMap[state.answers.Q_PROJET_DIVORCE] || 20;
+
+  let lead_temp = 'froid';
+  if (score_valeur > 60 && score_urgence > 60) {
+    lead_temp = 'chaud';
+  } else if (score_valeur > 60 || score_urgence > 60) {
+    lead_temp = 'tiede';
+  }
+
+  return {
+    score_valeur,
+    score_urgence,
+    lead_temp,
+  };
+}
+
+// Calculate score for Real Estate (Vente Maison) segment
+function calculateScoreVenteMaison(state) {
+  const montant = state.answers.Q_MONTANT_VENTE;
+  let score_valeur = 20;
+
+  if (montant >= 100000 && montant < 300000) {
+    score_valeur = 50;
+  } else if (montant >= 300000 && montant < 600000) {
+    score_valeur = 75;
+  } else if (montant >= 600000) {
+    score_valeur = 100;
+  }
+
+  // For real estate, urgence is based on Q_DELAI_VENTE
+  const delaiMap = {
+    less_than_3: 90,
+    '3_to_12': 50,
+    not_rushed: 20,
+  };
+  const score_urgence = delaiMap[state.answers.Q_DELAI_VENTE] || 20;
+
+  let lead_temp = 'froid';
+  if (score_valeur > 60 && score_urgence > 60) {
+    lead_temp = 'chaud';
+  } else if (score_valeur > 60 || score_urgence > 60) {
+    lead_temp = 'tiede';
+  }
+
+  return {
+    score_valeur,
+    score_urgence,
+    lead_temp,
+  };
+}
+
+// Calculate score for Business (Vente Entreprise) segment
+function calculateScoreVenteEntreprise(state) {
+  const montant = state.answers.Q_MONTANT_CESSION;
+  let score_valeur = 20;
+
+  // Higher thresholds for business
+  if (montant >= 300000 && montant < 800000) {
+    score_valeur = 50;
+  } else if (montant >= 800000 && montant < 1500000) {
+    score_valeur = 75;
+  } else if (montant >= 1500000) {
+    score_valeur = 100;
+  }
+
+  // For business, urgence is based on Q_STATUT_CESSION
+  const statutMap = {
+    finalized: 90,
+    ongoing: 50,
+    not_signed: 20,
+  };
+  const score_urgence = statutMap[state.answers.Q_STATUT_CESSION] || 20;
+
+  let lead_temp = 'froid';
+  if (score_valeur > 60 && score_urgence > 60) {
+    lead_temp = 'chaud';
+  } else if (score_valeur > 60 || score_urgence > 60) {
+    lead_temp = 'tiede';
+  }
+
+  return {
+    score_valeur,
+    score_urgence,
+    lead_temp,
+  };
+}
+
 // Update urgence flag based on Q_HORIZON
 function updateUrgenceFlag(horizon) {
   if (horizon === 'already_retired' || horizon === 'less_than_2') {
@@ -190,6 +314,12 @@ function getSegmentScreens() {
     return document.querySelectorAll('.questionnaire-screen.segment-lpp');
   } else if (state.segment === 'heritage') {
     return document.querySelectorAll('.questionnaire-screen.segment-heritage');
+  } else if (state.segment === 'divorce') {
+    return document.querySelectorAll('.questionnaire-screen.segment-divorce');
+  } else if (state.segment === 'vente_maison') {
+    return document.querySelectorAll('.questionnaire-screen.segment-vente_maison');
+  } else if (state.segment === 'vente_entreprise') {
+    return document.querySelectorAll('.questionnaire-screen.segment-vente_entreprise');
   }
   return [];
 }
@@ -234,6 +364,12 @@ function showScreen(screenIndex) {
     updateMontantDisplay();
   } else if (state.segment === 'heritage' && screenIndex === 0) {
     updateMontantHeritageDisplay();
+  } else if (state.segment === 'divorce' && screenIndex === 0) {
+    updateMontantDivorceDisplay();
+  } else if (state.segment === 'vente_maison' && screenIndex === 0) {
+    updateMontantVenteDisplay();
+  } else if (state.segment === 'vente_entreprise' && screenIndex === 0) {
+    updateMontantCessionDisplay();
   }
 
   window.scrollTo(0, 0);
@@ -259,6 +395,12 @@ function validateCurrentScreen() {
     return validateScreenLPP(screenIndex);
   } else if (state.segment === 'heritage') {
     return validateScreenHeritage(screenIndex);
+  } else if (state.segment === 'divorce') {
+    return validateScreenDivorce(screenIndex);
+  } else if (state.segment === 'vente_maison') {
+    return validateScreenVenteMaison(screenIndex);
+  } else if (state.segment === 'vente_entreprise') {
+    return validateScreenVenteEntreprise(screenIndex);
   }
 
   return true;
@@ -349,6 +491,114 @@ function validateScreenHeritage(screenIndex) {
   }
 
   if (screenIndex === 4) {
+    // Q_CONTACT
+    return validateContact();
+  }
+
+  return true;
+}
+
+// Validate screen for Divorce segment
+function validateScreenDivorce(screenIndex) {
+  if (screenIndex === 0) {
+    // Q_MONTANT_DIVORCE - always valid
+    return true;
+  }
+
+  if (screenIndex === 1) {
+    // Q_STATUT_PROCEDURE
+    const selected = document.querySelector('input[name="statut-procedure"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_STATUT_PROCEDURE = selected.value;
+    return true;
+  }
+
+  if (screenIndex === 2) {
+    // Q_PROJET_DIVORCE
+    const selected = document.querySelector('input[name="projet-divorce"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_PROJET_DIVORCE = selected.value;
+    state.scores = calculateScore(state);
+    return true;
+  }
+
+  if (screenIndex === 3) {
+    // Q_CONTACT
+    return validateContact();
+  }
+
+  return true;
+}
+
+// Validate screen for Real Estate (Vente Maison) segment
+function validateScreenVenteMaison(screenIndex) {
+  if (screenIndex === 0) {
+    // Q_MONTANT_VENTE - always valid
+    return true;
+  }
+
+  if (screenIndex === 1) {
+    // Q_REINVESTISSEMENT
+    const selected = document.querySelector('input[name="reinvestissement"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_REINVESTISSEMENT = selected.value;
+    return true;
+  }
+
+  if (screenIndex === 2) {
+    // Q_DELAI_VENTE
+    const selected = document.querySelector('input[name="delai-vente"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_DELAI_VENTE = selected.value;
+    state.scores = calculateScore(state);
+    return true;
+  }
+
+  if (screenIndex === 3) {
+    // Q_CONTACT
+    return validateContact();
+  }
+
+  return true;
+}
+
+// Validate screen for Business (Vente Entreprise) segment
+function validateScreenVenteEntreprise(screenIndex) {
+  if (screenIndex === 0) {
+    // Q_MONTANT_CESSION - always valid
+    return true;
+  }
+
+  if (screenIndex === 1) {
+    // Q_ROLE_CESSION
+    const selected = document.querySelector('input[name="role-cession"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_ROLE_CESSION = selected.value;
+    return true;
+  }
+
+  if (screenIndex === 2) {
+    // Q_STATUT_CESSION
+    const selected = document.querySelector('input[name="statut-cession"]:checked');
+    if (!selected) {
+      return false;
+    }
+    state.answers.Q_STATUT_CESSION = selected.value;
+    state.scores = calculateScore(state);
+    return true;
+  }
+
+  if (screenIndex === 3) {
     // Q_CONTACT
     return validateContact();
   }
@@ -546,6 +796,69 @@ function updateMontantHeritageDisplay() {
   slider.addEventListener('input', updateDisplay);
 }
 
+// Update montant divorce display (Divorce)
+function updateMontantDivorceDisplay() {
+  const slider = document.getElementById('montant-divorce-slider');
+  const display = document.getElementById('montant-divorce-display');
+
+  if (!slider || !display) {
+    return;
+  }
+
+  function updateDisplay() {
+    const value = parseInt(slider.value, 10);
+    state.answers.Q_MONTANT_DIVORCE = value;
+    display.textContent = formatCurrency(value);
+    state.scores = calculateScore(state);
+    saveState();
+  }
+
+  updateDisplay();
+  slider.addEventListener('input', updateDisplay);
+}
+
+// Update montant vente display (Real Estate)
+function updateMontantVenteDisplay() {
+  const slider = document.getElementById('montant-vente-slider');
+  const display = document.getElementById('montant-vente-display');
+
+  if (!slider || !display) {
+    return;
+  }
+
+  function updateDisplay() {
+    const value = parseInt(slider.value, 10);
+    state.answers.Q_MONTANT_VENTE = value;
+    display.textContent = formatCurrency(value);
+    state.scores = calculateScore(state);
+    saveState();
+  }
+
+  updateDisplay();
+  slider.addEventListener('input', updateDisplay);
+}
+
+// Update montant cession display (Business)
+function updateMontantCessionDisplay() {
+  const slider = document.getElementById('montant-cession-slider');
+  const display = document.getElementById('montant-cession-display');
+
+  if (!slider || !display) {
+    return;
+  }
+
+  function updateDisplay() {
+    const value = parseInt(slider.value, 10);
+    state.answers.Q_MONTANT_CESSION = value;
+    display.textContent = formatCurrency(value);
+    state.scores = calculateScore(state);
+    saveState();
+  }
+
+  updateDisplay();
+  slider.addEventListener('input', updateDisplay);
+}
+
 // Update option styling on selection
 function setupOptionListeners() {
   const radioInputs = document.querySelectorAll('input[type="radio"]');
@@ -627,6 +940,21 @@ function init() {
     const montantHeritageSlider = document.getElementById('montant-heritage-slider');
     if (montantHeritageSlider && state.answers.Q_MONTANT_HERITAGE) {
       montantHeritageSlider.value = state.answers.Q_MONTANT_HERITAGE;
+    }
+  } else if (state.segment === 'divorce') {
+    const montantDivorceSlider = document.getElementById('montant-divorce-slider');
+    if (montantDivorceSlider && state.answers.Q_MONTANT_DIVORCE) {
+      montantDivorceSlider.value = state.answers.Q_MONTANT_DIVORCE;
+    }
+  } else if (state.segment === 'vente_maison') {
+    const montantVenteSlider = document.getElementById('montant-vente-slider');
+    if (montantVenteSlider && state.answers.Q_MONTANT_VENTE) {
+      montantVenteSlider.value = state.answers.Q_MONTANT_VENTE;
+    }
+  } else if (state.segment === 'vente_entreprise') {
+    const montantCessionSlider = document.getElementById('montant-cession-slider');
+    if (montantCessionSlider && state.answers.Q_MONTANT_CESSION) {
+      montantCessionSlider.value = state.answers.Q_MONTANT_CESSION;
     }
   }
 

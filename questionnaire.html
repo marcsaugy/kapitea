@@ -491,8 +491,157 @@
         </div>
       </div>
 
-      <!-- Screen 5: Q_CONTACT (LPP + Heritage) -->
-      <div class="questionnaire-screen segment-lpp segment-heritage" id="screen-contact">
+      <!-- Divorce Segment: Screen 1 - Q_MONTANT_DIVORCE -->
+      <div class="questionnaire-screen segment-divorce" id="screen-montant-divorce">
+        <h2>Quel est le montant approximatif reçu du partage ?</h2>
+        <div class="slider-container">
+          <div class="slider-value" id="montant-divorce-display">CHF 150'000</div>
+          <input type="range" id="montant-divorce-slider" min="20000" max="1500000" step="10000" value="150000">
+          <div class="slider-labels">
+            <span>CHF 20'000</span>
+            <span>CHF 1'500'000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divorce Segment: Screen 2 - Q_STATUT_PROCEDURE -->
+      <div class="questionnaire-screen segment-divorce" id="screen-statut-procedure">
+        <h2>Où en est la procédure ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="procedure-terminated" name="statut-procedure" value="terminated">
+            <label for="procedure-terminated">Terminée</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="procedure-ongoing" name="statut-procedure" value="ongoing">
+            <label for="procedure-ongoing">En cours</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="procedure-not-started" name="statut-procedure" value="not_started">
+            <label for="procedure-not-started">Pas encore entamée</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divorce Segment: Screen 3 - Q_PROJET_DIVORCE -->
+      <div class="questionnaire-screen segment-divorce" id="screen-projet-divorce">
+        <h2>Avez-vous une idée de ce que vous voulez faire de cette somme ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="projet-divorce-precis" name="projet-divorce" value="precise_plan">
+            <label for="projet-divorce-precis">Oui, un projet précis en tête</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="projet-divorce-direction" name="projet-divorce" value="general_direction">
+            <label for="projet-divorce-direction">Une direction générale mais pas de plan</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="projet-divorce-aucune" name="projet-divorce" value="no_idea">
+            <label for="projet-divorce-aucune">Aucune idée pour l'instant</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real Estate Segment: Screen 1 - Q_MONTANT_VENTE -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-montant-vente">
+        <h2>Quel est le montant net après la vente ?</h2>
+        <div class="slider-container">
+          <div class="slider-value" id="montant-vente-display">CHF 300'000</div>
+          <input type="range" id="montant-vente-slider" min="50000" max="2000000" step="10000" value="300000">
+          <div class="slider-labels">
+            <span>CHF 50'000</span>
+            <span>CHF 2'000'000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real Estate Segment: Screen 2 - Q_REINVESTISSEMENT -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-reinvestissement">
+        <h2>Comptez-vous racheter un bien immobilier ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="reinvest-non" name="reinvestissement" value="no_property">
+            <label for="reinvest-non">Non, pas de projet immobilier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="reinvest-oui" name="reinvestissement" value="yes_elsewhere">
+            <label for="reinvest-oui">Oui, ailleurs</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="reinvest-uncertain" name="reinvestissement" value="uncertain">
+            <label for="reinvest-uncertain">Je ne sais pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real Estate Segment: Screen 3 - Q_DELAI_VENTE -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-delai-vente">
+        <h2>Sous quel délai voulez-vous placer cette somme ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="delai-court" name="delai-vente" value="less_than_3">
+            <label for="delai-court">Moins de 3 mois</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="delai-moyen" name="delai-vente" value="3_to_12">
+            <label for="delai-moyen">3 à 12 mois</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="delai-long" name="delai-vente" value="not_rushed">
+            <label for="delai-long">Pas pressé</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Segment: Screen 1 - Q_MONTANT_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-montant-cession">
+        <h2>Quel montant avez-vous reçu de la cession ?</h2>
+        <div class="slider-container">
+          <div class="slider-value" id="montant-cession-display">CHF 500'000</div>
+          <input type="range" id="montant-cession-slider" min="100000" max="5000000" step="50000" value="500000">
+          <div class="slider-labels">
+            <span>CHF 100'000</span>
+            <span>CHF 5'000'000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Segment: Screen 2 - Q_ROLE_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-role-cession">
+        <h2>Quel est votre rôle dans cette cession ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="role-vendeur" name="role-cession" value="sold_own">
+            <label for="role-vendeur">J'ai vendu mon entreprise</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="role-heritage" name="role-cession" value="inherited_sold">
+            <label for="role-heritage">J'ai hérité de l'entreprise puis je l'ai vendue</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Segment: Screen 3 - Q_STATUT_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-statut-cession">
+        <h2>Où en est la cession ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="statut-finalized" name="statut-cession" value="finalized">
+            <label for="statut-finalized">Finalisée</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="statut-ongoing-biz" name="statut-cession" value="ongoing">
+            <label for="statut-ongoing-biz">En cours</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="statut-not-signed" name="statut-cession" value="not_signed">
+            <label for="statut-not-signed">Pas encore signée</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 5: Q_CONTACT (LPP + Heritage + Divorce + Real Estate + Business) -->
+      <div class="questionnaire-screen segment-lpp segment-heritage segment-divorce segment-vente_maison segment-vente_entreprise" id="screen-contact">
         <h2>Dernière étape : vos informations de contact</h2>
         <form class="contact-form" id="contact-form" onsubmit="return false;">
           <div class="form-group">
