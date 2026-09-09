@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kapitea - Demande confirmée">
+  <meta name="theme-color" content="#9C4A2E">
+
+  <title>Kapitea - Demande confirmée</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/mobile.css">
+
+  <style>
+    /* Thank you page specific styles */
+
+    .merci-container {
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: var(--spacing-2xl) var(--spacing-md);
+    }
+
+    .merci-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Header icon */
+    .merci-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+      animation: slideInUp var(--transition-base) ease-out;
+    }
+
+    .merci-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto var(--spacing-lg);
+      background-color: rgba(16, 185, 129, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .merci-icon svg {
+      width: 40px;
+      height: 40px;
+      stroke: #10B981;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .merci-header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .merci-header p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--text2);
+      margin-bottom: 0;
+    }
+
+    /* Summary section */
+    .summary-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-2xl);
+      animation: slideInUp var(--transition-base) ease-out;
+      animation-delay: 0.1s;
+      animation-fill-mode: both;
+    }
+
+    .summary-section h3 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .summary-section h3::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background-color: var(--terracotta);
+      border-radius: 2px;
+    }
+
+    .summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .summary-label {
+      font-size: var(--font-size-sm);
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .summary-value {
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* Calendly section */
+    .calendly-section {
+      margin-bottom: var(--spacing-2xl);
+      animation: slideInUp var(--transition-base) ease-out;
+      animation-delay: 0.2s;
+      animation-fill-mode: both;
+    }
+
+    .calendly-header {
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .calendly-header h2 {
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .calendly-header p {
+      font-size: var(--font-size-base);
+      color: var(--text2);
+      margin-bottom: 0;
+    }
+
+    .calendly-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 600px;
+    }
+
+    /* Reassurance banner */
+    .reassurance-banner {
+      background-color: rgba(156, 74, 46, 0.08);
+      border: 1px solid rgba(156, 74, 46, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      text-align: center;
+      animation: slideInUp var(--transition-base) ease-out;
+      animation-delay: 0.3s;
+      animation-fill-mode: both;
+    }
+
+    .reassurance-banner p {
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .reassurance-banner strong {
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    /* Error state */
+    .error-message {
+      background-color: #FEE2E2;
+      border: 1px solid #FCA5A5;
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-2xl);
+      text-align: center;
+    }
+
+    .error-message p {
+      color: #991B1B;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .merci-container {
+        padding: var(--spacing-lg) var(--spacing-sm);
+      }
+
+      .summary-item {
+        flex-direction: column;
+      }
+
+      .summary-value {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="merci-container">
+    <div class="merci-wrapper">
+      <!-- Header -->
+      <div class="merci-header">
+        <div class="merci-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+          </svg>
+        </div>
+        <h1>Merci <span id="firstname-display"></span></h1>
+        <p id="confirmation-message">Votre demande est bien reçue.</p>
+      </div>
+
+      <!-- Summary section -->
+      <div class="summary-section" id="summary-container" style="display: none;">
+        <h3 id="summary-title">Récapitulatif</h3>
+        <div class="summary-list" id="summary-list"></div>
+      </div>
+
+      <!-- Error message if state is missing -->
+      <div class="error-message" id="error-container" style="display: none;">
+        <p>Les données de votre questionnaire n'ont pas pu être récupérées. Vous pouvez toujours réserver un créneau ci-dessous.</p>
+      </div>
+
+      <!-- Calendly section -->
+      <div class="calendly-section">
+        <div class="calendly-header">
+          <h2>Réservez 30 minutes</h2>
+          <p>Faites le point sur votre capital avec un conseiller</p>
+        </div>
+        <div class="calendly-container" id="calendly-widget"></div>
+      </div>
+
+      <!-- Reassurance banner -->
+      <div class="reassurance-banner">
+        <p>Un conseiller FINMA vous contactera <strong>sous 24h</strong> si vous ne réservez pas de créneau maintenant.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configuration and Thank You Logic -->
+  <script src="js/config.js" defer></script>
+  <script defer>
+    // Utility: format currency
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('fr-CH', {
+        style: 'currency',
+        currency: 'CHF',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(value).replace('CHF', 'CHF');
+    }
+
+    // Utility: get label for answer value
+    function getAnswerLabel(segment, questionKey, value) {
+      const labels = {
+        lpp: {
+          Q_HORIZON: {
+            already_retired: 'Déjà retraité',
+            less_than_2: 'Retraite dans moins de 2 ans',
+            '2_to_5': 'Retraite dans 2 à 5 ans',
+          },
+          Q_MONTANT: null, // special: formatted as currency
+          Q_SITUATION_FAMILIALE: {
+            single: 'Célibataire',
+            couple: 'En couple',
+            married: 'Marié(e)',
+            with_children: 'Avec enfants à charge',
+          },
+          Q_OBJECTIF: {
+            regular_income: 'Obtenir un revenu complémentaire régulier',
+            secure_capital: 'Sécuriser le capital sans prendre de risque',
+            transmit: 'Le transmettre à mes proches',
+            finance_project: 'Financer un projet précis',
+          },
+        },
+        heritage: {
+          Q_MONTANT_HERITAGE: null, // special: formatted as currency
+          Q_TYPE_ACTIFS: {
+            cash: 'Liquidités (compte, épargne)',
+            securities: 'Titres (actions, fonds)',
+            real_estate: 'Immobilier',
+            mixed: 'Un mélange de plusieurs types',
+          },
+          Q_NOTAIRE: {
+            settled: 'Oui, la succession est réglée',
+            in_progress: 'Oui, mais c\'est encore en cours',
+            not_yet: 'Non, pas encore',
+          },
+          Q_PROJET: {
+            precise_plan: 'Oui, un projet précis en tête',
+            general_direction: 'Une direction générale mais pas de plan',
+            no_idea: 'Aucune idée pour l\'instant',
+          },
+        },
+      };
+
+      const questionLabels = labels[segment] && labels[segment][questionKey];
+      if (!questionLabels) return null;
+      return questionLabels[value] || value;
+    }
+
+    // Load and display state
+    function initMerciPage() {
+      const storedState = sessionStorage.getItem('funnel_state_kapitea');
+      let state = null;
+      let hasError = false;
+
+      if (storedState) {
+        try {
+          state = JSON.parse(storedState);
+        } catch (e) {
+          console.error('Failed to parse stored state:', e);
+          hasError = true;
+        }
+      } else {
+        hasError = true;
+      }
+
+      // Display firstname or generic message
+      const firstnameDisplay = document.getElementById('firstname-display');
+      if (state && state.answers && state.answers.Q_CONTACT && state.answers.Q_CONTACT.firstname) {
+        firstnameDisplay.textContent = state.answers.Q_CONTACT.firstname + ',';
+      }
+
+      // Display error if state is missing
+      if (hasError || !state) {
+        document.getElementById('error-container').style.display = 'block';
+      } else {
+        // Display summary
+        displaySummary(state);
+      }
+
+      // Load Calendly widget
+      loadCalendly();
+    }
+
+    // Display summary based on segment
+    function displaySummary(state) {
+      if (!state.segment || !state.answers) {
+        return;
+      }
+
+      const summaryContainer = document.getElementById('summary-container');
+      const summaryTitle = document.getElementById('summary-title');
+      const summaryList = document.getElementById('summary-list');
+
+      let items = [];
+
+      if (state.segment === 'lpp') {
+        summaryTitle.textContent = 'Récapitulatif - Retraite LPP';
+
+        if (state.answers.Q_HORIZON) {
+          items.push({
+            label: 'Horizon retraite',
+            value: getAnswerLabel('lpp', 'Q_HORIZON', state.answers.Q_HORIZON),
+          });
+        }
+
+        if (state.answers.Q_MONTANT) {
+          items.push({
+            label: 'Capital 2e/3e pilier',
+            value: formatCurrency(state.answers.Q_MONTANT),
+          });
+        }
+
+        if (state.answers.Q_OBJECTIF) {
+          items.push({
+            label: 'Objectif principal',
+            value: getAnswerLabel('lpp', 'Q_OBJECTIF', state.answers.Q_OBJECTIF),
+          });
+        }
+      } else if (state.segment === 'heritage') {
+        summaryTitle.textContent = 'Récapitulatif - Héritage';
+
+        if (state.answers.Q_MONTANT_HERITAGE) {
+          items.push({
+            label: 'Montant reçu',
+            value: formatCurrency(state.answers.Q_MONTANT_HERITAGE),
+          });
+        }
+
+        if (state.answers.Q_TYPE_ACTIFS) {
+          items.push({
+            label: 'Type d\'actifs',
+            value: getAnswerLabel('heritage', 'Q_TYPE_ACTIFS', state.answers.Q_TYPE_ACTIFS),
+          });
+        }
+
+        if (state.answers.Q_NOTAIRE) {
+          items.push({
+            label: 'Démarche notariale',
+            value: getAnswerLabel('heritage', 'Q_NOTAIRE', state.answers.Q_NOTAIRE),
+          });
+        }
+      }
+
+      // Render items
+      summaryList.innerHTML = items
+        .map(
+          (item) =>
+            `<div class="summary-item">
+              <span class="summary-label">${item.label}</span>
+              <span class="summary-value">${item.value}</span>
+            </div>`
+        )
+        .join('');
+
+      summaryContainer.style.display = 'block';
+    }
+
+    // Load Calendly widget
+    function loadCalendly() {
+      // Check if CONFIG is available
+      if (typeof CONFIG === 'undefined') {
+        console.error('CONFIG not loaded');
+        return;
+      }
+
+      if (!CONFIG.CALENDLY_URL) {
+        console.warn('CALENDLY_URL not configured');
+        return;
+      }
+
+      // Load Calendly script
+      const script = document.createElement('script');
+      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.async = true;
+      script.onload = () => {
+        // Initialize Calendly widget
+        const widget = document.getElementById('calendly-widget');
+        if (window.Calendly) {
+          window.Calendly.initInlineWidget({
+            url: CONFIG.CALENDLY_URL,
+            parentElement: widget,
+            prefill: {
+              // Optional: pre-fill contact info from state
+              name: getContactInfo().firstname,
+              email: getContactInfo().email,
+            },
+          });
+        }
+      };
+      document.head.appendChild(script);
+    }
+
+    // Get contact info from state
+    function getContactInfo() {
+      const storedState = sessionStorage.getItem('funnel_state_kapitea');
+      if (!storedState) {
+        return { firstname: '', email: '' };
+      }
+
+      try {
+        const state = JSON.parse(storedState);
+        const contact = state.answers && state.answers.Q_CONTACT;
+        return contact || { firstname: '', email: '' };
+      } catch (e) {
+        return { firstname: '', email: '' };
+      }
+    }
+
+    // Run on page load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMerciPage);
+    } else {
+      initMerciPage();
+    }
+  </script>
+</body>
+</html>

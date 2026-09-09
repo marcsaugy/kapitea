@@ -17,7 +17,7 @@ const CONFIG = {
   META_PIXEL_ID: 'YOUR_META_PIXEL_ID',
 
   // External services
-  CALENDLY_URL: 'https://calendly.com/YOUR_USERNAME',
+  CALENDLY_URL: 'https://calendly.com/marc-saugy/kapitea-consultation-30min',
 
   // Brand configuration
   BRAND_NAME: 'Kapitea',
