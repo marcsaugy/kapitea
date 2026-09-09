@@ -144,6 +144,53 @@
       line-height: 1.5;
     }
 
+    /* Inverted style for tool card */
+    .journey-card-tool {
+      background-color: var(--terracotta);
+      border-color: var(--terracotta-dark);
+    }
+
+    .journey-card-tool:hover {
+      background-color: var(--terracotta-dark);
+      border-color: var(--terracotta-dark);
+    }
+
+    .journey-card-tool .journey-card-icon {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .journey-card-tool .journey-card-icon svg {
+      stroke: white;
+      fill: none;
+    }
+
+    .journey-card-tool h3 {
+      color: white;
+    }
+
+    .journey-card-tool p {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Tool section separator */
+    .journey-tool-separator {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: var(--spacing-lg) 0 var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .journey-tool-separator-text {
+      font-size: var(--font-size-sm);
+      color: var(--text3);
+      background-color: var(--bg-card);
+      padding: 0 var(--spacing-md);
+      position: relative;
+    }
+
     /* Reassurance section */
     .reassurance {
       padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
@@ -407,6 +454,24 @@
             <div class="journey-card-content">
               <h3>Je viens de vendre mon entreprise</h3>
               <p>Ou j'en ai hérité et je l'ai vendue</p>
+            </div>
+          </a>
+
+          <!-- Tool Separator -->
+          <div class="journey-tool-separator">
+            <span class="journey-tool-separator-text">Ou testez un outil</span>
+          </div>
+
+          <!-- Compound Interest Calculator Card (Tool) -->
+          <a href="/calculateur" class="journey-card journey-card-tool">
+            <div class="journey-card-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.17V20h3.83L16 9.66l2.29 2.29L20 9V6h-4zm4-4h-6v2h4.17L7.58 16.59 5.29 14.3 3.17 16.41 7.71 21 9.83 18.88l10-10V6h-2V2z"/>
+              </svg>
+            </div>
+            <div class="journey-card-content">
+              <h3>Simuler mes intérêts composés</h3>
+              <p>Voir l'effet du temps sur votre capital</p>
             </div>
           </a>
         </div>
