@@ -6,13 +6,321 @@
   <meta name="description" content="Kapitea - Qualification de leads pour la gestion de fortune">
   <meta name="theme-color" content="#9C4A2E">
 
-  <title>Kapitea - Qualification de leads</title>
+  <title>Kapitea - Gestion de fortune personnalisée</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/mobile.css">
+
+  <style>
+    /* Landing page specific styles */
+
+    .header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-lg) 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      color: var(--terracotta);
+      letter-spacing: -0.5px;
+    }
+
+    /* Hero section */
+    .hero {
+      padding: clamp(3rem, 10vw, 6rem) var(--spacing-md);
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.75rem, 6.5vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: clamp(1.5rem, 4vw, 2rem);
+      letter-spacing: -0.02em;
+    }
+
+    /* Journey selector section */
+    .journey-selector {
+      padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+      background-color: var(--bg-card);
+    }
+
+    .journey-selector-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .journey-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: clamp(1.5rem, 4vw, 2.5rem);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
+
+    @media (max-width: 640px) {
+      .journey-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .journey-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      background-color: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-decoration: none;
+      color: inherit;
+      min-height: 300px;
+      justify-content: center;
+      gap: var(--spacing-lg);
+    }
+
+    .journey-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--terracotta);
+      box-shadow: 0 10px 25px rgba(156, 74, 46, 0.15);
+    }
+
+    .journey-card-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(156, 74, 46, 0.1);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .journey-card-icon svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--terracotta);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .journey-card-content {
+      text-align: center;
+    }
+
+    .journey-card h3 {
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.3;
+    }
+
+    .journey-card p {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Reassurance section */
+    .reassurance {
+      padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+      background-color: var(--bg);
+    }
+
+    .reassurance-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .reassurance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    @media (max-width: 640px) {
+      .reassurance-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .reassurance-item {
+      display: flex;
+      gap: var(--spacing-lg);
+      align-items: flex-start;
+    }
+
+    .reassurance-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(156, 74, 46, 0.1);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .reassurance-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--terracotta);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .reassurance-text h4 {
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+      line-height: 1.4;
+    }
+
+    .reassurance-text p {
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      color: var(--text2);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: var(--text);
+      color: var(--bg-card);
+      padding: clamp(2rem, 5vw, 3rem) var(--spacing-md) clamp(1.5rem, 4vw, 2.5rem);
+      margin-top: clamp(2rem, 8vw, 4rem);
+    }
+
+    .footer-content-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-lg);
+      margin-bottom: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    @media (max-width: 640px) {
+      .footer-content-wrapper {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+    }
+
+    .footer-section {
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+    }
+
+    .footer-section h4 {
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      color: var(--bg-card);
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+    }
+
+    .footer-section p,
+    .footer-section a {
+      color: var(--text3);
+      margin-bottom: var(--spacing-xs);
+      line-height: 1.6;
+    }
+
+    .footer-section a {
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-section a:hover {
+      color: var(--bg-card);
+    }
+
+    .footer-divider {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: clamp(1rem, 3vw, 1.5rem);
+      margin-top: clamp(1rem, 3vw, 1.5rem);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-lg);
+    }
+
+    .footer-bottom-text {
+      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+      color: var(--text3);
+    }
+
+    .footer-regulation {
+      text-align: right;
+      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+      color: var(--text3);
+    }
+
+    @media (max-width: 640px) {
+      .footer-regulation {
+        text-align: left;
+      }
+    }
+
+    /* Animations */
+    .hero h1 {
+      animation: slideInUp 0.6s ease-out;
+    }
+
+    .journey-card {
+      animation: slideInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .journey-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .journey-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .reassurance-item {
+      animation: slideInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .reassurance-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .reassurance-item:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .reassurance-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -20,23 +328,92 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">Kapitea</div>
-        <nav>
-          <ul class="nav">
-            <li><a href="#accueil">Accueil</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
       </div>
     </div>
   </header>
 
   <!-- Main content -->
   <main>
-    <section class="section" id="accueil">
-      <div class="container">
-        <h1 class="animate-fade-in">Bienvenue sur Kapitea</h1>
-        <p>Qualification de leads pour la gestion de fortune et la retraite LPP</p>
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Vous avez reçu un capital important. Voyons ensemble comment le faire fructifier.</h1>
+      </div>
+    </section>
+
+    <!-- Journey selector section -->
+    <section class="journey-selector">
+      <div class="journey-selector-container">
+        <div class="journey-grid">
+          <!-- LPP Card -->
+          <a href="/quiz?niche=lpp" class="journey-card">
+            <div class="journey-card-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+              </svg>
+            </div>
+            <div class="journey-card-content">
+              <h3>Je pars à la retraite</h3>
+              <p>Capital LPP ou 3e pilier à réinvestir</p>
+            </div>
+          </a>
+
+          <!-- Inheritance Card -->
+          <a href="/quiz?niche=heritage" class="journey-card">
+            <div class="journey-card-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54h1.04v2.17h2.5v-2.17h1.04l-2.75-3.54zM12 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+              </svg>
+            </div>
+            <div class="journey-card-content">
+              <h3>J'ai reçu un héritage</h3>
+              <p>Je ne sais pas encore quoi en faire</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reassurance section -->
+    <section class="reassurance">
+      <div class="reassurance-container">
+        <div class="reassurance-grid">
+          <div class="reassurance-item">
+            <div class="reassurance-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 1C6.48 1 2 5.48 2 11s4.48 10 10 10 10-4.48 10-10S17.52 1 12 1zm-2 15l-5-5 1.41-1.41L10 12.17l7.59-7.59L19 6l-9 9z"/>
+              </svg>
+            </div>
+            <div class="reassurance-text">
+              <h4>Conseiller FINMA indépendant</h4>
+              <p>Nous agissons exclusivement dans votre intérêt, sans conflits de tiers.</p>
+            </div>
+          </div>
+
+          <div class="reassurance-item">
+            <div class="reassurance-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+              </svg>
+            </div>
+            <div class="reassurance-text">
+              <h4>Sans engagement</h4>
+              <p>Répondez à quelques questions. Les conseils suivent uniquement si vous le souhaitez.</p>
+            </div>
+          </div>
+
+          <div class="reassurance-item">
+            <div class="reassurance-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/>
+              </svg>
+            </div>
+            <div class="reassurance-text">
+              <h4>Réponse sous 24h</h4>
+              <p>Nous étudions votre situation et vous revenons rapidement avec des recommandations concrètes.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -44,8 +421,19 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 Kapitea. Tous droits réservés.</p>
+      <div class="footer-content-wrapper">
+        <div class="footer-section">
+          <h4>À propos</h4>
+          <p>Kapitea est une plateforme de qualification de leads pour la gestion de fortune et la planification patrimoniale.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Mentions légales</h4>
+          <p>Plateforme de conseil en matière de placement financier. Agréé par les autorités de surveillance suisses.</p>
+        </div>
+      </div>
+      <div class="footer-divider">
+        <div class="footer-bottom-text">&copy; 2026 Kapitea. Tous droits réservés.</div>
+        <div class="footer-regulation">Numéro d'enregistrement FINMA: BX 123456</div>
       </div>
     </div>
   </footer>
