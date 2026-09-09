@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kapitea - Questionnaire de qualification">
+  <meta name="theme-color" content="#9C4A2E">
+
+  <title>Kapitea - Questionnaire</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/mobile.css">
+
+  <style>
+    /* Questionnaire specific styles */
+
+    .questionnaire-container {
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .questionnaire-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Progress bar */
+    .progress-bar-container {
+      margin-bottom: var(--spacing-2xl);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .progress-step {
+      flex: 1;
+      height: 4px;
+      background-color: var(--border);
+      border-radius: 2px;
+      transition: background-color var(--transition-base);
+    }
+
+    .progress-step.active,
+    .progress-step.completed {
+      background-color: var(--terracotta);
+    }
+
+    .progress-counter {
+      font-size: var(--font-size-sm);
+      color: var(--text2);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* Screen */
+    .questionnaire-screen {
+      display: none;
+      animation: slideInUp var(--transition-base) ease-out;
+    }
+
+    .questionnaire-screen.active {
+      display: block;
+    }
+
+    .questionnaire-screen h2 {
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      font-weight: 700;
+      margin-bottom: var(--spacing-2xl);
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .questionnaire-screen p {
+      font-size: var(--font-size-base);
+      color: var(--text2);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* Options (radio buttons) */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      cursor: pointer;
+      padding: var(--spacing-md);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+
+    .option:hover {
+      border-color: var(--terracotta-light);
+      background-color: rgba(196, 105, 74, 0.05);
+    }
+
+    .option input[type="radio"] {
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      accent-color: var(--terracotta);
+    }
+
+    .option label {
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0;
+      flex: 1;
+    }
+
+    .option input[type="radio"]:checked + label {
+      color: var(--terracotta);
+    }
+
+    .option.selected {
+      border-color: var(--terracotta);
+      background-color: rgba(156, 74, 46, 0.08);
+    }
+
+    /* Slider */
+    .slider-container {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .slider-value {
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: var(--terracotta);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
+      transition: all var(--transition-fast);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
+      transition: all var(--transition-fast);
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-sm);
+      color: var(--text3);
+      margin-top: var(--spacing-md);
+    }
+
+    /* Contact form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-base);
+    }
+
+    .form-group input {
+      padding: var(--spacing-md);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--text);
+      background-color: var(--bg-card);
+      transition: border-color var(--transition-fast);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--terracotta);
+      box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text3);
+    }
+
+    .form-group.error input {
+      border-color: #dc2626;
+    }
+
+    .error-message {
+      font-size: var(--font-size-sm);
+      color: #dc2626;
+      margin-top: var(--spacing-xs);
+      display: none;
+    }
+
+    .form-group.error .error-message {
+      display: block;
+    }
+
+    .optional-text {
+      font-size: var(--font-size-sm);
+      color: var(--text3);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Navigation buttons */
+    .questionnaire-navigation {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-nav {
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex: 1;
+    }
+
+    .btn-nav.back {
+      background-color: var(--bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-nav.back:hover {
+      border-color: var(--text2);
+      background-color: var(--border);
+    }
+
+    .btn-nav.back:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-nav.next {
+      background-color: var(--terracotta);
+      color: var(--bg-card);
+      border: none;
+    }
+
+    .btn-nav.next:hover {
+      background-color: var(--terracotta-dark);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-nav.next:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: var(--text3);
+    }
+
+    @media (max-width: 640px) {
+      .questionnaire-container {
+        padding: var(--spacing-md) var(--spacing-sm);
+      }
+
+      .questionnaire-navigation {
+        flex-direction: column-reverse;
+      }
+
+      .btn-nav {
+        width: 100%;
+      }
+
+      .questionnaire-screen h2 {
+        margin-bottom: var(--spacing-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="questionnaire-container">
+    <div class="questionnaire-wrapper">
+      <!-- Progress bar -->
+      <div class="progress-bar-container">
+        <div class="progress-step" id="progress-0"></div>
+        <div class="progress-step" id="progress-1"></div>
+        <div class="progress-step" id="progress-2"></div>
+        <div class="progress-step" id="progress-3"></div>
+        <div class="progress-step" id="progress-4"></div>
+        <div class="progress-counter"><span id="current-step">1</span>/5</div>
+      </div>
+
+      <!-- Screen 1: Q_HORIZON -->
+      <div class="questionnaire-screen active" id="screen-horizon">
+        <h2>Où en êtes-vous par rapport à la retraite ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="horizon-retired" name="horizon" value="already_retired">
+            <label for="horizon-retired">Déjà retraité</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="horizon-soon" name="horizon" value="less_than_2">
+            <label for="horizon-soon">Retraite dans moins de 2 ans</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="horizon-medium" name="horizon" value="2_to_5">
+            <label for="horizon-medium">Retraite dans 2 à 5 ans</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 2: Q_MONTANT -->
+      <div class="questionnaire-screen" id="screen-montant">
+        <h2>Quel est le montant approximatif de votre capital 2e et 3e pilier ?</h2>
+        <div class="slider-container">
+          <div class="slider-value" id="montant-display">CHF 400'000</div>
+          <input type="range" id="montant-slider" min="50000" max="2000000" step="10000" value="400000">
+          <div class="slider-labels">
+            <span>CHF 50'000</span>
+            <span>CHF 2'000'000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Q_SITUATION_FAMILIALE -->
+      <div class="questionnaire-screen" id="screen-situation">
+        <h2>Quelle est votre situation familiale ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="situation-single" name="situation" value="single">
+            <label for="situation-single">Célibataire</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="situation-couple" name="situation" value="couple">
+            <label for="situation-couple">En couple</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="situation-married" name="situation" value="married">
+            <label for="situation-married">Marié(e)</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="situation-children" name="situation" value="with_children">
+            <label for="situation-children">Avec enfants à charge</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 4: Q_OBJECTIF -->
+      <div class="questionnaire-screen" id="screen-objectif">
+        <h2>Quel est votre objectif principal avec ce capital ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="objectif-revenu" name="objectif" value="regular_income">
+            <label for="objectif-revenu">Obtenir un revenu complémentaire régulier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-securite" name="objectif" value="secure_capital">
+            <label for="objectif-securite">Sécuriser le capital sans prendre de risque</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-transmission" name="objectif" value="transmit">
+            <label for="objectif-transmission">Le transmettre à mes proches</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-projet" name="objectif" value="finance_project">
+            <label for="objectif-projet">Financer un projet précis</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 5: Q_CONTACT -->
+      <div class="questionnaire-screen" id="screen-contact">
+        <h2>Dernière étape : vos informations de contact</h2>
+        <form class="contact-form" id="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="firstname">Prénom *</label>
+            <input type="text" id="firstname" name="firstname" placeholder="Jean" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="vous@example.com" required>
+            <div class="error-message">Veuillez entrer une adresse email valide</div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Téléphone</label>
+            <input type="tel" id="phone" name="phone" placeholder="+41 XX XXX XX XX">
+            <div class="optional-text">Format: +41 XXXXXXXXX (optionnel)</div>
+            <div class="error-message">Format de téléphone invalide</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Navigation -->
+      <div class="questionnaire-navigation">
+        <button class="btn-nav back" id="btn-back" disabled>← Retour</button>
+        <button class="btn-nav next" id="btn-next">Suivant →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configuration and Funnel Logic -->
+  <script src="js/config.js" defer></script>
+  <script src="js/funnel.js" defer></script>
+</body>
+</html>
