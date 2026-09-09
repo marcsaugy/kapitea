@@ -339,8 +339,8 @@
         <div class="progress-counter"><span id="current-step">1</span>/5</div>
       </div>
 
-      <!-- Screen 1: Q_HORIZON -->
-      <div class="questionnaire-screen active" id="screen-horizon">
+      <!-- Screen 1: Q_HORIZON (LPP only) -->
+      <div class="questionnaire-screen active segment-lpp" id="screen-horizon">
         <h2>Où en êtes-vous par rapport à la retraite ?</h2>
         <div class="options">
           <div class="option">
@@ -358,8 +358,8 @@
         </div>
       </div>
 
-      <!-- Screen 2: Q_MONTANT -->
-      <div class="questionnaire-screen" id="screen-montant">
+      <!-- Screen 2: Q_MONTANT (LPP only) -->
+      <div class="questionnaire-screen segment-lpp" id="screen-montant">
         <h2>Quel est le montant approximatif de votre capital 2e et 3e pilier ?</h2>
         <div class="slider-container">
           <div class="slider-value" id="montant-display">CHF 400'000</div>
@@ -371,8 +371,8 @@
         </div>
       </div>
 
-      <!-- Screen 3: Q_SITUATION_FAMILIALE -->
-      <div class="questionnaire-screen" id="screen-situation">
+      <!-- Screen 3: Q_SITUATION_FAMILIALE (LPP only) -->
+      <div class="questionnaire-screen segment-lpp" id="screen-situation">
         <h2>Quelle est votre situation familiale ?</h2>
         <div class="options">
           <div class="option">
@@ -394,8 +394,8 @@
         </div>
       </div>
 
-      <!-- Screen 4: Q_OBJECTIF -->
-      <div class="questionnaire-screen" id="screen-objectif">
+      <!-- Screen 4: Q_OBJECTIF (LPP only) -->
+      <div class="questionnaire-screen segment-lpp" id="screen-objectif">
         <h2>Quel est votre objectif principal avec ce capital ?</h2>
         <div class="options">
           <div class="option">
@@ -417,8 +417,82 @@
         </div>
       </div>
 
-      <!-- Screen 5: Q_CONTACT -->
-      <div class="questionnaire-screen" id="screen-contact">
+      <!-- Screen 1: Q_MONTANT_HERITAGE (Heritage only) -->
+      <div class="questionnaire-screen segment-heritage" id="screen-montant-heritage">
+        <h2>Quel est le montant approximatif reçu ?</h2>
+        <div class="slider-container">
+          <div class="slider-value" id="montant-heritage-display">CHF 250'000</div>
+          <input type="range" id="montant-heritage-slider" min="20000" max="3000000" step="10000" value="250000">
+          <div class="slider-labels">
+            <span>CHF 20'000</span>
+            <span>CHF 3'000'000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 2: Q_TYPE_ACTIFS (Heritage only) -->
+      <div class="questionnaire-screen segment-heritage" id="screen-type-actifs">
+        <h2>De quel type d'actifs s'agit-il principalement ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="actifs-liquides" name="type-actifs" value="cash">
+            <label for="actifs-liquides">Liquidités (compte, épargne)</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-titres" name="type-actifs" value="securities">
+            <label for="actifs-titres">Titres (actions, fonds)</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-immobilier" name="type-actifs" value="real_estate">
+            <label for="actifs-immobilier">Immobilier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-melange" name="type-actifs" value="mixed">
+            <label for="actifs-melange">Un mélange de plusieurs types</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Q_NOTAIRE (Heritage only) -->
+      <div class="questionnaire-screen segment-heritage" id="screen-notaire">
+        <h2>Avez-vous déjà consulté un notaire ou fiscaliste pour cette succession ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="notaire-done" name="notaire" value="settled">
+            <label for="notaire-done">Oui, la succession est réglée</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="notaire-in-progress" name="notaire" value="in_progress">
+            <label for="notaire-in-progress">Oui, mais c'est encore en cours</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="notaire-no" name="notaire" value="not_yet">
+            <label for="notaire-no">Non, pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 4: Q_PROJET (Heritage only) -->
+      <div class="questionnaire-screen segment-heritage" id="screen-projet">
+        <h2>Avez-vous déjà une idée de ce que vous voulez faire de ce capital ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="projet-precis" name="projet" value="precise_plan">
+            <label for="projet-precis">Oui, un projet précis en tête</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="projet-direction" name="projet" value="general_direction">
+            <label for="projet-direction">Une direction générale mais pas de plan</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="projet-aucune" name="projet" value="no_idea">
+            <label for="projet-aucune">Aucune idée pour l'instant</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 5: Q_CONTACT (LPP + Heritage) -->
+      <div class="questionnaire-screen segment-lpp segment-heritage" id="screen-contact">
         <h2>Dernière étape : vos informations de contact</h2>
         <form class="contact-form" id="contact-form" onsubmit="return false;">
           <div class="form-group">
