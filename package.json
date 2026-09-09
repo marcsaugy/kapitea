@@ -1,0 +1,19 @@
+{
+  "name": "kapitea",
+  "version": "1.0.0",
+  "description": "Kapitea - Plateforme de qualification de leads pour la gestion de fortune",
+  "main": "index.html",
+  "scripts": {
+    "serve": "npx http-server -p 8080",
+    "test": "echo \"Tests to be defined\" && exit 0"
+  },
+  "keywords": [
+    "wealth-management",
+    "retirement",
+    "leads",
+    "qualification"
+  ],
+  "author": "Marc Saugy",
+  "license": "MIT",
+  "dependencies": {}
+}

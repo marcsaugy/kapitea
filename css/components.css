@@ -1,0 +1,130 @@
+/* Components */
+
+/* Header */
+.header {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: var(--spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--terracotta);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  gap: var(--spacing-lg);
+  list-style: none;
+}
+
+.nav a {
+  font-weight: 500;
+  color: var(--text);
+  transition: color var(--transition-fast);
+}
+
+.nav a:hover {
+  color: var(--terracotta);
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text);
+  background-color: var(--bg-card);
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Footer */
+.footer {
+  background-color: var(--text);
+  color: var(--bg-card);
+  padding: var(--spacing-2xl) 0 var(--spacing-lg);
+  margin-top: var(--spacing-2xl);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.footer-section h4 {
+  color: var(--bg-card);
+}
+
+.footer-section a {
+  color: var(--text3);
+  transition: color var(--transition-fast);
+}
+
+.footer-section a:hover {
+  color: var(--bg-card);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text3);
+  font-size: var(--font-size-sm);
+}
