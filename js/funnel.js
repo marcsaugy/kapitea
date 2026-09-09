@@ -435,14 +435,77 @@ function handleBack() {
   }
 }
 
-// Handle submit
-function handleSubmit() {
-  // Log state for debugging
+// Handle submit - complete flow: Supabase + EmailJS + redirect
+async function handleSubmit() {
   console.log('Funnel completed:', state);
 
-  // Optionally send to backend here (Supabase, EmailJS, etc.)
-  // For now, just redirect to thank you page
-  window.location.href = '/merci';
+  // Show loading state (optional - can add spinner UI here)
+  const btnNext = document.getElementById('btn-next');
+  const originalText = btnNext.textContent;
+  btnNext.disabled = true;
+  btnNext.textContent = 'Envoi en cours...';
+
+  try {
+    // Step 1: Insert lead into Supabase
+    console.log('Step 1: Inserting lead into Supabase...');
+    const supabaseResult = await insertLeadAndEmail(state);
+
+    if (!supabaseResult.success) {
+      console.error('Supabase insertion failed:', supabaseResult.error);
+      // Still redirect to merci page even if insertion fails
+      // The data is still in sessionStorage for manual recovery
+    } else {
+      console.log('Lead inserted successfully');
+    }
+
+    // Step 2: Redirect to thank you page
+    console.log('Redirecting to thank you page...');
+    window.location.href = '/merci';
+  } catch (err) {
+    console.error('Submission error:', err);
+    // Still redirect even if there's an error
+    window.location.href = '/merci';
+  } finally {
+    btnNext.disabled = false;
+    btnNext.textContent = originalText;
+  }
+}
+
+// Combined Supabase + EmailJS submission
+async function insertLeadAndEmail(state) {
+  // Step 1: Insert into Supabase
+  let supabaseResult = {
+    success: false,
+    error: 'Not executed',
+  };
+
+  if (typeof insertLead === 'function') {
+    try {
+      supabaseResult = await insertLead(state);
+    } catch (err) {
+      console.error('Error calling insertLead:', err);
+      supabaseResult = {
+        success: false,
+        error: err.message || 'Error inserting lead',
+      };
+    }
+  } else {
+    console.warn('insertLead function not available');
+  }
+
+  // Step 2: Send confirmation emails
+  if (typeof sendConfirmationEmails === 'function') {
+    try {
+      await sendConfirmationEmails(state);
+    } catch (err) {
+      console.error('Error sending emails:', err);
+      // Don't fail the entire flow if email sending fails
+    }
+  } else {
+    console.warn('sendConfirmationEmails function not available');
+  }
+
+  return supabaseResult;
 }
 
 // Update montant display (LPP)
@@ -500,10 +563,59 @@ function setupOptionListeners() {
   });
 }
 
+// Initialize Supabase client
+function initSupabase() {
+  if (typeof supabaseClientInstance === 'undefined') {
+    console.warn('Supabase client not available');
+    return;
+  }
+
+  if (typeof SUPABASE_CONFIG === 'undefined') {
+    console.warn('SUPABASE_CONFIG not loaded');
+    return;
+  }
+
+  try {
+    supabaseClientInstance.init(SUPABASE_CONFIG);
+    console.log('Supabase client initialized');
+  } catch (err) {
+    console.error('Failed to initialize Supabase:', err);
+  }
+}
+
+// Initialize EmailJS
+function initEmailJS() {
+  if (typeof emailjs === 'undefined') {
+    console.warn('EmailJS library not available');
+    return;
+  }
+
+  if (typeof CONFIG === 'undefined') {
+    console.warn('CONFIG not loaded');
+    return;
+  }
+
+  if (!CONFIG.EMAILJS_PUBLIC_KEY) {
+    console.warn('EMAILJS_PUBLIC_KEY not configured');
+    return;
+  }
+
+  try {
+    emailjs.init(CONFIG.EMAILJS_PUBLIC_KEY);
+    console.log('EmailJS initialized');
+  } catch (err) {
+    console.error('Failed to initialize EmailJS:', err);
+  }
+}
+
 // Initialize
 function init() {
   loadState();
   detectNiche();
+
+  // Initialize external services
+  initSupabase();
+  initEmailJS();
 
   // Restore slider values if needed
   if (state.segment === 'lpp') {
