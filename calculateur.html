@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kapitea - Simulateur d'intérêts composés">
+  <meta name="theme-color" content="#9C4A2E">
+
+  <title>Simulateur d'intérêts composés — Kapitea</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/mobile.css">
+
+  <style>
+    /* Calculator specific styles */
+
+    .calculator-container {
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: clamp(2rem, 5vw, 3rem) var(--spacing-md);
+    }
+
+    .calculator-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .calculator-header {
+      text-align: center;
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
+
+    .calculator-header h1 {
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+      letter-spacing: -0.02em;
+    }
+
+    .calculator-header p {
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* Main grid: inputs left, results right */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 3rem);
+      margin-bottom: clamp(3rem, 8vw, 4rem);
+    }
+
+    @media (max-width: 1024px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: clamp(2rem, 5vw, 3rem);
+      }
+    }
+
+    /* Left column: Inputs */
+    .calculator-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2rem, 4vw, 2.5rem);
+    }
+
+    .input-section {
+      padding: clamp(1.5rem, 3vw, 2rem);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .input-section h2 {
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .input-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .input-label {
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .input-value {
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: var(--terracotta);
+      font-weight: 700;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--border) 0%, var(--border) var(--value), var(--terracotta) var(--value), var(--terracotta) 100%);
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      --value: 50%;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--terracotta);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
+      transition: all var(--transition-fast);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      width: 20px;
+      height: 20px;
+      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--terracotta);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
+      transition: all var(--transition-fast);
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+      width: 20px;
+      height: 20px;
+      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+      color: var(--text3);
+      padding: 0 2px;
+    }
+
+    /* Toggle for withdrawal phase */
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: var(--spacing-lg) 0;
+    }
+
+    .toggle-label {
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      background-color: var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background-color var(--transition-fast);
+    }
+
+    .toggle-switch.active {
+      background-color: var(--terracotta);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-color: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left var(--transition-fast);
+    }
+
+    .toggle-switch.active::after {
+      left: 24px;
+    }
+
+    .withdrawal-section {
+      display: none;
+    }
+
+    .withdrawal-section.active {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      padding-top: var(--spacing-lg);
+    }
+
+    /* Right column: Results + Graph */
+    .calculator-results {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2rem, 5vw, 3rem);
+    }
+
+    .results-card {
+      padding: clamp(1.5rem, 3vw, 2rem);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .result-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .result-label {
+      font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
+      font-weight: 800;
+      color: var(--terracotta);
+      line-height: 1.2;
+    }
+
+    .result-breakdown {
+      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+      color: var(--text3);
+      margin-top: var(--spacing-xs);
+      line-height: 1.6;
+    }
+
+    .warning-message {
+      padding: var(--spacing-md);
+      background-color: rgba(156, 74, 46, 0.1);
+      border-left: 4px solid var(--terracotta);
+      border-radius: var(--radius-md);
+      font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+      color: var(--text);
+      margin-top: var(--spacing-md);
+    }
+
+    /* Graph */
+    .graph-container {
+      padding: clamp(1.5rem, 3vw, 2rem);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+    }
+
+    /* Footer CTA */
+    .calculator-cta {
+      text-align: center;
+      padding: clamp(2rem, 5vw, 3rem);
+      background-color: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+    }
+
+    .calculator-cta p {
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      color: var(--text2);
+      margin-bottom: var(--spacing-lg);
+      line-height: 1.6;
+    }
+
+    .btn-cta-calc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      background-color: var(--terracotta);
+      color: var(--bg-card);
+      font-family: var(--font-family);
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-cta-calc:hover {
+      background-color: var(--terracotta-dark);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .disclaimer {
+      font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+      color: var(--text3);
+      margin-top: var(--spacing-lg);
+      text-align: center;
+    }
+
+    /* Legend for graph */
+    .graph-legend {
+      display: flex;
+      gap: clamp(1.5rem, 3vw, 2rem);
+      justify-content: center;
+      margin-bottom: var(--spacing-lg);
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+      color: var(--text2);
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <div class="calculator-wrapper">
+      <!-- Header -->
+      <div class="calculator-header">
+        <h1>Simulateur d'intérêts composés</h1>
+        <p>Explorez l'impact du temps sur votre capital. Ajustez les paramètres en temps réel pour voir comment vos versements et les intérêts générés transforment votre épargne.</p>
+      </div>
+
+      <!-- Main grid -->
+      <div class="calculator-grid">
+        <!-- Left: Inputs -->
+        <div class="calculator-inputs">
+          <!-- Savings Phase -->
+          <div class="input-section">
+            <h2>Phase d'épargne</h2>
+
+            <!-- Initial amount -->
+            <div class="input-group">
+              <label class="input-label">
+                <span>Montant initial</span>
+                <span class="input-value" id="value-initial">CHF 20'000</span>
+              </label>
+              <div class="slider-container">
+                <input type="range" id="slider-initial" min="0" max="500000" step="5000" value="20000">
+                <div class="slider-labels">
+                  <span>CHF 0</span>
+                  <span>CHF 500'000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly contribution -->
+            <div class="input-group">
+              <label class="input-label">
+                <span>Versement mensuel</span>
+                <span class="input-value" id="value-monthly">CHF 300</span>
+              </label>
+              <div class="slider-container">
+                <input type="range" id="slider-monthly" min="0" max="5000" step="50" value="300">
+                <div class="slider-labels">
+                  <span>CHF 0</span>
+                  <span>CHF 5'000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Savings duration -->
+            <div class="input-group">
+              <label class="input-label">
+                <span>Durée d'épargne</span>
+                <span class="input-value" id="value-duration-savings">20 ans</span>
+              </label>
+              <div class="slider-container">
+                <input type="range" id="slider-duration-savings" min="1" max="40" step="1" value="20">
+                <div class="slider-labels">
+                  <span>1 an</span>
+                  <span>40 ans</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interest rate -->
+            <div class="input-group">
+              <label class="input-label">
+                <span>Taux d'intérêt annuel</span>
+                <span class="input-value" id="value-rate">4.0%</span>
+              </label>
+              <div class="slider-container">
+                <input type="range" id="slider-rate" min="0" max="10" step="0.1" value="4">
+                <div class="slider-labels">
+                  <span>0%</span>
+                  <span>10%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Withdrawal Phase Toggle -->
+          <div class="input-section">
+            <div class="toggle-group">
+              <label class="toggle-label">Simuler une phase de retrait</label>
+              <div class="toggle-switch" id="toggle-withdrawal"></div>
+            </div>
+
+            <!-- Withdrawal Phase (hidden by default) -->
+            <div class="withdrawal-section" id="withdrawal-section">
+              <!-- Withdrawal duration -->
+              <div class="input-group">
+                <label class="input-label">
+                  <span>Durée de retrait</span>
+                  <span class="input-value" id="value-duration-withdrawal">15 ans</span>
+                </label>
+                <div class="slider-container">
+                  <input type="range" id="slider-duration-withdrawal" min="1" max="30" step="1" value="15" disabled>
+                  <div class="slider-labels">
+                    <span>1 an</span>
+                    <span>30 ans</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Monthly withdrawal -->
+              <div class="input-group">
+                <label class="input-label">
+                  <span>Retrait mensuel</span>
+                  <span class="input-value" id="value-withdrawal">CHF 1'500</span>
+                </label>
+                <div class="slider-container">
+                  <input type="range" id="slider-withdrawal" min="0" max="10000" step="50" value="1500" disabled>
+                  <div class="slider-labels">
+                    <span>CHF 0</span>
+                    <span>CHF 10'000</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Results + Graph -->
+        <div class="calculator-results">
+          <!-- Results Summary -->
+          <div class="results-card">
+            <div class="results-grid" id="results-grid">
+              <div class="result-item">
+                <div class="result-label">Capital fin d'épargne</div>
+                <div class="result-value" id="result-total-savings">CHF 125'000</div>
+                <div class="result-breakdown" id="result-breakdown-savings"></div>
+              </div>
+              <div class="result-item" id="result-withdrawal-item" style="display: none;">
+                <div class="result-label">Capital après retraits</div>
+                <div class="result-value" id="result-total-withdrawal">CHF 85'000</div>
+                <div class="result-breakdown" id="result-breakdown-withdrawal"></div>
+              </div>
+            </div>
+            <div id="warning-container"></div>
+          </div>
+
+          <!-- Graph -->
+          <div class="graph-container">
+            <div class="graph-legend">
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--terracotta-light);"></div>
+                <span>Capital apporté</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--terracotta);"></div>
+                <span>Intérêts générés</span>
+              </div>
+            </div>
+            <svg id="graph-svg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="calculator-cta">
+        <p>Cette simulation vous parle ? Analysons votre situation réelle.</p>
+        <a href="/quiz" class="btn-cta-calc">Commencer le questionnaire</a>
+        <p class="disclaimer">Simulation à titre indicatif, hors fiscalité.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Calculator Logic
+    const state = {
+      savings: {
+        initial: 20000,
+        monthly: 300,
+        duration: 20,
+        rate: 4,
+      },
+      withdrawal: {
+        enabled: false,
+        duration: 15,
+        amount: 1500,
+      },
+    };
+
+    // Format currency
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('fr-CH', {
+        style: 'currency',
+        currency: 'CHF',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(value).replace('CHF', 'CHF');
+    }
+
+    // Simulate capital growth
+    function simulateCapital(inputs) {
+      const results = [];
+      let capital = inputs.savings.initial;
+      let totalContributed = inputs.savings.initial;
+
+      // Savings phase
+      for (let year = 1; year <= inputs.savings.duration; year++) {
+        const yearlyContribution = inputs.savings.monthly * 12;
+        capital = (capital + yearlyContribution) * (1 + inputs.savings.rate / 100);
+        totalContributed += yearlyContribution;
+        const interest = capital - totalContributed;
+
+        results.push({
+          year,
+          phase: 'savings',
+          capital,
+          contributed: totalContributed,
+          interest: Math.max(0, interest),
+        });
+      }
+
+      // Withdrawal phase
+      if (inputs.withdrawal.enabled) {
+        let withdrawalCapital = capital;
+        let capitalExhausted = false;
+        let exhaustionYear = null;
+
+        for (let year = 1; year <= inputs.withdrawal.duration; year++) {
+          const yearlyWithdrawal = inputs.withdrawal.amount * 12;
+
+          if (capitalExhausted) {
+            results.push({
+              year: inputs.savings.duration + year,
+              phase: 'withdrawal',
+              capital: 0,
+              contributed: totalContributed,
+              interest: 0,
+            });
+          } else {
+            withdrawalCapital = withdrawalCapital * (1 + inputs.savings.rate / 100) - yearlyWithdrawal;
+
+            if (withdrawalCapital < 0) {
+              capitalExhausted = true;
+              exhaustionYear = inputs.savings.duration + year;
+              withdrawalCapital = 0;
+            }
+
+            const interest = Math.max(0, withdrawalCapital - totalContributed);
+            results.push({
+              year: inputs.savings.duration + year,
+              phase: 'withdrawal',
+              capital: Math.max(0, withdrawalCapital),
+              contributed: totalContributed,
+              interest,
+              exhausted: capitalExhausted,
+            });
+          }
+        }
+      }
+
+      return results;
+    }
+
+    // Draw graph
+    function drawGraph(data) {
+      const svg = document.getElementById('graph-svg');
+      svg.innerHTML = '';
+
+      if (data.length === 0) return;
+
+      // Dimensions
+      const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+      const width = 800;
+      const height = 300;
+      const chartWidth = width - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
+
+      // Find max capital
+      const maxCapital = Math.max(...data.map(d => d.capital), 1);
+      const yScale = chartHeight / maxCapital;
+      const barWidth = Math.max(2, Math.min(30, chartWidth / (data.length || 1) * 0.6));
+      const barGap = Math.max(1, Math.min(5, chartWidth / (data.length || 1) * 0.1));
+      const totalBarWidth = barWidth + barGap;
+
+      // Background
+      const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bg.setAttribute('width', width);
+      bg.setAttribute('height', height);
+      bg.setAttribute('fill', 'var(--bg)');
+      svg.appendChild(bg);
+
+      // Group for chart
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('transform', `translate(${margin.left},${margin.top})`);
+
+      // Grid lines
+      for (let i = 0; i <= 5; i++) {
+        const y = (chartHeight / 5) * i;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', 0);
+        line.setAttribute('y1', chartHeight - y);
+        line.setAttribute('x2', chartWidth);
+        line.setAttribute('y2', chartHeight - y);
+        line.setAttribute('stroke', 'var(--border)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('stroke-dasharray', '4');
+        g.appendChild(line);
+
+        // Y axis label
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', -10);
+        text.setAttribute('y', chartHeight - y + 4);
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('font-size', '11');
+        text.setAttribute('fill', 'var(--text3)');
+        text.textContent = formatCurrency((maxCapital / 5) * i);
+        g.appendChild(text);
+      }
+
+      // Bars
+      data.forEach((d, i) => {
+        const x = i * totalBarWidth;
+        const interestHeight = (d.interest || 0) * yScale;
+        const contributedHeight = (d.contributed || 0) * yScale;
+        const totalHeight = interestHeight + contributedHeight;
+
+        // Contributed (bottom)
+        const rectContributed = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rectContributed.setAttribute('x', x);
+        rectContributed.setAttribute('y', chartHeight - contributedHeight);
+        rectContributed.setAttribute('width', barWidth);
+        rectContributed.setAttribute('height', contributedHeight);
+        rectContributed.setAttribute('fill', 'var(--terracotta-light)');
+        g.appendChild(rectContributed);
+
+        // Interest (top)
+        const rectInterest = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rectInterest.setAttribute('x', x);
+        rectInterest.setAttribute('y', chartHeight - totalHeight);
+        rectInterest.setAttribute('width', barWidth);
+        rectInterest.setAttribute('height', interestHeight);
+        rectInterest.setAttribute('fill', 'var(--terracotta)');
+        g.appendChild(rectInterest);
+
+        // X axis label (every 5 years or less if few years)
+        if (data.length <= 10 || i % 5 === 0) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', x + barWidth / 2);
+          text.setAttribute('y', chartHeight + 20);
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('font-size', '11');
+          text.setAttribute('fill', 'var(--text3)');
+          text.textContent = `${d.year}a`;
+          g.appendChild(text);
+        }
+      });
+
+      // Axes
+      const axisX = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      axisX.setAttribute('x1', 0);
+      axisX.setAttribute('y1', chartHeight);
+      axisX.setAttribute('x2', chartWidth);
+      axisX.setAttribute('y2', chartHeight);
+      axisX.setAttribute('stroke', 'var(--border)');
+      axisX.setAttribute('stroke-width', '1');
+      g.appendChild(axisX);
+
+      const axisY = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      axisY.setAttribute('x1', 0);
+      axisY.setAttribute('y1', 0);
+      axisY.setAttribute('x2', 0);
+      axisY.setAttribute('y2', chartHeight);
+      axisY.setAttribute('stroke', 'var(--border)');
+      axisY.setAttribute('stroke-width', '1');
+      g.appendChild(axisY);
+
+      svg.appendChild(g);
+    }
+
+    // Update display
+    function updateDisplay() {
+      const data = simulateCapital(state);
+
+      // Update result values
+      const savingsData = data[data.length - (state.withdrawal.enabled ? state.withdrawal.duration + 1 : 1)];
+      if (savingsData) {
+        document.getElementById('result-total-savings').textContent = formatCurrency(savingsData.capital);
+
+        const contributedPct = Math.round((savingsData.contributed / savingsData.capital) * 100) || 0;
+        const interestPct = 100 - contributedPct;
+        document.getElementById('result-breakdown-savings').textContent =
+          `Dont ${formatCurrency(savingsData.contributed)} apportés (${contributedPct}%) et ${formatCurrency(savingsData.interest)} en intérêts (${interestPct}%)`;
+      }
+
+      // Update withdrawal results if enabled
+      const withdrawalItem = document.getElementById('result-withdrawal-item');
+      if (state.withdrawal.enabled && data.length > 0) {
+        withdrawalItem.style.display = 'block';
+        const finalData = data[data.length - 1];
+        document.getElementById('result-total-withdrawal').textContent = formatCurrency(finalData.capital);
+        document.getElementById('result-breakdown-withdrawal').textContent = finalData.capital > 0
+          ? `${formatCurrency(finalData.contributed)} apportés (${Math.round((finalData.contributed / finalData.capital) * 100)}%)`
+          : 'Capital épuisé';
+
+        // Check for exhaustion warning
+        const exhaustedData = data.find(d => d.exhausted);
+        const warningContainer = document.getElementById('warning-container');
+        warningContainer.innerHTML = '';
+        if (exhaustedData) {
+          const warning = document.createElement('div');
+          warning.className = 'warning-message';
+          warning.textContent = `⚠️ Le capital s'épuise en année ${exhaustedData.year}. Les retraits ne peuvent continuer au-delà.`;
+          warningContainer.appendChild(warning);
+        }
+      } else {
+        withdrawalItem.style.display = 'none';
+        document.getElementById('warning-container').innerHTML = '';
+      }
+
+      // Draw graph
+      drawGraph(data);
+    }
+
+    // Setup sliders
+    function setupSliders() {
+      const sliders = {
+        'slider-initial': (val) => { state.savings.initial = parseInt(val); document.getElementById('value-initial').textContent = formatCurrency(val); },
+        'slider-monthly': (val) => { state.savings.monthly = parseInt(val); document.getElementById('value-monthly').textContent = formatCurrency(val); },
+        'slider-duration-savings': (val) => { state.savings.duration = parseInt(val); document.getElementById('value-duration-savings').textContent = `${val} ans`; },
+        'slider-rate': (val) => { state.savings.rate = parseFloat(val); document.getElementById('value-rate').textContent = `${val}%`; },
+        'slider-duration-withdrawal': (val) => { state.withdrawal.duration = parseInt(val); document.getElementById('value-duration-withdrawal').textContent = `${val} ans`; },
+        'slider-withdrawal': (val) => { state.withdrawal.amount = parseInt(val); document.getElementById('value-withdrawal').textContent = formatCurrency(val); },
+      };
+
+      Object.entries(sliders).forEach(([id, callback]) => {
+        const slider = document.getElementById(id);
+        if (slider) {
+          slider.addEventListener('input', (e) => {
+            callback(e.target.value);
+            updateDisplay();
+          });
+
+          // Update slider background gradient
+          slider.addEventListener('input', function() {
+            const val = (this.value - this.min) / (this.max - this.min) * 100;
+            this.style.setProperty('--value', val + '%');
+          });
+
+          // Initialize
+          const initialVal = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+          slider.style.setProperty('--value', initialVal + '%');
+        }
+      });
+    }
+
+    // Setup toggle
+    function setupToggle() {
+      const toggle = document.getElementById('toggle-withdrawal');
+      const withdrawalSection = document.getElementById('withdrawal-section');
+      const durationSlider = document.getElementById('slider-duration-withdrawal');
+      const withdrawalSlider = document.getElementById('slider-withdrawal');
+
+      toggle.addEventListener('click', () => {
+        state.withdrawal.enabled = !state.withdrawal.enabled;
+        toggle.classList.toggle('active');
+        withdrawalSection.classList.toggle('active');
+        durationSlider.disabled = !state.withdrawal.enabled;
+        withdrawalSlider.disabled = !state.withdrawal.enabled;
+        updateDisplay();
+      });
+    }
+
+    // Initialize
+    function init() {
+      setupSliders();
+      setupToggle();
+      updateDisplay();
+    }
+
+    // Run on load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
