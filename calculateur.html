@@ -142,7 +142,7 @@
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: linear-gradient(to right, var(--border) 0%, var(--border) var(--value), var(--terracotta) var(--value), var(--terracotta) 100%);
+      background: linear-gradient(to right, var(--terracotta) 0%, var(--terracotta) var(--value), var(--border) var(--value), var(--border) 100%);
       outline: none;
       -webkit-appearance: none;
       cursor: pointer;
@@ -583,6 +583,17 @@
       }).format(value).replace('CHF', 'CHF');
     }
 
+    // Short form for the graph axis, which has no room for a full amount
+    function formatCompact(value) {
+      if (value >= 1000000) {
+        return (value / 1000000).toFixed(1).replace('.0', '') + 'M';
+      }
+      if (value >= 1000) {
+        return Math.round(value / 1000) + 'k';
+      }
+      return String(Math.round(value));
+    }
+
     // Simulate capital growth
     function simulateCapital(inputs) {
       const results = [];
@@ -607,40 +618,37 @@
 
       // Withdrawal phase
       if (inputs.withdrawal.enabled) {
-        let withdrawalCapital = capital;
-        let capitalExhausted = false;
-        let exhaustionYear = null;
+        // Split the capital into what was paid in and what the interest built,
+        // then draw both down proportionally so the whole capital drains to zero.
+        let contributedPart = Math.min(totalContributed, capital);
+        let interestPart = Math.max(0, capital - contributedPart);
+        let exhausted = false;
 
         for (let year = 1; year <= inputs.withdrawal.duration; year++) {
           const yearlyWithdrawal = inputs.withdrawal.amount * 12;
 
-          if (capitalExhausted) {
-            results.push({
-              year: inputs.savings.duration + year,
-              phase: 'withdrawal',
-              capital: 0,
-              contributed: totalContributed,
-              interest: 0,
-            });
-          } else {
-            withdrawalCapital = withdrawalCapital * (1 + inputs.savings.rate / 100) - yearlyWithdrawal;
+          // Interest keeps accruing on whatever is left
+          interestPart += (contributedPart + interestPart) * (inputs.savings.rate / 100);
 
-            if (withdrawalCapital < 0) {
-              capitalExhausted = true;
-              exhaustionYear = inputs.savings.duration + year;
-              withdrawalCapital = 0;
-            }
+          const total = contributedPart + interestPart;
+          const withdrawn = Math.min(yearlyWithdrawal, total);
+          const remainingRatio = total > 0 ? (total - withdrawn) / total : 0;
 
-            const interest = Math.max(0, withdrawalCapital - totalContributed);
-            results.push({
-              year: inputs.savings.duration + year,
-              phase: 'withdrawal',
-              capital: Math.max(0, withdrawalCapital),
-              contributed: totalContributed,
-              interest,
-              exhausted: capitalExhausted,
-            });
+          contributedPart *= remainingRatio;
+          interestPart *= remainingRatio;
+
+          if (withdrawn < yearlyWithdrawal) {
+            exhausted = true;
           }
+
+          results.push({
+            year: inputs.savings.duration + year,
+            phase: 'withdrawal',
+            capital: contributedPart + interestPart,
+            contributed: contributedPart,
+            interest: interestPart,
+            exhausted,
+          });
         }
       }
 
@@ -699,7 +707,7 @@
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('font-size', '11');
         text.setAttribute('fill', 'var(--text3)');
-        text.textContent = formatCurrency((maxCapital / 5) * i);
+        text.textContent = formatCompact((maxCapital / 5) * i);
         g.appendChild(text);
       }
 
