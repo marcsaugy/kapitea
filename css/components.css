@@ -49,9 +49,12 @@
 }
 
 /* Hero */
+/* Fond plat : un dégradé d'ambiance est une décoration de fond, ce que la
+   direction artistique exclut. La matière vient du papier chaud et du
+   grain, pas d'un délavé diagonal. */
 .hero {
   padding: clamp(3rem, 10vw, 6rem) var(--spacing-md);
-  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
+  background-color: var(--paper);
 }
 
 .hero-content {

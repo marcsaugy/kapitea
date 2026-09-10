@@ -1,95 +1,35 @@
-/* Mobile and responsive styles */
+/* Ajustements mobiles.
+
+   Ce fichier ne surcharge plus l'échelle typographique. Les rôles de
+   base.css sont en clamp() : ils se réduisent déjà d'eux-mêmes avec la
+   largeur, et les valeurs en pixels qui vivaient ici les écrasaient. Elles
+   descendaient le corps de texte à 13px, sous le plancher de lisibilité
+   que design.md §1 fixe pour une audience de 55 à 70 ans, et faisaient
+   passer certains titres de carte sous la taille de leur propre
+   sous-titre.
+
+   Les sélecteurs .nav, .grid-2, .grid-3, .footer-content, .card,
+   .form-input, .form-textarea, .form-select et .section qui occupaient la
+   moitié du fichier ne correspondaient à aucun élément d'aucune page. */
 
 @media (max-width: 768px) {
   :root {
-    --font-size-base: 14px;
-    --font-size-lg: 16px;
-    --font-size-xl: 18px;
-    --font-size-2xl: 20px;
-    --font-size-3xl: 28px;
-    --spacing-md: 12px;
-    --spacing-lg: 16px;
+    /* Seul l'espacement se resserre, et modérément : design.md §5 rappelle
+       que le manque d'air est ce qui fait d'abord paraître une page
+       bricolée. */
     --spacing-xl: 24px;
-    --spacing-2xl: 32px;
+    --spacing-2xl: 40px;
   }
 
+  /* Marges latérales de 24px en mobile (design.md §5) */
   .container {
-    padding: 0 var(--spacing-md);
-  }
-
-  .section {
-    padding: var(--spacing-xl) 0;
-  }
-
-  .nav {
-    gap: var(--spacing-md);
-    flex-direction: column;
-  }
-
-  .grid-2,
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-  }
-
-  .btn {
-    width: 100%;
-    padding: var(--spacing-md);
-  }
-
-  h1 {
-    font-size: var(--font-size-2xl);
-  }
-
-  h2 {
-    font-size: var(--font-size-xl);
+    padding: 0 var(--spacing-lg);
   }
 }
 
 @media (max-width: 480px) {
-  :root {
-    --font-size-base: 13px;
-    --font-size-lg: 14px;
-    --spacing-md: 8px;
-    --spacing-lg: 12px;
-    --spacing-xl: 16px;
-    --spacing-2xl: 24px;
-  }
-
-  .header-content {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
+  /* Le mark rétrécit déjà dans components.css ; le mot suit. */
   .logo {
-    font-size: var(--font-size-xl);
-  }
-
-  h1 {
-    font-size: var(--font-size-xl);
-  }
-
-  h2 {
     font-size: var(--font-size-lg);
-  }
-
-  .card {
-    padding: var(--spacing-md);
-  }
-
-  .form-input,
-  .form-textarea,
-  .form-select {
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-}
-
-/* Tablet landscape */
-@media (max-width: 1024px) and (orientation: landscape) {
-  .section {
-    padding: var(--spacing-lg) 0;
   }
 }

@@ -277,7 +277,7 @@
 
     .form-group input:focus {
       border-color: var(--terracotta);
-      box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
+      box-shadow: 0 0 0 3px var(--brique-wash);
     }
 
     .form-group input::placeholder {
@@ -285,12 +285,12 @@
     }
 
     .form-group.error input {
-      border-color: #dc2626;
+      border-color: var(--err);
     }
 
     .error-message {
       font-size: var(--font-size-sm);
-      color: #dc2626;
+      color: var(--err);
       margin-top: var(--spacing-xs);
       display: none;
     }
@@ -320,7 +320,7 @@
 
     .checkbox-group:hover {
       border-color: var(--terracotta-light);
-      background-color: rgba(196, 105, 74, 0.05);
+      background-color: var(--surface-2);
     }
 
     .checkbox-group input[type="checkbox"] {
@@ -342,7 +342,7 @@
 
     .checkbox-group.selected {
       border-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.08);
+      background-color: var(--surface-2);
     }
 
     .checkbox-highlight {
@@ -351,7 +351,7 @@
     }
 
     .form-group.error .checkbox-group {
-      border-color: #dc2626;
+      border-color: var(--err);
     }
 
     /* Navigation buttons */

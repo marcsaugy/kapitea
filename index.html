@@ -61,7 +61,23 @@
       z-index: 0;
       pointer-events: none;
       color: var(--terracotta);
-      opacity: 0.06;
+      /* 0.06 disparaissait sur le papier chaud. La courbe est le seul
+         geste graphique du site : elle a le droit de se voir. */
+      opacity: 0.16;
+    }
+
+    /* L'aire sous la courbe, reprise de la bande simulateur : c'est le
+       même motif, il donne au hero une assise sans rien y ajouter de neuf.
+       Elle se révèle avec le tracé, sinon elle serait là avant lui. */
+    .hero-curve-area {
+      fill: var(--terracotta);
+      stroke: none;
+      opacity: 0;
+      transition: opacity 1200ms var(--ease-out);
+    }
+
+    .hero-curve.drawn .hero-curve-area {
+      opacity: 0.28;
     }
 
     /* Sous 768px le hero est trop court pour que la courbe se lise,
@@ -99,12 +115,6 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
-    @media (max-width: 800px) {
-      .journey-grid-primary,
-      .journey-grid-secondary {
-        grid-template-columns: 1fr;
-      }
-    }
 
     /* Pas d'ombre : la carte se distingue par son filet.
        Le filet supérieur est le seul geste, il porte l'état actif. */
@@ -162,6 +172,47 @@
       font-size: var(--font-size-sm);
     }
 
+    /* En colonne unique, la hiérarchie par le volume ne se lit plus comme
+       une hiérarchie : elle se lit comme des cartes de tailles inégales.
+       L'ordre suffit à porter la priorité sur mobile, donc les cinq cartes
+       reprennent la même boîte.
+
+       display:contents fait des cinq cartes les enfants directs d'une
+       seule grille : deux grilles séparées ne peuvent pas s'accorder sur
+       une hauteur de rangée. grid-auto-rows:1fr les aligne ensuite toutes
+       sur la plus haute, quel que soit le repli d'un sous-titre.
+
+       Ce bloc doit rester après les règles primary/secondary : à
+       spécificité égale, c'est l'ordre d'écriture qui tranche. */
+    @media (max-width: 800px) {
+      .journey-selector-container {
+        display: grid;
+        gap: var(--spacing-lg);
+        grid-auto-rows: 1fr;
+      }
+
+      .journey-grid {
+        display: contents;
+      }
+
+      .journey-grid-primary .journey-card,
+      .journey-grid-secondary .journey-card {
+        padding: var(--spacing-lg);
+      }
+
+      /* Une seule taille de titre : à 26px sur une colonne étroite, celui
+         des cartes primaires se repliait sur trois lignes. */
+      .journey-grid-primary .journey-card h3,
+      .journey-grid-secondary .journey-card h3 {
+        font-size: var(--font-size-lg);
+      }
+
+      .journey-grid-primary .journey-card p,
+      .journey-grid-secondary .journey-card p {
+        font-size: var(--font-size-sm);
+      }
+    }
+
     /* Bande simulateur — seule inversion de contraste du site.
        Le simulateur n'est pas un persona : il sort de la grille. */
     .simulator-band {
@@ -175,7 +226,7 @@
     }
 
     .simulator-band:hover {
-      background-color: #0A0F1A;
+      background-color: #170F0B;
     }
 
     .simulator-band-inner {
@@ -392,6 +443,7 @@
     <!-- Hero section -->
     <section class="hero">
       <svg class="hero-curve" viewBox="0 0 1200 300" fill="none" aria-hidden="true" focusable="false">
+        <path class="hero-curve-area" d="M0 296C380 295 640 284 820 230C980 182 1130 100 1200 4L1200 300L0 300Z"/>
         <path class="hero-curve-path" d="M0 296C380 295 640 284 820 230C980 182 1130 100 1200 4"
               stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>

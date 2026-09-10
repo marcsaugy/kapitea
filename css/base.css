@@ -37,22 +37,57 @@
 }
 
 :root {
-  /* Palette Kapitea */
-  --terracotta: #9C4A2E;
-  --terracotta-dark: #7A3922;
-  --terracotta-light: #C4694A;
+  /* Socle — neutres chauds (design.md §3).
+     Les neutres dérivent de la même famille chromatique que l'accent.
+     C'est le point qui décide de l'impression générale : les gris bleutés
+     précédents (#F5F6F8, #111827, #667085, #EAECF0) sont la palette par
+     défaut d'un starter, et c'est d'eux que venait l'air générique. */
+  --ink: #241A15;      /* texte principal, brun-noir chaud */
+  --ink-2: #6B5B52;    /* texte secondaire — 6.2:1 sur --paper */
+  --ink-3: #9E9089;    /* hints, placeholders, et texte sur fond --ink */
+  --paper: #FBFAF8;    /* fond de page */
+  --surface: #FFFFFF;  /* surfaces élevées */
+  --line: #E7E1DC;     /* filets, séparateurs */
+  --line-2: #D5CCC5;   /* bordures actives */
 
-  /* Neutrals */
-  --bg: #F5F6F8;
-  --bg-card: #FFFFFF;
-  --text: #111827;
+  /* Accent — une seule couleur sur tout le site. Elle signale l'action,
+     l'état actif et la progression ; elle ne décore jamais. */
+  --brique: #9C4A2E;
+  --brique-deep: #74341F;
+  --brique-light: #C4694A;
+  --brique-wash: #F5EAE5;
+
+  /* Données — exclusivement dans un SVG de graphique, jamais ailleurs.
+     Un empilement tout en terracotta est illisible : la distinction
+     capital apporté / intérêts générés est le cœur de la démonstration,
+     elle demande deux teintes séparables, y compris pour un daltonien. */
+  --data-capital: #8C7B72;   /* la part versée — neutre */
+  --data-interet: var(--brique);  /* la part produite par le temps */
+  --data-retrait: #B9AFA8;   /* phase de décaissement */
+
+  /* États système : désaturés, dans la même température que le reste.
+     Pas de rouge d'alerte ni de vert fluo. */
+  --ok: #4A7C59;
+  --warn: #A67C2E;
+  --warn-wash: #F7F0E2;
+  --err: #A33A2A;
+  --err-wash: #F7EBE8;
+  --err-line: #E2BDB5;
+
+  /* Noms employés dans les pages, rattachés au socle ci-dessus. */
+  --terracotta: var(--brique);
+  --terracotta-dark: var(--brique-deep);
+  --terracotta-light: var(--brique-light);
+  --bg: var(--paper);
+  --bg-card: var(--surface);
+  --text: var(--ink);
   /* --text2 porte de l'information : contraste >= 4.5:1 sur --bg et --bg-card */
-  --text2: #667085;
-  /* --text3 est purement décoratif (placeholders, ornements).
-     Ne jamais l'utiliser pour du texte porteur d'information : 2.5:1 seulement. */
-  --text3: #9CA3AF;
-  --border: #EAECF0;
-  --border2: #E5E7EB;
+  --text2: var(--ink-2);
+  /* --text3 est décoratif sur fond clair (3.0:1). Il ne porte d'information
+     que sur le fond --ink du footer, où il monte à 5.5:1. */
+  --text3: var(--ink-3);
+  --border: var(--line);
+  --border2: var(--line-2);
 
   /* Typography — échelle de rapport ~1.25, ancrée sur un corps de 17px */
   --font-family: 'Schibsted Grotesk', 'Schibsted Fallback', -apple-system,
@@ -111,7 +146,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Surface de survol : teinte d'accent très diluée, plutôt qu'un gris neutre */
-  --surface-2: #FAF6F4;
+  --surface-2: var(--brique-wash);
 }
 
 * {
@@ -142,7 +177,12 @@ body::after {
   inset: 0;
   z-index: 9000;
   pointer-events: none;
-  opacity: 0.032;
+  /* Mesuré, pas estimé : sur un fond clair, 0.032 ne produisait que 3
+     niveaux d'amplitude sur 255 — invisible. Un fond sombre rend le même
+     bruit deux fois plus présent, c'est de là que venait le réglage.
+     0.055 donne ~6 niveaux : la surface a du grain sans qu'on distingue
+     le bruit. */
+  opacity: 0.055;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 

@@ -338,10 +338,12 @@
       line-height: 1.6;
     }
 
+    /* État d'avertissement, pas d'action : il prend --warn et non l'accent,
+       qui est réservé à ce sur quoi on peut cliquer. */
     .warning-message {
       padding: var(--spacing-md);
-      background-color: rgba(156, 74, 46, 0.1);
-      border-left: 4px solid var(--terracotta);
+      background-color: var(--warn-wash);
+      border-left: 4px solid var(--warn);
       border-radius: var(--r-input);
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
       color: var(--text);
@@ -587,11 +589,11 @@
           <div class="graph-container">
             <div class="graph-legend">
               <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--terracotta-light);"></div>
+                <div class="legend-color" style="background-color: var(--data-capital);"></div>
                 <span>Capital apporté</span>
               </div>
               <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--terracotta);"></div>
+                <div class="legend-color" style="background-color: var(--data-interet);"></div>
                 <span>Intérêts générés</span>
               </div>
             </div>
@@ -773,7 +775,7 @@
         rectContributed.setAttribute('y', chartHeight - contributedHeight);
         rectContributed.setAttribute('width', barWidth);
         rectContributed.setAttribute('height', contributedHeight);
-        rectContributed.setAttribute('fill', 'var(--terracotta-light)');
+        rectContributed.setAttribute('fill', 'var(--data-capital)');
         g.appendChild(rectContributed);
 
         // Interest (top)
@@ -782,7 +784,7 @@
         rectInterest.setAttribute('y', chartHeight - totalHeight);
         rectInterest.setAttribute('width', barWidth);
         rectInterest.setAttribute('height', interestHeight);
-        rectInterest.setAttribute('fill', 'var(--terracotta)');
+        rectInterest.setAttribute('fill', 'var(--data-interet)');
         g.appendChild(rectInterest);
 
         // X axis label (every 5 years or less if few years)
@@ -852,7 +854,8 @@
         if (exhaustedData) {
           const warning = document.createElement('div');
           warning.className = 'warning-message';
-          warning.textContent = `⚠️ Le capital s'épuise en année ${exhaustedData.year}. Les retraits ne peuvent continuer au-delà.`;
+          // Pas d'emoji en guise d'icône : le filet --warn porte l'état.
+          warning.textContent = `Le capital s'épuise en année ${exhaustedData.year}. Les retraits ne peuvent continuer au-delà.`;
           warningContainer.appendChild(warning);
         }
       } else {

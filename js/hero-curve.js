@@ -23,10 +23,15 @@
 
     var reduced = window.matchMedia(REDUCED).matches;
 
-    if (!reduced) {
-      draw(curve, path);
-      parallax(curve);
+    if (reduced) {
+      // La courbe reste, seul son tracé disparaît : l'aire est posée
+      // directement plutôt que révélée.
+      curve.classList.add('drawn');
+      return;
     }
+
+    draw(curve, path);
+    parallax(curve);
   }
 
   /* Tracé initial. stroke-dashoffset est la seule propriété qu'on puisse
@@ -45,6 +50,8 @@
 
     path.style.transition = 'stroke-dashoffset ' + DRAW_MS + 'ms var(--ease-out)';
     path.style.strokeDashoffset = '0';
+    // L'aire monte en même temps que le trait avance.
+    curve.classList.add('drawn');
 
     path.addEventListener('transitionend', function () {
       path.style.transition = '';
