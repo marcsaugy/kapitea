@@ -29,30 +29,14 @@
       margin: 0 auto;
     }
 
-    /* Header icon */
+    /* En-tête. Pas de pastille : le vert introduisait un second accent,
+       et la confirmation est déjà portée par le texte. Le filet reprend
+       le geste des cartes, ici en terracotta car il marque un état. */
     .merci-header {
-      text-align: center;
       margin-bottom: var(--spacing-2xl);
+      padding-top: var(--spacing-lg);
+      border-top: 2px solid var(--terracotta);
       animation: slideInUp var(--transition-base) ease-out;
-    }
-
-    .merci-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto var(--spacing-lg);
-      background-color: rgba(16, 185, 129, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .merci-icon svg {
-      width: 40px;
-      height: 40px;
-      stroke: #10B981;
-      stroke-width: 2;
-      fill: none;
     }
 
     .merci-header h1 {
@@ -142,7 +126,6 @@
     }
 
     .calendly-header {
-      text-align: center;
       margin-bottom: var(--spacing-lg);
     }
 
@@ -173,7 +156,6 @@
       border: 1px solid rgba(156, 74, 46, 0.2);
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg);
-      text-align: center;
       animation: slideInUp var(--transition-base) ease-out;
       animation-delay: 0.3s;
       animation-fill-mode: both;
@@ -198,7 +180,6 @@
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-2xl);
-      text-align: center;
     }
 
     .error-message p {
@@ -228,11 +209,6 @@
     <div class="merci-wrapper">
       <!-- Header -->
       <div class="merci-header">
-        <div class="merci-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-          </svg>
-        </div>
         <h1>Merci <span id="firstname-display"></span></h1>
         <p id="confirmation-message">Votre demande est bien reçue.</p>
       </div>
