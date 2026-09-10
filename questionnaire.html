@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Quelques questions pour comprendre votre situation et vous orienter vers le bon conseil. Deux minutes, sans engagement, avec un conseiller FINMA indépendant.">
-  <meta name="theme-color" content="#9C4A2E">
+  <meta name="theme-color" content="#14100E">
   <link rel="canonical" href="https://kapitea.ch/quiz">
 
   <title>Votre situation en quelques questions — Kapitea</title>
@@ -34,7 +34,7 @@
 
     .questionnaire-container {
       min-height: 100vh;
-      background-color: var(--bg);
+      background-color: var(--void);
       padding: var(--spacing-lg) var(--spacing-md);
     }
 
@@ -61,19 +61,19 @@
     .progress-step {
       flex: 1;
       height: 4px;
-      background-color: var(--border);
+      background-color: var(--surface-2);
       border-radius: 2px;
       transition: background-color var(--transition-base);
     }
 
     .progress-step.active,
     .progress-step.completed {
-      background-color: var(--terracotta);
+      background-color: var(--brique);
     }
 
     .progress-counter {
       font-size: var(--font-size-sm);
-      color: var(--text2);
+      color: var(--text-2);
       white-space: nowrap;
       font-weight: 500;
     }
@@ -100,7 +100,7 @@
 
     .questionnaire-screen p {
       font-size: var(--font-size-base);
-      color: var(--text2);
+      color: var(--text-2);
       margin-bottom: var(--spacing-lg);
     }
 
@@ -116,11 +116,11 @@
 
     .question-hint {
       font-size: var(--font-size-sm);
-      color: var(--text2);
+      color: var(--text-2);
       line-height: 1.5;
       margin-bottom: var(--spacing-2xl);
       padding-left: var(--spacing-md);
-      border-left: 3px solid var(--terracotta-light);
+      border-left: 3px solid var(--brique);
     }
 
     /* Options (radio buttons) */
@@ -137,21 +137,21 @@
       gap: var(--spacing-md);
       cursor: pointer;
       padding: var(--spacing-md);
-      border: 2px solid var(--border);
+      border: 2px solid var(--line);
       border-radius: var(--r-card);
       transition: all var(--transition-fast);
     }
 
     .option:hover {
-      border-color: var(--terracotta-light);
-      background-color: rgba(196, 105, 74, 0.05);
+      border-color: var(--brique);
+      background-color: var(--surface-2);
     }
 
     .option input[type="radio"] {
       cursor: pointer;
       width: 20px;
       height: 20px;
-      accent-color: var(--terracotta);
+      accent-color: var(--brique);
     }
 
     .option label {
@@ -163,12 +163,12 @@
     }
 
     .option input[type="radio"]:checked + label {
-      color: var(--terracotta);
+      color: var(--brique);
     }
 
     .option.selected {
-      border-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.08);
+      border-color: var(--brique);
+      background-color: var(--surface-2);
     }
 
     /* Slider */
@@ -183,7 +183,7 @@
       font-weight: 500;
       letter-spacing: var(--amount-track);
       line-height: 1;
-      color: var(--terracotta);
+      color: var(--brique);
       margin-bottom: var(--spacing-lg);
       text-align: center;
     }
@@ -192,7 +192,7 @@
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: var(--border);
+      background: var(--surface-2);
       /* Zone tactile de 48px sans épaissir la piste — voir calculateur.html */
       box-sizing: content-box;
       padding-block: 21px;
@@ -207,32 +207,29 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: var(--terracotta);
+      background: var(--brique);
+      border: 2px solid var(--void);
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
       transition: all var(--transition-fast);
     }
 
     input[type="range"]::-webkit-slider-thumb:hover {
       transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
     }
 
     input[type="range"]::-moz-range-thumb {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: var(--terracotta);
+      background: var(--brique);
+      border: 2px solid var(--void);
       cursor: pointer;
-      border: none;
-      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
       transition: all var(--transition-fast);
     }
 
     input[type="range"]::-moz-range-thumb:hover {
       transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
-    }
+        }
 
     .slider-labels {
       font-variant-numeric: tabular-nums;
@@ -240,7 +237,7 @@
       display: flex;
       justify-content: space-between;
       font-size: var(--font-size-sm);
-      color: var(--text2);
+      color: var(--text-2);
       margin-top: var(--spacing-md);
     }
 
@@ -266,31 +263,30 @@
 
     .form-group input {
       padding: var(--spacing-md);
-      border: 2px solid var(--border);
+      border: 2px solid var(--line);
       border-radius: var(--r-input);
       font-family: var(--font-family);
       font-size: var(--font-size-base);
       color: var(--text);
-      background-color: var(--bg-card);
+      background-color: var(--surface-2);
       transition: border-color var(--transition-fast);
     }
 
     .form-group input:focus {
-      border-color: var(--terracotta);
-      box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
+      border-color: var(--brique);
     }
 
     .form-group input::placeholder {
-      color: var(--text3);
+      color: var(--text-3);
     }
 
     .form-group.error input {
-      border-color: #dc2626;
+      border-color: var(--err);
     }
 
     .error-message {
       font-size: var(--font-size-sm);
-      color: #dc2626;
+      color: var(--err);
       margin-top: var(--spacing-xs);
       display: none;
     }
@@ -301,7 +297,7 @@
 
     .optional-text {
       font-size: var(--font-size-sm);
-      color: var(--text2);
+      color: var(--text-2);
       margin-top: var(--spacing-xs);
     }
 
@@ -311,7 +307,7 @@
       align-items: flex-start;
       gap: var(--spacing-md);
       padding: var(--spacing-md);
-      border: 2px solid var(--border);
+      border: 2px solid var(--line);
       border-radius: var(--r-card);
       margin-top: var(--spacing-lg);
       cursor: pointer;
@@ -319,14 +315,14 @@
     }
 
     .checkbox-group:hover {
-      border-color: var(--terracotta-light);
-      background-color: rgba(196, 105, 74, 0.05);
+      border-color: var(--brique);
+      background-color: var(--surface-2);
     }
 
     .checkbox-group input[type="checkbox"] {
       width: 20px;
       height: 20px;
-      accent-color: var(--terracotta);
+      accent-color: var(--brique);
       cursor: pointer;
       flex-shrink: 0;
       margin-top: 2px;
@@ -341,17 +337,17 @@
     }
 
     .checkbox-group.selected {
-      border-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.08);
+      border-color: var(--brique);
+      background-color: var(--surface-2);
     }
 
     .checkbox-highlight {
-      color: var(--terracotta);
+      color: var(--brique);
       font-weight: 600;
     }
 
     .form-group.error .checkbox-group {
-      border-color: #dc2626;
+      border-color: var(--err);
     }
 
     /* Navigation buttons */
@@ -375,14 +371,14 @@
     }
 
     .btn-nav.back {
-      background-color: var(--bg);
+      background-color: transparent;
       color: var(--text);
-      border: 2px solid var(--border);
+      border: 1px solid var(--line-2);
     }
 
     .btn-nav.back:hover {
-      border-color: var(--text2);
-      background-color: var(--border);
+      border-color: var(--text-2);
+      background-color: var(--line);
     }
 
     .btn-nav.back:disabled {
@@ -391,20 +387,20 @@
     }
 
     .btn-nav.next {
-      background-color: var(--terracotta);
-      color: var(--bg-card);
+      background-color: var(--brique);
+      color: var(--void);
       border: none;
     }
 
     .btn-nav.next:hover {
-      background-color: var(--terracotta-dark);
-      box-shadow: var(--shadow-md);
+      background-color: var(--brique-deep);
+      box-shadow: var(--shadow);
     }
 
     .btn-nav.next:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background-color: var(--text3);
+      background-color: var(--text-3);
     }
 
     @media (max-width: 640px) {

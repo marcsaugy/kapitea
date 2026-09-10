@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Retraite, héritage, vente d'un bien ou d'une entreprise : recevoir un capital important soulève beaucoup de questions. Un conseiller FINMA indépendant fait le point avec vous, à votre rythme et sans engagement.">
-  <meta name="theme-color" content="#9C4A2E">
+  <meta name="theme-color" content="#14100E">
   <meta name="keywords" content="gestion de fortune Suisse, conseiller financier indépendant, capital LPP, 2e pilier, placement héritage, succession, conseil patrimonial FINMA">
   <link rel="canonical" href="https://kapitea.ch/">
 
@@ -43,7 +43,7 @@
     /* Journey selector section */
     .journey-selector {
       padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
-      background-color: var(--bg-card);
+      background-color: var(--void);
     }
 
     .journey-selector-container {
@@ -78,9 +78,9 @@
        Le filet supérieur est le seul geste, il porte l'état actif. */
     .journey-card {
       display: block;
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--border);
+      background-color: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--line);
       border-radius: var(--r-card);
       text-decoration: none;
       color: inherit;
@@ -90,8 +90,8 @@
 
     .journey-card:hover,
     .journey-card:focus-visible {
-      border-top-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.03);
+      border-top-color: var(--brique);
+      background-color: var(--surface-2);
     }
 
     .journey-card h3 {
@@ -101,7 +101,7 @@
     }
 
     .journey-card p {
-      color: var(--text2);
+      color: var(--text-2);
       margin: 0;
       line-height: 1.55;
     }
@@ -131,19 +131,21 @@
     }
 
     /* Bande simulateur — seule inversion de contraste du site.
+       Sur fond sombre, c'est l'accent plein qui joue ce rôle : une bande
+       sombre de plus se confondrait avec le reste de la page.
        Le simulateur n'est pas un persona : il sort de la grille. */
     .simulator-band {
       display: block;
       position: relative;
       overflow: hidden;
-      background-color: var(--text);
-      color: var(--bg-card);
+      background-color: var(--brique);
+      color: var(--void);
       text-decoration: none;
       transition: background-color var(--transition-fast);
     }
 
     .simulator-band:hover {
-      background-color: #0A0F1A;
+      background-color: var(--brique-deep);
     }
 
     .simulator-band-inner {
@@ -165,12 +167,13 @@
       letter-spacing: var(--title-track);
       line-height: 1.15;
       margin-bottom: var(--spacing-sm);
-      color: var(--bg-card);
+      color: var(--void);
     }
 
     .simulator-band p {
       font-size: var(--font-size-base);
-      color: rgba(255, 255, 255, 0.72);
+      color: var(--void);
+      opacity: 0.78;
       margin: 0;
       max-width: var(--measure);
     }
@@ -181,18 +184,19 @@
       align-items: center;
       min-height: 48px;
       padding: 0 var(--spacing-lg);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      border: 1px solid var(--void);
       border-radius: var(--r-input);
       font-weight: 550;
       font-size: var(--font-size-base);
-      color: var(--bg-card);
+      color: var(--void);
       transition: background-color var(--transition-fast),
                   border-color var(--transition-fast);
     }
 
     .simulator-band:hover .simulator-band-cta {
-      background-color: var(--terracotta);
-      border-color: var(--terracotta);
+      background-color: var(--void);
+      border-color: var(--void);
+      color: var(--brique);
     }
 
     /* La courbe, en filigrane : le seul motif du site.
@@ -207,16 +211,16 @@
     }
 
     .simulator-band-curve .curve-area {
-      fill: var(--terracotta);
-      opacity: 0.14;
+      fill: var(--void);
+      opacity: 0.12;
       stroke: none;
     }
 
     .simulator-band-curve .curve-line {
       fill: none;
-      stroke: var(--terracotta-light);
+      stroke: var(--void);
       stroke-width: 2;
-      opacity: 0.4;
+      opacity: 0.35;
       vector-effect: non-scaling-stroke;
     }
 
@@ -225,7 +229,7 @@
 
     /* La réassurance alterne avec la bande sombre qui la précède */
     .reassurance {
-      background-color: var(--bg);
+      background-color: var(--void);
     }
 
     /* Animations */

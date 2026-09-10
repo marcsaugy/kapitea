@@ -37,22 +37,39 @@
 }
 
 :root {
-  /* Palette Kapitea */
-  --terracotta: #9C4A2E;
-  --terracotta-dark: #7A3922;
-  --terracotta-light: #C4694A;
+  color-scheme: dark;
 
-  /* Neutrals */
-  --bg: #F5F6F8;
-  --bg-card: #FFFFFF;
-  --text: #111827;
-  /* --text2 porte de l'information : contraste >= 4.5:1 sur --bg et --bg-card */
-  --text2: #667085;
-  /* --text3 est purement décoratif (placeholders, ornements).
-     Ne jamais l'utiliser pour du texte porteur d'information : 2.5:1 seulement. */
-  --text3: #9CA3AF;
-  --border: #EAECF0;
-  --border2: #E5E7EB;
+  /* Fonds, bruns-noirs chauds pour rester dans la famille chromatique du terracotta */
+  --void:      #14100E;  /* fond de page */
+  --surface:   #1E1815;  /* cartes, panneaux */
+  --surface-2: #292120;  /* survol, champs, zones enfoncées */
+
+  /* Filets et bordures */
+  --line:      #332925;
+  --line-2:    #4A3D37;
+
+  /* Texte, jamais blanc pur pour éviter le halo sur fond sombre */
+  --text:      #F2ECE7;
+  --text-2:    #B8A9A0;
+  --text-3:    #8A7A71;
+
+  /* Accent, terracotta éclairci pour rester lisible sur fond sombre */
+  --brique:      #CD6539;
+  --brique-deep: #A54D28;
+  --brique-wash: #2A1C15;
+
+  /* États */
+  --ok:   #6E9E76;
+  --warn: #C99A4A;
+  --err:  #C56A54;
+
+  /* Ombre unique, adaptée au fond sombre */
+  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+
+  /* Couleurs de données, réservées aux SVG de graphique */
+  --data-capital: #9C8B81;
+  --data-interet: #CD6539;
+  --data-retrait: #5C4C45;
 
   /* Typography — échelle de rapport ~1.25, ancrée sur un corps de 17px */
   --font-family: 'Schibsted Grotesk', 'Schibsted Fallback', -apple-system,
@@ -91,11 +108,6 @@
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-
   /* Rayons — le rayon encode la nature de l'objet, pas sa taille.
      Un rayon unique partout aplatit la lecture. */
   --r-card: 4px;      /* cartes de choix — sobres, presque droites */
@@ -124,13 +136,13 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--text);
-  background-color: var(--bg);
+  background-color: var(--void);
 }
 
 /* Focus visible sur tout élément interactif.
    Au clavier uniquement, pour ne pas cerner les boutons au clic souris. */
 :focus-visible {
-  outline: 2px solid var(--terracotta);
+  outline: 2px solid var(--brique);
   outline-offset: 3px;
 }
 
@@ -201,7 +213,7 @@ h4 {
 
 p {
   margin-bottom: var(--spacing-md);
-  color: var(--text2);
+  color: var(--text-2);
 }
 
 /* Rôles typographiques nommés */
@@ -243,13 +255,13 @@ p {
 }
 
 a {
-  color: var(--terracotta);
+  color: var(--brique);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--terracotta-dark);
+  color: var(--brique-deep);
 }
 
 /* Containers */
@@ -280,35 +292,35 @@ a:hover {
 }
 
 .btn-primary {
-  background-color: var(--terracotta);
-  color: var(--bg-card);
+  background-color: var(--brique);
+  color: var(--text);
 }
 
 .btn-primary:hover {
-  background-color: var(--terracotta-dark);
-  box-shadow: var(--shadow-md);
+  background-color: var(--brique-deep);
+  box-shadow: var(--shadow);
 }
 
 .btn-secondary {
-  background-color: var(--bg-card);
-  color: var(--terracotta);
-  border: 2px solid var(--terracotta);
+  background-color: var(--surface);
+  color: var(--brique);
+  border: 2px solid var(--brique);
 }
 
 .btn-secondary:hover {
-  background-color: var(--bg);
+  background-color: var(--void);
 }
 
 /* Cards */
 .card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--r-surface);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   transition: box-shadow var(--transition-base);
 }
