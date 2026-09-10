@@ -3,10 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Kapitea - Questionnaire de qualification">
+  <meta name="description" content="Quelques questions pour comprendre votre situation et vous orienter vers le bon conseil. Deux minutes, sans engagement, avec un conseiller FINMA indépendant.">
   <meta name="theme-color" content="#9C4A2E">
+  <link rel="canonical" href="https://kapitea.ch/quiz">
 
-  <title>Kapitea - Questionnaire</title>
+  <title>Votre situation en quelques questions — Kapitea</title>
+
+  <!-- Open Graph / WhatsApp / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kapitea">
+  <meta property="og:locale" content="fr_CH">
+  <meta property="og:url" content="https://kapitea.ch/quiz">
+  <meta property="og:title" content="Parlons de votre situation, en quelques questions">
+  <meta property="og:description" content="Deux minutes pour faire le point. Un conseiller FINMA indépendant vous rappelle sous 24h, sans engagement.">
+  <meta property="og:image" content="https://kapitea.ch/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css">
@@ -31,6 +44,13 @@
     /* Progress bar */
     .progress-bar-container {
       margin-bottom: var(--spacing-2xl);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .progress-steps {
+      flex: 1;
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
@@ -78,6 +98,25 @@
       font-size: var(--font-size-base);
       color: var(--text2);
       margin-bottom: var(--spacing-lg);
+    }
+
+    /* [hidden] must beat the display rules set on components below */
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Hint shown under a question title */
+    .questionnaire-screen h2.tight {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .question-hint {
+      font-size: var(--font-size-sm);
+      color: var(--text2);
+      line-height: 1.5;
+      margin-bottom: var(--spacing-2xl);
+      padding-left: var(--spacing-md);
+      border-left: 3px solid var(--terracotta-light);
     }
 
     /* Options (radio buttons) */
@@ -378,38 +417,93 @@
 <body>
   <div class="questionnaire-container">
     <div class="questionnaire-wrapper">
-      <!-- Progress bar -->
+      <!-- Progress bar (steps rendered by funnel.js based on segment) -->
       <div class="progress-bar-container">
-        <div class="progress-step" id="progress-0"></div>
-        <div class="progress-step" id="progress-1"></div>
-        <div class="progress-step" id="progress-2"></div>
-        <div class="progress-step" id="progress-3"></div>
-        <div class="progress-step" id="progress-4"></div>
-        <div class="progress-counter"><span id="current-step">1</span>/5</div>
+        <div class="progress-steps" id="progress-steps"></div>
+        <div class="progress-counter"><span id="current-step">1</span>/<span id="total-steps">5</span></div>
       </div>
 
-      <!-- Screen 1: Q_HORIZON (LPP only) -->
+      <!-- ============ LPP (8 écrans) ============ -->
+
+      <!-- LPP 1: Q_HORIZON -->
       <div class="questionnaire-screen active segment-lpp" id="screen-horizon">
         <h2>Où en êtes-vous par rapport à la retraite ?</h2>
         <div class="options">
           <div class="option">
             <input type="radio" id="horizon-retired" name="horizon" value="already_retired">
-            <label for="horizon-retired">Déjà retraité</label>
+            <label for="horizon-retired">Je suis déjà à la retraite</label>
           </div>
           <div class="option">
             <input type="radio" id="horizon-soon" name="horizon" value="less_than_2">
-            <label for="horizon-soon">Retraite dans moins de 2 ans</label>
+            <label for="horizon-soon">Dans moins de 2 ans</label>
           </div>
           <div class="option">
             <input type="radio" id="horizon-medium" name="horizon" value="2_to_5">
-            <label for="horizon-medium">Retraite dans 2 à 5 ans</label>
+            <label for="horizon-medium">Dans 2 à 5 ans</label>
           </div>
         </div>
       </div>
 
-      <!-- Screen 2: Q_MONTANT (LPP only) -->
+      <!-- LPP 2: Q_CHOIX_PRESENTE -->
+      <div class="questionnaire-screen segment-lpp" id="screen-choix-presente">
+        <h2 class="tight">Votre caisse de pension vous a-t-elle déjà présenté le choix entre rente et capital ?</h2>
+        <div class="question-hint">C'est une décision définitive, il vaut mieux la prendre en connaissance de cause.</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="choix-decide-soon" name="choix-presente" value="decide_soon">
+            <label for="choix-decide-soon">Oui, et je dois décider bientôt</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="choix-not-understood" name="choix-presente" value="not_understood">
+            <label for="choix-not-understood">Oui, mais je n'ai pas tout compris</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="choix-not-yet" name="choix-presente" value="not_yet">
+            <label for="choix-not-yet">Pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- LPP 3: Q_PREOCCUPATION -->
+      <div class="questionnaire-screen segment-lpp" id="screen-preoccupation">
+        <h2>Qu'est-ce qui vous préoccupe le plus aujourd'hui ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="preoccupation-vivre" name="preoccupation" value="enough_to_live">
+            <label for="preoccupation-vivre">Avoir assez pour vivre confortablement</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="preoccupation-placer" name="preoccupation" value="where_to_invest">
+            <label for="preoccupation-placer">Ne pas savoir où placer cet argent</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="preoccupation-impots" name="preoccupation" value="taxes">
+            <label for="preoccupation-impots">Payer trop d'impôts sur le retrait</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="preoccupation-transmission" name="preoccupation" value="transmission">
+            <label for="preoccupation-transmission">Ce que je laisserai à mes proches</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- LPP 4: Q_PRENOM -->
+      <div class="questionnaire-screen segment-lpp" id="screen-prenom-lpp">
+        <h2 class="tight">Avant d'aller plus loin, comment vous appelez-vous ?</h2>
+        <div class="question-hint">C'est pour personnaliser votre analyse, rien d'autre.</div>
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="prenom-lpp">Prénom *</label>
+            <input type="text" id="prenom-lpp" name="prenom-lpp" placeholder="Jean" autocomplete="given-name" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- LPP 5: Q_MONTANT -->
       <div class="questionnaire-screen segment-lpp" id="screen-montant">
-        <h2>Quel est le montant approximatif de votre capital 2e et 3e pilier ?</h2>
+        <h2 class="tight" id="montant-title">Quel est le montant approximatif de votre capital de prévoyance ?</h2>
+        <div class="question-hint">Une estimation suffit, on affinera ensemble.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-display">CHF 400'000</div>
           <input type="range" id="montant-slider" min="50000" max="2000000" step="10000" value="400000">
@@ -420,7 +514,7 @@
         </div>
       </div>
 
-      <!-- Screen 3: Q_SITUATION_FAMILIALE (LPP only) -->
+      <!-- LPP 6: Q_SITUATION_FAMILIALE -->
       <div class="questionnaire-screen segment-lpp" id="screen-situation">
         <h2>Quelle est votre situation familiale ?</h2>
         <div class="options">
@@ -443,17 +537,17 @@
         </div>
       </div>
 
-      <!-- Screen 4: Q_OBJECTIF (LPP only) -->
+      <!-- LPP 7: Q_OBJECTIF -->
       <div class="questionnaire-screen segment-lpp" id="screen-objectif">
         <h2>Quel est votre objectif principal avec ce capital ?</h2>
         <div class="options">
           <div class="option">
             <input type="radio" id="objectif-revenu" name="objectif" value="regular_income">
-            <label for="objectif-revenu">Obtenir un revenu complémentaire régulier</label>
+            <label for="objectif-revenu">Un revenu complémentaire régulier</label>
           </div>
           <div class="option">
             <input type="radio" id="objectif-securite" name="objectif" value="secure_capital">
-            <label for="objectif-securite">Sécuriser le capital sans prendre de risque</label>
+            <label for="objectif-securite">Sécuriser sans prendre de risque</label>
           </div>
           <div class="option">
             <input type="radio" id="objectif-transmission" name="objectif" value="transmit">
@@ -466,9 +560,91 @@
         </div>
       </div>
 
-      <!-- Screen 1: Q_MONTANT_HERITAGE (Heritage only) -->
+      <!-- ============ HERITAGE (8 écrans) ============ -->
+
+      <!-- Heritage 1: Q_ETAPE_SUCCESSION -->
+      <div class="questionnaire-screen segment-heritage" id="screen-etape-succession">
+        <h2 class="tight">Où en êtes-vous dans la succession ?</h2>
+        <div class="question-hint">Il n'y a aucune urgence à décider. On est là pour y voir clair.</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="succession-settled" name="etape-succession" value="settled">
+            <label for="succession-settled">Tout est réglé, j'ai reçu les fonds</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="succession-notaire" name="etape-succession" value="at_notary">
+            <label for="succession-notaire">C'est en cours chez le notaire</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="succession-starting" name="etape-succession" value="just_started">
+            <label for="succession-starting">Ça vient de commencer</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heritage 2: Q_TYPE_ACTIFS -->
+      <div class="questionnaire-screen segment-heritage" id="screen-type-actifs">
+        <h2>De quoi se compose principalement cet héritage ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="actifs-liquides" name="type-actifs" value="cash">
+            <label for="actifs-liquides">Des liquidités</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-titres" name="type-actifs" value="securities">
+            <label for="actifs-titres">Des titres, actions ou fonds</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-immobilier" name="type-actifs" value="real_estate">
+            <label for="actifs-immobilier">De l'immobilier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="actifs-melange" name="type-actifs" value="mixed">
+            <label for="actifs-melange">Un peu de tout</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heritage 3: Q_RESSENTI -->
+      <div class="questionnaire-screen segment-heritage" id="screen-ressenti">
+        <h2>Aujourd'hui, face à cette somme, vous diriez plutôt :</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="ressenti-start" name="ressenti" value="where_to_start">
+            <label for="ressenti-start">Je ne sais pas par où commencer</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="ressenti-erreur" name="ressenti" value="fear_mistake">
+            <label for="ressenti-erreur">J'ai peur de faire une erreur</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="ressenti-valider" name="ressenti" value="want_validation">
+            <label for="ressenti-valider">J'ai des idées mais je veux valider</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="ressenti-travailler" name="ressenti" value="make_it_work">
+            <label for="ressenti-travailler">Je veux juste que ça travaille</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heritage 4: Q_PRENOM -->
+      <div class="questionnaire-screen segment-heritage" id="screen-prenom-heritage">
+        <h2 class="tight">Comment vous appelez-vous ?</h2>
+        <div class="question-hint">C'est pour personnaliser votre analyse, rien d'autre.</div>
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="prenom-heritage">Prénom *</label>
+            <input type="text" id="prenom-heritage" name="prenom-heritage" placeholder="Jean" autocomplete="given-name" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Heritage 5: Q_MONTANT_HERITAGE -->
       <div class="questionnaire-screen segment-heritage" id="screen-montant-heritage">
-        <h2>Quel est le montant approximatif reçu ?</h2>
+        <h2 class="tight" id="montant-heritage-title">Quel montant approximatif avez-vous reçu ou allez-vous recevoir ?</h2>
+        <div class="question-hint">Une estimation suffit.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-heritage-display">CHF 250'000</div>
           <input type="range" id="montant-heritage-slider" min="20000" max="3000000" step="10000" value="250000">
@@ -479,70 +655,127 @@
         </div>
       </div>
 
-      <!-- Screen 2: Q_TYPE_ACTIFS (Heritage only) -->
-      <div class="questionnaire-screen segment-heritage" id="screen-type-actifs">
-        <h2>De quel type d'actifs s'agit-il principalement ?</h2>
-        <div class="options">
-          <div class="option">
-            <input type="radio" id="actifs-liquides" name="type-actifs" value="cash">
-            <label for="actifs-liquides">Liquidités (compte, épargne)</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="actifs-titres" name="type-actifs" value="securities">
-            <label for="actifs-titres">Titres (actions, fonds)</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="actifs-immobilier" name="type-actifs" value="real_estate">
-            <label for="actifs-immobilier">Immobilier</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="actifs-melange" name="type-actifs" value="mixed">
-            <label for="actifs-melange">Un mélange de plusieurs types</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Screen 3: Q_NOTAIRE (Heritage only) -->
-      <div class="questionnaire-screen segment-heritage" id="screen-notaire">
-        <h2>Avez-vous déjà consulté un notaire ou fiscaliste pour cette succession ?</h2>
-        <div class="options">
-          <div class="option">
-            <input type="radio" id="notaire-done" name="notaire" value="settled">
-            <label for="notaire-done">Oui, la succession est réglée</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="notaire-in-progress" name="notaire" value="in_progress">
-            <label for="notaire-in-progress">Oui, mais c'est encore en cours</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="notaire-no" name="notaire" value="not_yet">
-            <label for="notaire-no">Non, pas encore</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Screen 4: Q_PROJET (Heritage only) -->
+      <!-- Heritage 6: Q_PROJET -->
       <div class="questionnaire-screen segment-heritage" id="screen-projet">
-        <h2>Avez-vous déjà une idée de ce que vous voulez faire de ce capital ?</h2>
+        <h2>Avez-vous déjà une idée de ce que vous voulez en faire ?</h2>
         <div class="options">
           <div class="option">
             <input type="radio" id="projet-precis" name="projet" value="precise_plan">
-            <label for="projet-precis">Oui, un projet précis en tête</label>
+            <label for="projet-precis">Oui, un projet précis</label>
           </div>
           <div class="option">
             <input type="radio" id="projet-direction" name="projet" value="general_direction">
-            <label for="projet-direction">Une direction générale mais pas de plan</label>
+            <label for="projet-direction">Une direction générale</label>
           </div>
           <div class="option">
             <input type="radio" id="projet-aucune" name="projet" value="no_idea">
-            <label for="projet-aucune">Aucune idée pour l'instant</label>
+            <label for="projet-aucune">Pas encore du tout</label>
           </div>
         </div>
       </div>
 
-      <!-- Divorce Segment: Screen 1 - Q_MONTANT_DIVORCE -->
+      <!-- Heritage 7: Q_HORIZON_HERITAGE -->
+      <div class="questionnaire-screen segment-heritage" id="screen-horizon-heritage">
+        <h2>Sur quel horizon envisagez-vous de placer cette somme ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="horizon-h-court" name="horizon-heritage" value="short_term">
+            <label for="horizon-h-court">Court terme, moins de 3 ans</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="horizon-h-moyen" name="horizon-heritage" value="medium_term">
+            <label for="horizon-h-moyen">Moyen terme, 3 à 10 ans</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="horizon-h-long" name="horizon-heritage" value="long_term">
+            <label for="horizon-h-long">Long terme, plus de 10 ans</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="horizon-h-inconnu" name="horizon-heritage" value="unknown">
+            <label for="horizon-h-inconnu">Je ne sais pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DIVORCE (7 écrans) ============ -->
+
+      <!-- Divorce 1: Q_STATUT_PROCEDURE -->
+      <div class="questionnaire-screen segment-divorce" id="screen-statut-procedure">
+        <h2>Où en est la procédure ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="statut-terminee" name="statut-procedure" value="completed">
+            <label for="statut-terminee">Terminée, le partage est fait</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="statut-encours" name="statut-procedure" value="ongoing">
+            <label for="statut-encours">En cours</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="statut-pas-entamee" name="statut-procedure" value="not_started">
+            <label for="statut-pas-entamee">Pas encore entamée</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divorce 2: Q_REPRESENTE -->
+      <div class="questionnaire-screen segment-divorce" id="screen-represente">
+        <h2>Ce capital, pour vous, c'est plutôt :</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="represente-depart" name="represente" value="new_start">
+            <label for="represente-depart">Un nouveau départ à financer</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="represente-securite" name="represente" value="security">
+            <label for="represente-securite">Une sécurité à préserver</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="represente-reloger" name="represente" value="rehousing">
+            <label for="represente-reloger">De quoi me reloger</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="represente-inconnu" name="represente" value="unknown">
+            <label for="represente-inconnu">Je ne sais pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divorce 3: Q_BESOIN_COURT_TERME -->
+      <div class="questionnaire-screen segment-divorce" id="screen-besoin-court-terme">
+        <h2>Avez-vous des besoins financiers à court terme ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="besoin-logement" name="besoin-court-terme" value="housing">
+            <label for="besoin-logement">Oui, un logement à racheter</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="besoin-frais" name="besoin-court-terme" value="procedure_fees">
+            <label for="besoin-frais">Oui, des frais liés à la procédure</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="besoin-aucun" name="besoin-court-terme" value="none">
+            <label for="besoin-aucun">Non, rien d'urgent</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divorce 4: Q_PRENOM -->
+      <div class="questionnaire-screen segment-divorce" id="screen-prenom-divorce">
+        <h2 class="tight">Comment vous appelez-vous ?</h2>
+        <div class="question-hint">C'est pour personnaliser votre analyse, rien d'autre.</div>
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="prenom-divorce">Prénom *</label>
+            <input type="text" id="prenom-divorce" name="prenom-divorce" placeholder="Jean" autocomplete="given-name" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Divorce 5: Q_MONTANT_DIVORCE -->
       <div class="questionnaire-screen segment-divorce" id="screen-montant-divorce">
-        <h2>Quel est le montant approximatif reçu du partage ?</h2>
+        <h2 id="montant-divorce-title">Quel montant approximatif recevez-vous du partage ?</h2>
         <div class="slider-container">
           <div class="slider-value" id="montant-divorce-display">CHF 150'000</div>
           <input type="range" id="montant-divorce-slider" min="20000" max="1500000" step="10000" value="150000">
@@ -553,47 +786,113 @@
         </div>
       </div>
 
-      <!-- Divorce Segment: Screen 2 - Q_STATUT_PROCEDURE -->
-      <div class="questionnaire-screen segment-divorce" id="screen-statut-procedure">
-        <h2>Où en est la procédure ?</h2>
+      <!-- Divorce 6: Q_REVENUS -->
+      <div class="questionnaire-screen segment-divorce" id="screen-revenus">
+        <h2>Vos revenus actuels vous permettent-ils de couvrir vos charges ?</h2>
         <div class="options">
           <div class="option">
-            <input type="radio" id="procedure-terminated" name="statut-procedure" value="terminated">
-            <label for="procedure-terminated">Terminée</label>
+            <input type="radio" id="revenus-oui" name="revenus" value="comfortable">
+            <label for="revenus-oui">Oui, sans problème</label>
           </div>
           <div class="option">
-            <input type="radio" id="procedure-ongoing" name="statut-procedure" value="ongoing">
-            <label for="procedure-ongoing">En cours</label>
+            <input type="radio" id="revenus-juste" name="revenus" value="just_enough">
+            <label for="revenus-juste">Tout juste</label>
           </div>
           <div class="option">
-            <input type="radio" id="procedure-not-started" name="statut-procedure" value="not_started">
-            <label for="procedure-not-started">Pas encore entamée</label>
+            <input type="radio" id="revenus-non" name="revenus" value="need_capital">
+            <label for="revenus-non">Non, je vais devoir puiser dans ce capital</label>
           </div>
         </div>
       </div>
 
-      <!-- Divorce Segment: Screen 3 - Q_PROJET_DIVORCE -->
-      <div class="questionnaire-screen segment-divorce" id="screen-projet-divorce">
-        <h2>Avez-vous une idée de ce que vous voulez faire de cette somme ?</h2>
+      <!-- ============ VENTE MAISON (8 écrans) ============ -->
+
+      <!-- Vente maison 1: Q_ETAPE_VENTE -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-etape-vente">
+        <h2>Où en êtes-vous dans la vente ?</h2>
         <div class="options">
           <div class="option">
-            <input type="radio" id="projet-divorce-precis" name="projet-divorce" value="precise_plan">
-            <label for="projet-divorce-precis">Oui, un projet précis en tête</label>
+            <input type="radio" id="etape-vendu" name="etape-vente" value="sold">
+            <label for="etape-vendu">Vendu, les fonds sont sur mon compte</label>
           </div>
           <div class="option">
-            <input type="radio" id="projet-divorce-direction" name="projet-divorce" value="general_direction">
-            <label for="projet-divorce-direction">Une direction générale mais pas de plan</label>
+            <input type="radio" id="etape-compromis" name="etape-vente" value="under_contract">
+            <label for="etape-compromis">Sous compromis, ça se finalise</label>
           </div>
           <div class="option">
-            <input type="radio" id="projet-divorce-aucune" name="projet-divorce" value="no_idea">
-            <label for="projet-divorce-aucune">Aucune idée pour l'instant</label>
+            <input type="radio" id="etape-encours" name="etape-vente" value="selling">
+            <label for="etape-encours">En cours de vente</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="etape-reflexion" name="etape-vente" value="considering">
+            <label for="etape-reflexion">J'y réfléchis encore</label>
           </div>
         </div>
       </div>
 
-      <!-- Real Estate Segment: Screen 1 - Q_MONTANT_VENTE -->
+      <!-- Vente maison 2: Q_REINVESTISSEMENT -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-reinvestissement">
+        <h2>Comptez-vous racheter un bien immobilier ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="reinvest-non" name="reinvestissement" value="no_project">
+            <label for="reinvest-non">Non, pas de projet immobilier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="reinvest-plus-petit" name="reinvestissement" value="smaller">
+            <label for="reinvest-plus-petit">Oui, mais plus petit</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="reinvest-ailleurs" name="reinvestissement" value="elsewhere">
+            <label for="reinvest-ailleurs">Oui, ailleurs</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="reinvest-inconnu" name="reinvestissement" value="unknown">
+            <label for="reinvest-inconnu">Je ne sais pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vente maison 3: Q_RAISON -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-raison">
+        <h2>Qu'est-ce qui motive cette vente ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="raison-reduire" name="raison" value="downsizing">
+            <label for="raison-reduire">Je réduis la taille de mon logement</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="raison-region" name="raison" value="relocating">
+            <label for="raison-region">Je change de région</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="raison-plusvalue" name="raison" value="capital_gain">
+            <label for="raison-plusvalue">Je réalise une plus-value</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="raison-perso" name="raison" value="personal">
+            <label for="raison-perso">Une situation personnelle</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vente maison 4: Q_PRENOM -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-prenom-vente">
+        <h2 class="tight">Comment vous appelez-vous ?</h2>
+        <div class="question-hint">C'est pour personnaliser votre analyse, rien d'autre.</div>
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="prenom-vente">Prénom *</label>
+            <input type="text" id="prenom-vente" name="prenom-vente" placeholder="Jean" autocomplete="given-name" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Vente maison 5: Q_MONTANT_VENTE -->
       <div class="questionnaire-screen segment-vente_maison" id="screen-montant-vente">
-        <h2>Quel est le montant net après la vente ?</h2>
+        <h2 class="tight" id="montant-vente-title">Quel montant net vous restera-t-il après remboursement de l'hypothèque ?</h2>
+        <div class="question-hint">Après hypothèque et impôt sur les gains immobiliers, une estimation suffit.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-vente-display">CHF 300'000</div>
           <input type="range" id="montant-vente-slider" min="50000" max="2000000" step="10000" value="300000">
@@ -604,28 +903,9 @@
         </div>
       </div>
 
-      <!-- Real Estate Segment: Screen 2 - Q_REINVESTISSEMENT -->
-      <div class="questionnaire-screen segment-vente_maison" id="screen-reinvestissement">
-        <h2>Comptez-vous racheter un bien immobilier ?</h2>
-        <div class="options">
-          <div class="option">
-            <input type="radio" id="reinvest-non" name="reinvestissement" value="no_property">
-            <label for="reinvest-non">Non, pas de projet immobilier</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="reinvest-oui" name="reinvestissement" value="yes_elsewhere">
-            <label for="reinvest-oui">Oui, ailleurs</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="reinvest-uncertain" name="reinvestissement" value="uncertain">
-            <label for="reinvest-uncertain">Je ne sais pas encore</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Real Estate Segment: Screen 3 - Q_DELAI_VENTE -->
+      <!-- Vente maison 6: Q_DELAI_VENTE -->
       <div class="questionnaire-screen segment-vente_maison" id="screen-delai-vente">
-        <h2>Sous quel délai voulez-vous placer cette somme ?</h2>
+        <h2>Sous quel délai souhaitez-vous placer cette somme ?</h2>
         <div class="options">
           <div class="option">
             <input type="radio" id="delai-court" name="delai-vente" value="less_than_3">
@@ -642,9 +922,109 @@
         </div>
       </div>
 
-      <!-- Business Segment: Screen 1 - Q_MONTANT_CESSION -->
+      <!-- Vente maison 7: Q_OBJECTIF_VENTE -->
+      <div class="questionnaire-screen segment-vente_maison" id="screen-objectif-vente">
+        <h2>Quel est votre objectif principal avec ce capital ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="objectif-v-revenu" name="objectif-vente" value="regular_income">
+            <label for="objectif-v-revenu">Générer un revenu régulier</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-v-fructifier" name="objectif-vente" value="long_term_growth">
+            <label for="objectif-v-fructifier">Le faire fructifier sur le long terme</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-v-disponible" name="objectif-vente" value="stay_liquid">
+            <label for="objectif-v-disponible">Le garder disponible</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-v-transmettre" name="objectif-vente" value="transmit">
+            <label for="objectif-v-transmettre">Le transmettre</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ VENTE ENTREPRISE (8 écrans) ============ -->
+
+      <!-- Vente entreprise 1: Q_ROLE_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-role-cession">
+        <h2>Quel est votre rôle dans cette cession ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="role-fondateur" name="role-cession" value="founder">
+            <label for="role-fondateur">J'ai fondé et vendu mon entreprise</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="role-associe" name="role-cession" value="partner">
+            <label for="role-associe">J'étais associé, j'ai vendu mes parts</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="role-heritier" name="role-cession" value="inherited">
+            <label for="role-heritier">J'en ai hérité puis je l'ai vendue</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vente entreprise 2: Q_STATUT_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-statut-cession">
+        <h2>Où en est la transaction ?</h2>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="cession-finalisee" name="statut-cession" value="finalized">
+            <label for="cession-finalisee">Finalisée, les fonds sont disponibles</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="cession-closing" name="statut-cession" value="closing">
+            <label for="cession-closing">Signée, en cours de closing</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="cession-negociation" name="statut-cession" value="negotiating">
+            <label for="cession-negociation">En négociation</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="cession-reflexion" name="statut-cession" value="considering">
+            <label for="cession-reflexion">En réflexion</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vente entreprise 3: Q_ACCOMPAGNEMENT -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-accompagnement">
+        <h2 class="tight">Êtes-vous déjà accompagné sur le volet patrimonial ?</h2>
+        <div class="question-hint">Beaucoup de dirigeants sont sollicités très vite après une cession, rarement de façon neutre.</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="accompagnement-banque" name="accompagnement" value="bank">
+            <label for="accompagnement-banque">Oui, par une banque</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="accompagnement-fiduciaire" name="accompagnement" value="fiduciary">
+            <label for="accompagnement-fiduciaire">Oui, par ma fiduciaire</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="accompagnement-non" name="accompagnement" value="none">
+            <label for="accompagnement-non">Non, pas encore</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vente entreprise 4: Q_PRENOM -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-prenom-cession">
+        <h2 class="tight">Comment vous appelez-vous ?</h2>
+        <div class="question-hint">C'est pour personnaliser votre analyse, rien d'autre.</div>
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="prenom-cession">Prénom *</label>
+            <input type="text" id="prenom-cession" name="prenom-cession" placeholder="Jean" autocomplete="given-name" required>
+            <div class="error-message">Le prénom est requis</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Vente entreprise 5: Q_MONTANT_CESSION -->
       <div class="questionnaire-screen segment-vente_entreprise" id="screen-montant-cession">
-        <h2>Quel montant avez-vous reçu de la cession ?</h2>
+        <h2 id="montant-cession-title">Quel montant net avez-vous reçu ou allez-vous recevoir ?</h2>
         <div class="slider-container">
           <div class="slider-value" id="montant-cession-display">CHF 500'000</div>
           <input type="range" id="montant-cession-slider" min="100000" max="5000000" step="50000" value="500000">
@@ -655,50 +1035,57 @@
         </div>
       </div>
 
-      <!-- Business Segment: Screen 2 - Q_ROLE_CESSION -->
-      <div class="questionnaire-screen segment-vente_entreprise" id="screen-role-cession">
-        <h2>Quel est votre rôle dans cette cession ?</h2>
+      <!-- Vente entreprise 6: Q_SUITE -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-suite">
+        <h2>Et maintenant, qu'est-ce qui vous attend ?</h2>
         <div class="options">
           <div class="option">
-            <input type="radio" id="role-vendeur" name="role-cession" value="sold_own">
-            <label for="role-vendeur">J'ai vendu mon entreprise</label>
+            <input type="radio" id="suite-arret" name="suite" value="stopping">
+            <label for="suite-arret">Je m'arrête</label>
           </div>
           <div class="option">
-            <input type="radio" id="role-heritage" name="role-cession" value="inherited_sold">
-            <label for="role-heritage">J'ai hérité de l'entreprise puis je l'ai vendue</label>
+            <input type="radio" id="suite-nouveau" name="suite" value="new_venture">
+            <label for="suite-nouveau">Je lance autre chose</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="suite-implique" name="suite" value="staying_involved">
+            <label for="suite-implique">Je reste impliqué dans l'entreprise</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="suite-inconnu" name="suite" value="unknown">
+            <label for="suite-inconnu">Je ne sais pas encore</label>
           </div>
         </div>
       </div>
 
-      <!-- Business Segment: Screen 3 - Q_STATUT_CESSION -->
-      <div class="questionnaire-screen segment-vente_entreprise" id="screen-statut-cession">
-        <h2>Où en est la cession ?</h2>
+      <!-- Vente entreprise 7: Q_OBJECTIF_CESSION -->
+      <div class="questionnaire-screen segment-vente_entreprise" id="screen-objectif-cession">
+        <h2>Quelle est votre priorité pour ce capital ?</h2>
         <div class="options">
           <div class="option">
-            <input type="radio" id="statut-finalized" name="statut-cession" value="finalized">
-            <label for="statut-finalized">Finalisée</label>
+            <input type="radio" id="objectif-c-revenu" name="objectif-cession" value="replacement_income">
+            <label for="objectif-c-revenu">Générer un revenu de remplacement</label>
           </div>
           <div class="option">
-            <input type="radio" id="statut-ongoing-biz" name="statut-cession" value="ongoing">
-            <label for="statut-ongoing-biz">En cours</label>
+            <input type="radio" id="objectif-c-croissance" name="objectif-cession" value="long_term_growth">
+            <label for="objectif-c-croissance">Le faire croître sur le long terme</label>
           </div>
           <div class="option">
-            <input type="radio" id="statut-not-signed" name="statut-cession" value="not_signed">
-            <label for="statut-not-signed">Pas encore signée</label>
+            <input type="radio" id="objectif-c-transmettre" name="objectif-cession" value="preserve_transmit">
+            <label for="objectif-c-transmettre">Préserver et transmettre</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="objectif-c-liquidites" name="objectif-cession" value="keep_liquid">
+            <label for="objectif-c-liquidites">Garder des liquidités pour un futur projet</label>
           </div>
         </div>
       </div>
 
-      <!-- Screen 5: Q_CONTACT (LPP + Heritage + Divorce + Real Estate + Business) -->
+      <!-- Dernier écran : Q_CONTACT (tous segments, le prénom est déjà collecté avant) -->
       <div class="questionnaire-screen segment-lpp segment-heritage segment-divorce segment-vente_maison segment-vente_entreprise" id="screen-contact">
-        <h2>Dernière étape : vos informations de contact</h2>
+        <h2 id="contact-title">Où pouvons-nous vous envoyer votre analyse ?</h2>
+        <div class="question-hint" id="contact-hint" hidden></div>
         <form class="contact-form" id="contact-form" onsubmit="return false;">
-          <div class="form-group">
-            <label for="firstname">Prénom *</label>
-            <input type="text" id="firstname" name="firstname" placeholder="Jean" required>
-            <div class="error-message">Le prénom est requis</div>
-          </div>
-
           <div class="form-group">
             <label for="email">Email *</label>
             <input type="email" id="email" name="email" placeholder="vous@example.com" required>
