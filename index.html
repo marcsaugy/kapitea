@@ -33,48 +33,9 @@
   <link rel="stylesheet" href="css/mobile.css">
 
   <style>
-    /* Landing page specific styles */
-
-    .header {
-      background-color: var(--bg-card);
-      border-bottom: 1px solid var(--border);
-      padding: var(--spacing-lg) 0;
-      position: relative;
-      z-index: 100;
-    }
-
-    .header-content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      font-weight: 800;
-      color: var(--terracotta);
-      letter-spacing: -0.5px;
-    }
-
-    /* Hero section */
+    /* Le hero de l'accueil est la seule exception au fer à gauche */
     .hero {
-      padding: clamp(3rem, 10vw, 6rem) var(--spacing-md);
-      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
       text-align: center;
-    }
-
-    .hero-content {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.75rem, 6.5vw, 2.8rem);
-      font-weight: 800;
-      line-height: 1.2;
-      color: var(--text);
-      margin-bottom: clamp(1.5rem, 4vw, 2rem);
-      letter-spacing: -0.02em;
     }
 
     /* Journey selector section */
@@ -259,129 +220,10 @@
 
 
     /* Reassurance section */
+
+    /* La réassurance alterne avec la bande sombre qui la précède */
     .reassurance {
-      padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
       background-color: var(--bg);
-    }
-
-    .reassurance-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .reassurance-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--spacing-lg);
-    }
-
-    @media (max-width: 800px) {
-      .reassurance-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Même filet que les cartes de la grille. Il reste en --border :
-       ces blocs ne sont pas cliquables, et l'accent ne sert qu'à signaler
-       une action ou un état actif, jamais à décorer. */
-    .reassurance-item {
-      border-top: 2px solid var(--border);
-      padding-top: var(--spacing-lg);
-    }
-
-    .reassurance-item h4 {
-      font-size: 1.0625rem;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.01em;
-      margin-bottom: var(--spacing-sm);
-      line-height: 1.35;
-    }
-
-    .reassurance-item p {
-      font-size: 0.9375rem;
-      color: var(--text2);
-      margin: 0;
-      line-height: 1.55;
-    }
-
-    /* Footer */
-    .footer {
-      background-color: var(--text);
-      color: var(--bg-card);
-      padding: clamp(2rem, 5vw, 3rem) var(--spacing-md) clamp(1.5rem, 4vw, 2.5rem);
-      margin-top: clamp(2rem, 8vw, 4rem);
-    }
-
-    .footer-content-wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-lg);
-      margin-bottom: clamp(1.5rem, 4vw, 2rem);
-    }
-
-    @media (max-width: 640px) {
-      .footer-content-wrapper {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-      }
-    }
-
-    .footer-section {
-      font-size: clamp(0.85rem, 2vw, 0.95rem);
-    }
-
-    .footer-section h4 {
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
-      color: var(--bg-card);
-      margin-bottom: var(--spacing-sm);
-      font-weight: 600;
-    }
-
-    .footer-section p,
-    .footer-section a {
-      color: var(--text3);
-      margin-bottom: var(--spacing-xs);
-      line-height: 1.6;
-    }
-
-    .footer-section a {
-      text-decoration: none;
-      transition: color var(--transition-fast);
-    }
-
-    .footer-section a:hover {
-      color: var(--bg-card);
-    }
-
-    .footer-divider {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: clamp(1rem, 3vw, 1.5rem);
-      margin-top: clamp(1rem, 3vw, 1.5rem);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: var(--spacing-lg);
-    }
-
-    .footer-bottom-text {
-      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-      color: var(--text3);
-    }
-
-    .footer-regulation {
-      text-align: right;
-      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-      color: var(--text3);
-    }
-
-    @media (max-width: 640px) {
-      .footer-regulation {
-        text-align: left;
-      }
     }
 
     /* Animations */

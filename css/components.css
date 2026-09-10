@@ -1,118 +1,225 @@
-/* Components */
+/* Composants partagés par les pages publiques.
+   index.html, heritage.html et retraite-lpp.html dupliquaient
+   ces règles dans leur <style> ; elles vivent ici désormais. */
 
 /* Header */
 .header {
   background-color: var(--bg-card);
   border-bottom: 1px solid var(--border);
-  padding: var(--spacing-md) 0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg) 0;
+  position: relative;
+  z-index: 100;
 }
 
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
 .logo {
-  font-size: var(--font-size-2xl);
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 800;
   color: var(--terracotta);
+  letter-spacing: -0.5px;
 }
 
-/* Navigation */
-.nav {
-  display: flex;
-  gap: var(--spacing-lg);
-  list-style: none;
+/* Hero */
+.hero {
+  padding: clamp(3rem, 10vw, 6rem) var(--spacing-md);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
 }
 
-.nav a {
-  font-weight: 500;
+.hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: clamp(1.75rem, 6.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.2;
   color: var(--text);
-  transition: color var(--transition-fast);
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
+  letter-spacing: -0.02em;
 }
 
-.nav a:hover {
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* CTA — pages d'atterrissage */
+.cta-section {
+  padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+  background-color: var(--bg-card);
+  text-align: center;
+}
+
+.cta-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+  background-color: var(--terracotta);
+  color: var(--bg-card);
+  font-family: var(--font-family);
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  min-width: 250px;
+}
+
+.btn-cta:hover {
+  background-color: var(--terracotta-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Section explicative — pages d'atterrissage */
+.why-section {
+  padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+  background-color: var(--bg);
+}
+
+.why-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.why-section h2 {
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+
+.why-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.why-text p {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+
+.why-text strong {
   color: var(--terracotta);
+  font-weight: 600;
 }
 
-/* Forms */
+/* Réassurance.
+   Le fond reste défini par la page : la section alterne avec celle
+   qui la précède, qui n'est pas la même partout. */
+.reassurance {
+  padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
+}
+
+.reassurance-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reassurance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 800px) {
+  .reassurance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Même filet que les cartes de la grille d'accueil. Il reste en --border :
+   ces blocs ne sont pas cliquables, et l'accent ne sert qu'à signaler
+   une action ou un état actif, jamais à décorer. */
+.reassurance-item {
+  border-top: 2px solid var(--border);
+  padding-top: var(--spacing-lg);
+}
+
+.reassurance-item h4 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.35;
+}
+
+.reassurance-item p {
+  font-size: 0.9375rem;
+  color: var(--text2);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Formulaires */
 .form-group {
   margin-bottom: var(--spacing-lg);
-}
-
-.form-label {
-  display: block;
-  margin-bottom: var(--spacing-sm);
-  font-weight: 500;
-  color: var(--text);
-}
-
-.form-input,
-.form-textarea,
-.form-select {
-  width: 100%;
-  padding: var(--spacing-md);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  color: var(--text);
-  background-color: var(--bg-card);
-  transition: border-color var(--transition-fast);
-}
-
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-  border-color: var(--terracotta);
-  box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-/* Grid */
-.grid {
-  display: grid;
-  gap: var(--spacing-lg);
-}
-
-.grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
-
-.grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 /* Footer */
 .footer {
   background-color: var(--text);
   color: var(--bg-card);
-  padding: var(--spacing-2xl) 0 var(--spacing-lg);
-  margin-top: var(--spacing-2xl);
+  padding: clamp(2rem, 5vw, 3rem) var(--spacing-md) clamp(1.5rem, 4vw, 2.5rem);
+  margin-top: clamp(2rem, 8vw, 4rem);
 }
 
-.footer-content {
+.footer-content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: clamp(1.5rem, 4vw, 2rem);
+}
+
+@media (max-width: 640px) {
+  .footer-content-wrapper {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+.footer-section {
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 .footer-section h4 {
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   color: var(--bg-card);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.footer-section p,
+.footer-section a {
+  color: var(--text3);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.6;
 }
 
 .footer-section a {
-  color: var(--text3);
+  text-decoration: none;
   transition: color var(--transition-fast);
 }
 
@@ -120,10 +227,30 @@
   color: var(--bg-card);
 }
 
-.footer-bottom {
-  text-align: center;
-  padding-top: var(--spacing-lg);
+.footer-divider {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: clamp(1rem, 3vw, 1.5rem);
+  margin-top: clamp(1rem, 3vw, 1.5rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.footer-bottom-text {
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   color: var(--text3);
-  font-size: var(--font-size-sm);
+}
+
+.footer-regulation {
+  text-align: right;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+  color: var(--text3);
+}
+
+@media (max-width: 640px) {
+  .footer-regulation {
+    text-align: left;
+  }
 }
