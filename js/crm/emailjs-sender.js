@@ -51,11 +51,8 @@ async function sendConfirmationEmails(state) {
   }
 
   if (montantCapital) {
-    montantFormatted = new Intl.NumberFormat('fr-CH', {
-      style: 'currency',
-      currency: 'CHF',
-      minimumFractionDigits: 0,
-    }).format(montantCapital).replace('CHF', 'CHF');
+    // formatCHF vient de js/format.js
+    montantFormatted = formatCHF(montantCapital);
   }
 
   // Get scores

@@ -54,6 +54,7 @@
       font-weight: 500;
       color: var(--text2);
       text-decoration: none;
+      min-height: 48px;
       padding: var(--spacing-sm) var(--spacing-md);
       margin-bottom: clamp(1rem, 3vw, 1.5rem);
       margin-left: calc(var(--spacing-md) * -1);
@@ -155,6 +156,8 @@
     }
 
     .input-value {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       font-size: clamp(0.9rem, 2vw, 1rem);
       color: var(--terracotta);
       font-weight: 700;
@@ -173,7 +176,12 @@
       height: 6px;
       border-radius: 3px;
       background: linear-gradient(to right, var(--terracotta) 0%, var(--terracotta) var(--value), var(--border) var(--value), var(--border) 100%);
-      outline: none;
+      /* Zone tactile de 48px sans épaissir la piste : le padding agrandit
+         la cible, background-clip garde le dégradé sur les 6px de contenu.
+         Les deux doivent suivre le raccourci `background`, qui les écraserait. */
+      box-sizing: content-box;
+      padding-block: 21px;
+      background-clip: content-box;
       -webkit-appearance: none;
       cursor: pointer;
       --value: 50%;
@@ -214,10 +222,12 @@
     }
 
     .slider-labels {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       display: flex;
       justify-content: space-between;
       font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-      color: var(--text3);
+      color: var(--text2);
       padding: 0 2px;
     }
 
@@ -313,6 +323,8 @@
     }
 
     .result-value {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       font-size: clamp(1.3rem, 3vw, 1.6rem);
       font-weight: 800;
       color: var(--terracotta);
@@ -321,7 +333,7 @@
 
     .result-breakdown {
       font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-      color: var(--text3);
+      color: var(--text2);
       margin-top: var(--spacing-xs);
       line-height: 1.6;
     }
@@ -345,7 +357,9 @@
       overflow-x: auto;
     }
 
-    svg {
+    /* Scopé au graphique : un sélecteur svg nu écraserait la taille
+       de toutes les icônes de la page. */
+    #graph-svg {
       display: block;
       width: 100%;
       height: auto;
@@ -393,7 +407,7 @@
 
     .disclaimer {
       font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-      color: var(--text3);
+      color: var(--text2);
       margin-top: var(--spacing-lg);
       text-align: center;
     }
@@ -450,7 +464,7 @@
 
             <!-- Initial amount -->
             <div class="input-group">
-              <label class="input-label">
+              <label class="input-label" for="slider-initial">
                 <span>Montant initial</span>
                 <span class="input-value" id="value-initial">CHF 20'000</span>
               </label>
@@ -465,7 +479,7 @@
 
             <!-- Monthly contribution -->
             <div class="input-group">
-              <label class="input-label">
+              <label class="input-label" for="slider-monthly">
                 <span>Versement mensuel</span>
                 <span class="input-value" id="value-monthly">CHF 300</span>
               </label>
@@ -480,7 +494,7 @@
 
             <!-- Savings duration -->
             <div class="input-group">
-              <label class="input-label">
+              <label class="input-label" for="slider-duration-savings">
                 <span>Durée d'épargne</span>
                 <span class="input-value" id="value-duration-savings">20 ans</span>
               </label>
@@ -495,7 +509,7 @@
 
             <!-- Interest rate -->
             <div class="input-group">
-              <label class="input-label">
+              <label class="input-label" for="slider-rate">
                 <span>Taux d'intérêt annuel</span>
                 <span class="input-value" id="value-rate">4.0%</span>
               </label>
@@ -520,7 +534,7 @@
             <div class="withdrawal-section" id="withdrawal-section">
               <!-- Withdrawal duration -->
               <div class="input-group">
-                <label class="input-label">
+                <label class="input-label" for="slider-duration-withdrawal">
                   <span>Durée de retrait</span>
                   <span class="input-value" id="value-duration-withdrawal">15 ans</span>
                 </label>
@@ -535,7 +549,7 @@
 
               <!-- Monthly withdrawal -->
               <div class="input-group">
-                <label class="input-label">
+                <label class="input-label" for="slider-withdrawal">
                   <span>Retrait mensuel</span>
                   <span class="input-value" id="value-withdrawal">CHF 1'500</span>
                 </label>
@@ -596,6 +610,7 @@
     </div>
   </div>
 
+  <script src="js/format.js"></script>
   <script>
     // Calculator Logic
     const state = {
@@ -613,13 +628,9 @@
     };
 
     // Format currency
+    // formatCHF vient de js/format.js
     function formatCurrency(value) {
-      return new Intl.NumberFormat('fr-CH', {
-        style: 'currency',
-        currency: 'CHF',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(value).replace('CHF', 'CHF');
+      return formatCHF(value);
     }
 
     // Short form for the graph axis, which has no room for a full amount
@@ -745,7 +756,7 @@
         text.setAttribute('y', chartHeight - y + 4);
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('font-size', '11');
-        text.setAttribute('fill', 'var(--text3)');
+        text.setAttribute('fill', 'var(--text2)');
         text.textContent = formatCompact((maxCapital / 5) * i);
         g.appendChild(text);
       }
@@ -782,7 +793,7 @@
           text.setAttribute('y', chartHeight + 20);
           text.setAttribute('text-anchor', 'middle');
           text.setAttribute('font-size', '11');
-          text.setAttribute('fill', 'var(--text3)');
+          text.setAttribute('fill', 'var(--text2)');
           text.textContent = `${d.year}a`;
           g.appendChild(text);
         }
@@ -860,29 +871,37 @@
         'slider-initial': (val) => { state.savings.initial = parseInt(val); document.getElementById('value-initial').textContent = formatCurrency(val); },
         'slider-monthly': (val) => { state.savings.monthly = parseInt(val); document.getElementById('value-monthly').textContent = formatCurrency(val); },
         'slider-duration-savings': (val) => { state.savings.duration = parseInt(val); document.getElementById('value-duration-savings').textContent = `${val} ans`; },
-        'slider-rate': (val) => { state.savings.rate = parseFloat(val); document.getElementById('value-rate').textContent = `${val}%`; },
+        'slider-rate': (val) => { state.savings.rate = parseFloat(val); document.getElementById('value-rate').textContent = `${parseFloat(val).toFixed(1)}%`; },
         'slider-duration-withdrawal': (val) => { state.withdrawal.duration = parseInt(val); document.getElementById('value-duration-withdrawal').textContent = `${val} ans`; },
         'slider-withdrawal': (val) => { state.withdrawal.amount = parseInt(val); document.getElementById('value-withdrawal').textContent = formatCurrency(val); },
       };
 
       Object.entries(sliders).forEach(([id, callback]) => {
         const slider = document.getElementById(id);
-        if (slider) {
-          slider.addEventListener('input', (e) => {
-            callback(e.target.value);
-            updateDisplay();
-          });
-
-          // Update slider background gradient
-          slider.addEventListener('input', function() {
-            const val = (this.value - this.min) / (this.max - this.min) * 100;
-            this.style.setProperty('--value', val + '%');
-          });
-
-          // Initialize
-          const initialVal = (slider.value - slider.min) / (slider.max - slider.min) * 100;
-          slider.style.setProperty('--value', initialVal + '%');
+        if (!slider) {
+          return;
         }
+
+        // La valeur lisible est déjà rendue dans #value-<nom>, on la réutilise
+        // pour l'annonce vocale : sinon un lecteur d'écran lit « 20000 ».
+        const readout = document.getElementById(id.replace('slider-', 'value-'));
+
+        function refresh(value) {
+          callback(value);
+          slider.setAttribute('aria-valuenow', value);
+          if (readout) {
+            slider.setAttribute('aria-valuetext', readout.textContent);
+          }
+          const pct = (value - slider.min) / (slider.max - slider.min) * 100;
+          slider.style.setProperty('--value', pct + '%');
+        }
+
+        slider.addEventListener('input', (e) => {
+          refresh(e.target.value);
+          updateDisplay();
+        });
+
+        refresh(slider.value);
       });
     }
 

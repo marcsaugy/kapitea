@@ -173,6 +173,8 @@
     }
 
     .slider-value {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       font-size: clamp(1.3rem, 3vw, 1.6rem);
       font-weight: 700;
       color: var(--terracotta);
@@ -185,7 +187,10 @@
       height: 6px;
       border-radius: 3px;
       background: var(--border);
-      outline: none;
+      /* Zone tactile de 48px sans épaissir la piste — voir calculateur.html */
+      box-sizing: content-box;
+      padding-block: 21px;
+      background-clip: content-box;
       -webkit-appearance: none;
       appearance: none;
     }
@@ -224,10 +229,12 @@
     }
 
     .slider-labels {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       display: flex;
       justify-content: space-between;
       font-size: var(--font-size-sm);
-      color: var(--text3);
+      color: var(--text2);
       margin-top: var(--spacing-md);
     }
 
@@ -263,7 +270,6 @@
     }
 
     .form-group input:focus {
-      outline: none;
       border-color: var(--terracotta);
       box-shadow: 0 0 0 3px rgba(156, 74, 46, 0.1);
     }
@@ -289,7 +295,7 @@
 
     .optional-text {
       font-size: var(--font-size-sm);
-      color: var(--text3);
+      color: var(--text2);
       margin-top: var(--spacing-xs);
     }
 
@@ -506,7 +512,7 @@
         <div class="question-hint">Une estimation suffit, on affinera ensemble.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-display">CHF 400'000</div>
-          <input type="range" id="montant-slider" min="50000" max="2000000" step="10000" value="400000">
+          <input type="range" aria-label="Montant de votre capital de prévoyance, en francs" id="montant-slider" min="50000" max="2000000" step="10000" value="400000">
           <div class="slider-labels">
             <span>CHF 50'000</span>
             <span>CHF 2'000'000</span>
@@ -647,7 +653,7 @@
         <div class="question-hint">Une estimation suffit.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-heritage-display">CHF 250'000</div>
-          <input type="range" id="montant-heritage-slider" min="20000" max="3000000" step="10000" value="250000">
+          <input type="range" aria-label="Montant de l'héritage, en francs" id="montant-heritage-slider" min="20000" max="3000000" step="10000" value="250000">
           <div class="slider-labels">
             <span>CHF 20'000</span>
             <span>CHF 3'000'000</span>
@@ -778,7 +784,7 @@
         <h2 id="montant-divorce-title">Quel montant approximatif recevez-vous du partage ?</h2>
         <div class="slider-container">
           <div class="slider-value" id="montant-divorce-display">CHF 150'000</div>
-          <input type="range" id="montant-divorce-slider" min="20000" max="1500000" step="10000" value="150000">
+          <input type="range" aria-label="Montant reçu du partage, en francs" id="montant-divorce-slider" min="20000" max="1500000" step="10000" value="150000">
           <div class="slider-labels">
             <span>CHF 20'000</span>
             <span>CHF 1'500'000</span>
@@ -895,7 +901,7 @@
         <div class="question-hint">Après hypothèque et impôt sur les gains immobiliers, une estimation suffit.</div>
         <div class="slider-container">
           <div class="slider-value" id="montant-vente-display">CHF 300'000</div>
-          <input type="range" id="montant-vente-slider" min="50000" max="2000000" step="10000" value="300000">
+          <input type="range" aria-label="Montant net après remboursement de l'hypothèque, en francs" id="montant-vente-slider" min="50000" max="2000000" step="10000" value="300000">
           <div class="slider-labels">
             <span>CHF 50'000</span>
             <span>CHF 2'000'000</span>
@@ -1027,7 +1033,7 @@
         <h2 id="montant-cession-title">Quel montant net avez-vous reçu ou allez-vous recevoir ?</h2>
         <div class="slider-container">
           <div class="slider-value" id="montant-cession-display">CHF 500'000</div>
-          <input type="range" id="montant-cession-slider" min="100000" max="5000000" step="50000" value="500000">
+          <input type="range" aria-label="Montant net de la cession, en francs" id="montant-cession-slider" min="100000" max="5000000" step="50000" value="500000">
           <div class="slider-labels">
             <span>CHF 100'000</span>
             <span>CHF 5'000'000</span>
@@ -1124,6 +1130,7 @@
 
   <!-- Configuration and Funnel Logic -->
   <script src="js/config.js" defer></script>
+  <script src="js/format.js" defer></script>
   <script src="js/crm/config.js" defer></script>
   <script src="js/crm/supabase-client.js" defer></script>
   <script src="js/crm/lead-ingest.js" defer></script>

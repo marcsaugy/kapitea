@@ -1,13 +1,9 @@
 // Kapitea LPP Funnel Logic
 
 // Utility functions
+// formatCHF vient de js/format.js
 function formatCurrency(value) {
-  return new Intl.NumberFormat('fr-CH', {
-    style: 'currency',
-    currency: 'CHF',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value).replace('CHF', 'CHF');
+  return formatCHF(value);
 }
 
 function validateEmail(email) {
@@ -682,7 +678,11 @@ function setupMontantSlider() {
   function updateDisplay() {
     const value = parseInt(slider.value, 10);
     state.answers[screen.key] = value;
-    display.textContent = formatCurrency(value);
+    const formatted = formatCurrency(value);
+    display.textContent = formatted;
+    // Un lecteur d'écran annoncerait « 400000 » sans aria-valuetext
+    slider.setAttribute('aria-valuenow', value);
+    slider.setAttribute('aria-valuetext', formatted);
     state.scores = calculateScore(state);
     saveState();
   }
@@ -705,6 +705,23 @@ function setupOptionListeners() {
       });
       e.target.parentElement.classList.add('selected');
     });
+  });
+}
+
+// Entrée valide l'écran courant, depuis n'importe quel champ.
+// Les flèches parcourent déjà les réponses : les radios d'un même groupe
+// sont nativement navigables, il n'y a rien à ajouter pour ça.
+function setupKeyboardNav() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || e.isComposing) {
+      return;
+    }
+    // Laisser les boutons faire leur propre travail
+    if (e.target.tagName === 'BUTTON') {
+      return;
+    }
+    e.preventDefault();
+    handleNext();
   });
 }
 
@@ -816,6 +833,7 @@ function init() {
 
   btnNext.addEventListener('click', handleNext);
   btnBack.addEventListener('click', handleBack);
+  setupKeyboardNav();
 
   // Restore form values on the contact screen
   document.getElementById('email').value = state.answers.Q_CONTACT.email || '';

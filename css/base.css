@@ -10,7 +10,10 @@
   --bg: #F5F6F8;
   --bg-card: #FFFFFF;
   --text: #111827;
-  --text2: #6B7280;
+  /* --text2 porte de l'information : contraste >= 4.5:1 sur --bg et --bg-card */
+  --text2: #667085;
+  /* --text3 est purement décoratif (placeholders, ornements).
+     Ne jamais l'utiliser pour du texte porteur d'information : 2.5:1 seulement. */
   --text3: #9CA3AF;
   --border: #EAECF0;
   --border2: #E5E7EB;
@@ -68,6 +71,48 @@ body {
   line-height: var(--line-height-normal);
   color: var(--text);
   background-color: var(--bg);
+}
+
+/* Focus visible sur tout élément interactif.
+   Au clavier uniquement, pour ne pas cerner les boutons au clic souris. */
+:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+/* Les montants ne doivent pas sauter quand un slider bouge */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Zones tactiles : 48px de haut minimum.
+   Les sliders sont traités dans chaque page : leur zone tactile s'obtient
+   par du padding, qui doit être déclaré avec le background pour survivre
+   au raccourci `background:` qui réinitialiserait background-clip. */
+button,
+.btn,
+.btn-nav,
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+  min-height: 48px;
+}
+
+/* Une partie de l'audience cible est sensible au mouvement */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Typography */

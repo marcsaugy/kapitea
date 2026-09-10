@@ -125,6 +125,8 @@
     }
 
     .summary-value {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
       font-size: var(--font-size-sm);
       color: var(--text);
       font-weight: 600;
@@ -264,15 +266,11 @@
 
   <!-- Configuration and Thank You Logic -->
   <script src="js/config.js" defer></script>
+  <script src="js/format.js" defer></script>
   <script defer>
-    // Utility: format currency
+    // formatCHF vient de js/format.js
     function formatCurrency(value) {
-      return new Intl.NumberFormat('fr-CH', {
-        style: 'currency',
-        currency: 'CHF',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(value).replace('CHF', 'CHF');
+      return formatCHF(value);
     }
 
     // Utility: get label for answer value
