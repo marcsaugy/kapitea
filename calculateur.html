@@ -58,7 +58,7 @@
       padding: var(--spacing-sm) var(--spacing-md);
       margin-bottom: clamp(1rem, 3vw, 1.5rem);
       margin-left: calc(var(--spacing-md) * -1);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-input);
       transition: color var(--transition-fast), background-color var(--transition-fast);
     }
 
@@ -78,7 +78,6 @@
     }
 
     .calculator-header {
-      text-align: center;
       margin-bottom: clamp(2rem, 5vw, 3rem);
     }
 
@@ -95,7 +94,6 @@
       color: var(--text2);
       line-height: 1.6;
       max-width: var(--measure);
-      margin-inline: auto;
     }
 
     /* Main grid: inputs left, results right */
@@ -124,7 +122,7 @@
       padding: clamp(1.5rem, 3vw, 2rem);
       background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-surface);
     }
 
     .input-section h2 {
@@ -257,7 +255,7 @@
       width: 50px;
       height: 28px;
       background-color: var(--border);
-      border-radius: 14px;
+      border-radius: var(--r-pill);
       cursor: pointer;
       transition: background-color var(--transition-fast);
     }
@@ -304,7 +302,7 @@
       padding: clamp(1.5rem, 3vw, 2rem);
       background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-surface);
     }
 
     .results-grid {
@@ -346,7 +344,7 @@
       padding: var(--spacing-md);
       background-color: rgba(156, 74, 46, 0.1);
       border-left: 4px solid var(--terracotta);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-input);
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
       color: var(--text);
       margin-top: var(--spacing-md);
@@ -357,7 +355,7 @@
       padding: clamp(1.5rem, 3vw, 2rem);
       background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-surface);
       overflow-x: auto;
     }
 
@@ -375,7 +373,7 @@
       text-align: center;
       padding: clamp(2rem, 5vw, 3rem);
       background-color: var(--bg-card);
-      border-radius: var(--radius-md);
+      border-radius: var(--r-surface);
       border: 2px solid var(--border);
     }
 
@@ -397,7 +395,7 @@
       font-size: var(--font-size-base);
       font-weight: 550;
       border: none;
-      border-radius: var(--radius-md);
+      border-radius: var(--r-input);
       cursor: pointer;
       text-decoration: none;
       transition: all var(--transition-fast);

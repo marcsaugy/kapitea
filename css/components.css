@@ -77,7 +77,7 @@
   font-size: var(--font-size-base);
   font-weight: 550;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--r-input);
   cursor: pointer;
   text-decoration: none;
   transition: all var(--transition-fast);
