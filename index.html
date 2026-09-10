@@ -109,11 +109,11 @@
     }
 
     .journey-grid-primary .journey-card h3 {
-      font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+      font-size: var(--font-size-xl);
     }
 
     .journey-grid-primary .journey-card p {
-      font-size: clamp(0.95rem, 1.6vw, 1.0625rem);
+      font-size: var(--font-size-base);
     }
 
     .journey-grid-secondary .journey-card {
@@ -121,11 +121,11 @@
     }
 
     .journey-grid-secondary .journey-card h3 {
-      font-size: 1.0625rem;
+      font-size: var(--font-size-base);
     }
 
     .journey-grid-secondary .journey-card p {
-      font-size: 0.9375rem;
+      font-size: var(--font-size-sm);
     }
 
     /* Bande simulateur — seule inversion de contraste du site.
@@ -158,19 +158,19 @@
     }
 
     .simulator-band h2 {
-      font-size: clamp(1.35rem, 2.8vw, 1.75rem);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.2;
+      font-size: var(--title-size);
+      font-weight: 600;
+      letter-spacing: var(--title-track);
+      line-height: 1.15;
       margin-bottom: var(--spacing-sm);
       color: var(--bg-card);
     }
 
     .simulator-band p {
-      font-size: clamp(0.95rem, 1.6vw, 1.0625rem);
+      font-size: var(--font-size-base);
       color: rgba(255, 255, 255, 0.72);
       margin: 0;
-      max-width: 34em;
+      max-width: var(--measure);
     }
 
     .simulator-band-cta {
@@ -181,8 +181,8 @@
       padding: 0 var(--spacing-lg);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 4px;
-      font-weight: 600;
-      font-size: 1rem;
+      font-weight: 550;
+      font-size: var(--font-size-base);
       color: var(--bg-card);
       transition: background-color var(--transition-fast),
                   border-color var(--transition-fast);

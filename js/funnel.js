@@ -417,7 +417,7 @@ function showScreen(screenIndex) {
 
   // Update button states
   btnBack.disabled = screenIndex === 0;
-  btnNext.textContent = screenIndex === lastScreenIndex ? 'Terminer' : 'Suivant →';
+  btnNext.textContent = screenIndex === lastScreenIndex ? 'Terminer' : 'Suivant';
 
   // Reset form validation on new screen
   clearFormErrors();
