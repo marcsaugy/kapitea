@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 100" width="150" height="100"
+     fill="none" stroke="#9C4A2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="Kapitea">
+  <title>Kapitea</title>
+  <!-- hampe de la flèche -->
+  <path d="M6 50H128"/>
+  <!-- empennage -->
+  <path d="M4 41 12 50 4 59"/>
+  <path d="M14 41 22 50 14 59"/>
+  <path d="M24 41 32 50 24 59"/>
+  <!-- fût du K -->
+  <rect x="30" y="7" width="19" height="86" fill="#9C4A2E" stroke="none"/>
+  <!-- corde tendue : les bras du K -->
+  <path d="M50 50 72 6M50 50 72 94"/>
+  <!-- arc -->
+  <path d="M72 6A44 44 0 0 1 72 94"/>
+  <!-- pointe -->
+  <path d="M127 41 146 50 127 59Z" fill="#9C4A2E" stroke-width="3"/>
+</svg>
