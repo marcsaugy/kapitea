@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Simulez librement l'évolution de votre capital : versement initial, versements mensuels, durée, rendement et phase de retraits. Calculateur d'intérêts composés gratuit, sans inscription.">
-  <meta name="theme-color" content="#14100E">
+  <meta name="theme-color" content="#9C4A2E">
   <meta name="keywords" content="calculateur intérêts composés, simulateur épargne, capital retraite, rendement placement, simulation capital Suisse">
   <link rel="canonical" href="https://kapitea.ch/calculateur">
 
@@ -39,7 +39,7 @@
 
     .calculator-container {
       min-height: 100vh;
-      background-color: var(--void);
+      background-color: var(--bg);
       padding: clamp(2rem, 5vw, 3rem) var(--spacing-md);
     }
 
@@ -54,7 +54,7 @@
       gap: var(--spacing-sm);
       font-size: var(--font-size-sm);
       font-weight: 500;
-      color: var(--text-2);
+      color: var(--text2);
       text-decoration: none;
       min-height: 48px;
       padding: var(--spacing-sm) var(--spacing-md);
@@ -65,8 +65,8 @@
     }
 
     .back-link:hover {
-      color: var(--brique);
-      background-color: var(--surface-2);
+      color: var(--terracotta);
+      background-color: rgba(156, 74, 46, 0.08);
     }
 
     .back-link svg {
@@ -93,7 +93,7 @@
 
     .calculator-header p {
       font-size: var(--font-size-base);
-      color: var(--text-2);
+      color: var(--text2);
       line-height: 1.6;
       max-width: var(--measure);
     }
@@ -122,8 +122,8 @@
 
     .input-section {
       padding: clamp(1.5rem, 3vw, 2rem);
-      background-color: var(--surface);
-      border: 1px solid var(--line);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: var(--r-surface);
     }
 
@@ -134,7 +134,7 @@
       color: var(--text);
       margin-bottom: var(--spacing-lg);
       padding-bottom: var(--spacing-md);
-      border-bottom: 2px solid var(--line);
+      border-bottom: 2px solid var(--border);
     }
 
     .input-group {
@@ -162,7 +162,7 @@
       font-variant-numeric: tabular-nums;
       font-feature-settings: "tnum" 1;
       font-size: var(--font-size-base);
-      color: var(--brique);
+      color: var(--terracotta);
       font-weight: 600;
       min-width: 100px;
       text-align: right;
@@ -178,7 +178,7 @@
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: linear-gradient(to right, var(--brique) 0%, var(--brique) var(--value), var(--surface-2) var(--value), var(--surface-2) 100%);
+      background: linear-gradient(to right, var(--terracotta) 0%, var(--terracotta) var(--value), var(--border) var(--value), var(--border) 100%);
       /* Zone tactile de 48px sans épaissir la piste : le padding agrandit
          la cible, background-clip garde le dégradé sur les 6px de contenu.
          Les deux doivent suivre le raccourci `background`, qui les écraserait. */
@@ -195,30 +195,33 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background-color: var(--brique);
-      border: 2px solid var(--void);
+      background-color: var(--terracotta);
       cursor: pointer;
+      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
       transition: all var(--transition-fast);
     }
 
     input[type="range"]::-webkit-slider-thumb:hover {
       width: 20px;
       height: 20px;
+      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
     }
 
     input[type="range"]::-moz-range-thumb {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background-color: var(--brique);
-      border: 2px solid var(--void);
+      background-color: var(--terracotta);
       cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
       transition: all var(--transition-fast);
     }
 
     input[type="range"]::-moz-range-thumb:hover {
       width: 20px;
       height: 20px;
+      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
     }
 
     .slider-labels {
@@ -227,7 +230,7 @@
       display: flex;
       justify-content: space-between;
       font-size: var(--font-size-sm);
-      color: var(--text-2);
+      color: var(--text2);
       padding: 0 2px;
     }
 
@@ -237,8 +240,8 @@
       align-items: center;
       gap: var(--spacing-md);
       padding: var(--spacing-md) 0;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       margin: var(--spacing-lg) 0;
     }
 
@@ -253,14 +256,14 @@
       position: relative;
       width: 50px;
       height: 28px;
-      background-color: var(--surface-2);
+      background-color: var(--border);
       border-radius: var(--r-pill);
       cursor: pointer;
       transition: background-color var(--transition-fast);
     }
 
     .toggle-switch.active {
-      background-color: var(--brique);
+      background-color: var(--terracotta);
     }
 
     .toggle-switch::after {
@@ -268,7 +271,7 @@
       position: absolute;
       width: 24px;
       height: 24px;
-      background-color: var(--text);
+      background-color: white;
       border-radius: 50%;
       top: 2px;
       left: 2px;
@@ -299,8 +302,8 @@
 
     .results-card {
       padding: clamp(1.5rem, 3vw, 2rem);
-      background-color: var(--surface);
-      border: 1px solid var(--line);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: var(--r-surface);
     }
 
@@ -318,7 +321,7 @@
 
     .result-label {
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-      color: var(--text-2);
+      color: var(--text2);
       font-weight: 500;
     }
 
@@ -328,21 +331,21 @@
       font-size: var(--amount-size);
       font-weight: 500;
       letter-spacing: var(--amount-track);
-      color: var(--brique);
+      color: var(--terracotta);
       line-height: 1;
     }
 
     .result-breakdown {
       font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-      color: var(--text-2);
+      color: var(--text2);
       margin-top: var(--spacing-xs);
       line-height: 1.6;
     }
 
     .warning-message {
       padding: var(--spacing-md);
-      background-color: var(--brique-wash);
-      border-left: 4px solid var(--warn);
+      background-color: rgba(156, 74, 46, 0.1);
+      border-left: 4px solid var(--terracotta);
       border-radius: var(--r-input);
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
       color: var(--text);
@@ -352,8 +355,8 @@
     /* Graph */
     .graph-container {
       padding: clamp(1.5rem, 3vw, 2rem);
-      background-color: var(--surface);
-      border: 1px solid var(--line);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: var(--r-surface);
       overflow-x: auto;
     }
@@ -371,14 +374,14 @@
     .calculator-cta {
       text-align: center;
       padding: clamp(2rem, 5vw, 3rem);
-      background-color: var(--surface);
+      background-color: var(--bg-card);
       border-radius: var(--r-surface);
-      border: 2px solid var(--line);
+      border: 2px solid var(--border);
     }
 
     .calculator-cta p {
       font-size: clamp(0.95rem, 2vw, 1.05rem);
-      color: var(--text-2);
+      color: var(--text2);
       margin-bottom: var(--spacing-lg);
       line-height: 1.6;
     }
@@ -388,8 +391,8 @@
       align-items: center;
       justify-content: center;
       padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
-      background-color: var(--brique);
-      color: var(--void);
+      background-color: var(--terracotta);
+      color: var(--bg-card);
       font-family: var(--font-family);
       font-size: var(--font-size-base);
       font-weight: 550;
@@ -401,14 +404,14 @@
     }
 
     .btn-cta-calc:hover {
-      background-color: var(--brique-deep);
-      box-shadow: var(--shadow);
+      background-color: var(--terracotta-dark);
+      box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
     .disclaimer {
       font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-      color: var(--text-2);
+      color: var(--text2);
       margin-top: var(--spacing-lg);
       text-align: center;
     }
@@ -427,7 +430,7 @@
       align-items: center;
       gap: var(--spacing-sm);
       font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-      color: var(--text-2);
+      color: var(--text2);
     }
 
     .legend-color {
@@ -589,11 +592,11 @@
           <div class="graph-container">
             <div class="graph-legend">
               <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--data-capital);"></div>
+                <div class="legend-color" style="background-color: var(--terracotta-light);"></div>
                 <span>Capital apporté</span>
               </div>
               <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--data-interet);"></div>
+                <div class="legend-color" style="background-color: var(--terracotta);"></div>
                 <span>Intérêts générés</span>
               </div>
             </div>
@@ -731,7 +734,7 @@
       const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       bg.setAttribute('width', width);
       bg.setAttribute('height', height);
-      bg.setAttribute('fill', 'var(--surface)');
+      bg.setAttribute('fill', 'var(--bg)');
       svg.appendChild(bg);
 
       // Group for chart
@@ -746,7 +749,7 @@
         line.setAttribute('y1', chartHeight - y);
         line.setAttribute('x2', chartWidth);
         line.setAttribute('y2', chartHeight - y);
-        line.setAttribute('stroke', 'var(--line)');
+        line.setAttribute('stroke', 'var(--border)');
         line.setAttribute('stroke-width', '1');
         line.setAttribute('stroke-dasharray', '4');
         g.appendChild(line);
@@ -757,7 +760,7 @@
         text.setAttribute('y', chartHeight - y + 4);
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('font-size', '11');
-        text.setAttribute('fill', 'var(--text-3)');
+        text.setAttribute('fill', 'var(--text2)');
         text.textContent = formatCompact((maxCapital / 5) * i);
         g.appendChild(text);
       }
@@ -775,7 +778,7 @@
         rectContributed.setAttribute('y', chartHeight - contributedHeight);
         rectContributed.setAttribute('width', barWidth);
         rectContributed.setAttribute('height', contributedHeight);
-        rectContributed.setAttribute('fill', 'var(--data-capital)');
+        rectContributed.setAttribute('fill', 'var(--terracotta-light)');
         g.appendChild(rectContributed);
 
         // Interest (top)
@@ -784,7 +787,7 @@
         rectInterest.setAttribute('y', chartHeight - totalHeight);
         rectInterest.setAttribute('width', barWidth);
         rectInterest.setAttribute('height', interestHeight);
-        rectInterest.setAttribute('fill', 'var(--data-interet)');
+        rectInterest.setAttribute('fill', 'var(--terracotta)');
         g.appendChild(rectInterest);
 
         // X axis label (every 5 years or less if few years)
@@ -794,7 +797,7 @@
           text.setAttribute('y', chartHeight + 20);
           text.setAttribute('text-anchor', 'middle');
           text.setAttribute('font-size', '11');
-          text.setAttribute('fill', 'var(--text-3)');
+          text.setAttribute('fill', 'var(--text2)');
           text.textContent = `${d.year}a`;
           g.appendChild(text);
         }
@@ -806,7 +809,7 @@
       axisX.setAttribute('y1', chartHeight);
       axisX.setAttribute('x2', chartWidth);
       axisX.setAttribute('y2', chartHeight);
-      axisX.setAttribute('stroke', 'var(--line)');
+      axisX.setAttribute('stroke', 'var(--border)');
       axisX.setAttribute('stroke-width', '1');
       g.appendChild(axisX);
 
@@ -815,7 +818,7 @@
       axisY.setAttribute('y1', 0);
       axisY.setAttribute('x2', 0);
       axisY.setAttribute('y2', chartHeight);
-      axisY.setAttribute('stroke', 'var(--line)');
+      axisY.setAttribute('stroke', 'var(--border)');
       axisY.setAttribute('stroke-width', '1');
       g.appendChild(axisY);
 

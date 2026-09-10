@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Votre demande est bien reçue. Un conseiller FINMA indépendant vous recontacte sous 24h.">
-  <meta name="theme-color" content="#14100E">
+  <meta name="theme-color" content="#9C4A2E">
   <meta name="robots" content="noindex, nofollow">
 
   <title>Votre demande est bien reçue — Kapitea</title>
@@ -22,7 +22,7 @@
 
     .merci-container {
       min-height: 100vh;
-      background-color: var(--void);
+      background-color: var(--bg);
       padding: var(--spacing-2xl) var(--spacing-md);
     }
 
@@ -37,7 +37,7 @@
     .merci-header {
       margin-bottom: var(--spacing-2xl);
       padding-top: var(--spacing-lg);
-      border-top: 2px solid var(--brique);
+      border-top: 2px solid var(--terracotta);
       animation: slideInUp var(--transition-base) ease-out;
     }
 
@@ -51,14 +51,14 @@
 
     .merci-header p {
       font-size: var(--font-size-lg);
-      color: var(--text-2);
+      color: var(--text2);
       margin-bottom: 0;
     }
 
     /* Summary section */
     .summary-section {
-      background-color: var(--surface);
-      border: 1px solid var(--line);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: var(--r-surface);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-2xl);
@@ -81,7 +81,7 @@
       content: '';
       width: 4px;
       height: 20px;
-      background-color: var(--brique);
+      background-color: var(--terracotta);
       border-radius: 2px;
     }
 
@@ -97,7 +97,7 @@
       align-items: flex-start;
       gap: var(--spacing-md);
       padding-bottom: var(--spacing-md);
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--border);
     }
 
     .summary-item:last-child {
@@ -107,7 +107,7 @@
 
     .summary-label {
       font-size: var(--font-size-sm);
-      color: var(--text-2);
+      color: var(--text2);
       font-weight: 500;
     }
 
@@ -142,13 +142,13 @@
 
     .calendly-header p {
       font-size: var(--font-size-base);
-      color: var(--text-2);
+      color: var(--text2);
       margin-bottom: 0;
     }
 
     .calendly-container {
-      background-color: var(--surface);
-      border: 1px solid var(--line);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: var(--r-surface);
       overflow: hidden;
       min-height: 600px;
@@ -156,8 +156,8 @@
 
     /* Reassurance banner */
     .reassurance-banner {
-      background-color: var(--surface-2);
-      border: 1px solid var(--line-2);
+      background-color: rgba(156, 74, 46, 0.08);
+      border: 1px solid rgba(156, 74, 46, 0.2);
       border-radius: var(--r-input);
       padding: var(--spacing-lg);
       animation: slideInUp var(--transition-base) ease-out;
@@ -173,21 +173,21 @@
     }
 
     .reassurance-banner strong {
-      color: var(--brique);
+      color: var(--terracotta);
       font-weight: 600;
     }
 
     /* Error state */
     .error-message {
-      background-color: var(--brique-wash);
-      border: 1px solid var(--err);
+      background-color: #FEE2E2;
+      border: 1px solid #FCA5A5;
       border-radius: var(--r-input);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-2xl);
     }
 
     .error-message p {
-      color: var(--err);
+      color: #991B1B;
       margin: 0;
       font-weight: 500;
     }
@@ -432,15 +432,8 @@
         // Initialize Calendly widget
         const widget = document.getElementById('calendly-widget');
         if (window.Calendly) {
-          // Le widget est servi dans une iframe : son thème ne peut être
-          // réglé que par les paramètres d'URL, pas par notre CSS.
-          const themed = new URL(CONFIG.CALENDLY_URL);
-          themed.searchParams.set('background_color', '1E1815');
-          themed.searchParams.set('text_color', 'F2ECE7');
-          themed.searchParams.set('primary_color', 'CD6539');
-
           window.Calendly.initInlineWidget({
-            url: themed.toString(),
+            url: CONFIG.CALENDLY_URL,
             parentElement: widget,
             prefill: {
               // Optional: pre-fill contact info from state
