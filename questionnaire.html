@@ -139,12 +139,16 @@
       padding: var(--spacing-md);
       border: 2px solid var(--border);
       border-radius: var(--r-card);
-      transition: all var(--transition-fast);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
     }
 
-    .option:hover {
+    /* Trois échelons : repos, survol, choisi. Le survol prend la teinte
+       claire — s'il prenait l'accent plein, une option seulement survolée
+       aurait l'air déjà choisie. */
+    .option:hover,
+    .option:focus-within {
       border-color: var(--terracotta-light);
-      background-color: rgba(196, 105, 74, 0.05);
+      background-color: var(--surface-2);
     }
 
     .option input[type="radio"] {
@@ -168,7 +172,7 @@
 
     .option.selected {
       border-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.08);
+      background-color: var(--surface-2);
     }
 
     /* Slider */
@@ -209,13 +213,11 @@
       border-radius: 50%;
       background: var(--terracotta);
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
-      transition: all var(--transition-fast);
+      transition: transform var(--transition-fast);
     }
 
-    input[type="range"]::-webkit-slider-thumb:hover {
+    input[type="range"]:active::-webkit-slider-thumb {
       transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -225,13 +227,11 @@
       background: var(--terracotta);
       cursor: pointer;
       border: none;
-      box-shadow: 0 2px 4px rgba(156, 74, 46, 0.3);
-      transition: all var(--transition-fast);
+      transition: transform var(--transition-fast);
     }
 
-    input[type="range"]::-moz-range-thumb:hover {
+    input[type="range"]:active::-moz-range-thumb {
       transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(156, 74, 46, 0.4);
     }
 
     .slider-labels {
@@ -315,7 +315,7 @@
       border-radius: var(--r-card);
       margin-top: var(--spacing-lg);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
     }
 
     .checkbox-group:hover {
@@ -370,7 +370,7 @@
       border: none;
       border-radius: var(--r-input);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
       flex: 1;
     }
 
@@ -398,7 +398,6 @@
 
     .btn-nav.next:hover {
       background-color: var(--terracotta-dark);
-      box-shadow: var(--shadow-md);
     }
 
     .btn-nav.next:disabled {

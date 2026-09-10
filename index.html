@@ -38,6 +38,38 @@
     /* Le hero de l'accueil est la seule exception au fer à gauche */
     .hero {
       text-align: center;
+      position: relative;
+      /* La courbe déborde à droite : elle se coupe au bord du hero
+         plutôt que d'allonger la page. */
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Seul élément décoratif du site. Une croissance exponentielle,
+       posée assez pâle pour qu'on la lise comme une texture et non
+       comme un graphique. */
+    .hero-curve {
+      position: absolute;
+      left: 4%;
+      bottom: 0;
+      width: 108%;
+      height: auto;
+      z-index: 0;
+      pointer-events: none;
+      color: var(--terracotta);
+      opacity: 0.06;
+    }
+
+    /* Sous 768px le hero est trop court pour que la courbe se lise,
+       et le parallaxe coûte cher sur mobile : on la retire entièrement. */
+    @media (max-width: 767px) {
+      .hero-curve {
+        display: none;
+      }
     }
 
     /* Journey selector section */
@@ -91,7 +123,7 @@
     .journey-card:hover,
     .journey-card:focus-visible {
       border-top-color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.03);
+      background-color: var(--surface-2);
     }
 
     .journey-card h3 {
@@ -359,6 +391,10 @@
   <main>
     <!-- Hero section -->
     <section class="hero">
+      <svg class="hero-curve" viewBox="0 0 1200 300" fill="none" aria-hidden="true" focusable="false">
+        <path class="hero-curve-path" d="M0 296C380 295 640 284 820 230C980 182 1130 100 1200 4"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
       <div class="hero-content">
         <h1>Vous avez reçu un capital important. Voyons ensemble comment le faire fructifier.</h1>
       </div>
@@ -507,5 +543,6 @@
 
   <!-- Configuration (loaded at runtime) -->
   <script src="js/config.js" defer></script>
+  <script src="js/hero-curve.js" defer></script>
 </body>
 </html>

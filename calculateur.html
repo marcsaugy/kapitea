@@ -66,7 +66,7 @@
 
     .back-link:hover {
       color: var(--terracotta);
-      background-color: rgba(156, 74, 46, 0.08);
+      background-color: var(--surface-2);
     }
 
     .back-link svg {
@@ -197,14 +197,11 @@
       border-radius: 50%;
       background-color: var(--terracotta);
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
-      transition: all var(--transition-fast);
+      transition: transform var(--transition-fast);
     }
 
-    input[type="range"]::-webkit-slider-thumb:hover {
-      width: 20px;
-      height: 20px;
-      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
+    input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.1);
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -214,14 +211,11 @@
       background-color: var(--terracotta);
       cursor: pointer;
       border: none;
-      box-shadow: 0 2px 8px rgba(156, 74, 46, 0.3);
-      transition: all var(--transition-fast);
+      transition: transform var(--transition-fast);
     }
 
-    input[type="range"]::-moz-range-thumb:hover {
-      width: 20px;
-      height: 20px;
-      box-shadow: 0 4px 12px rgba(156, 74, 46, 0.4);
+    input[type="range"]:active::-moz-range-thumb {
+      transform: scale(1.1);
     }
 
     .slider-labels {
@@ -275,11 +269,13 @@
       border-radius: 50%;
       top: 2px;
       left: 2px;
-      transition: left var(--transition-fast);
+      /* translateX plutôt que `left` : la position d'un élément absolu
+         relayoute la boîte à chaque image, une translation non. */
+      transition: transform var(--transition-fast);
     }
 
     .toggle-switch.active::after {
-      left: 24px;
+      transform: translateX(22px);
     }
 
     .withdrawal-section {
@@ -400,12 +396,11 @@
       border-radius: var(--r-input);
       cursor: pointer;
       text-decoration: none;
-      transition: all var(--transition-fast);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
     }
 
     .btn-cta-calc:hover {
       background-color: var(--terracotta-dark);
-      box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
@@ -871,13 +866,28 @@
 
     // Setup sliders
     function setupSliders() {
+      // Les montants s'interpolent (tweenAmount vient de js/format.js) ;
+      // les durées et le taux avancent d'un pas trop court pour que le
+      // mouvement se voie, ils sont écrits directement.
+      function amount(id, val) {
+        tweenAmount(document.getElementById(id), val, formatCurrency);
+        return formatCurrency(val);
+      }
+
+      function label(id, text) {
+        document.getElementById(id).textContent = text;
+        return text;
+      }
+
+      // Chaque callback renvoie la valeur lisible finale : l'annonce vocale
+      // ne doit pas reprendre un chiffre pris au milieu d'une interpolation.
       const sliders = {
-        'slider-initial': (val) => { state.savings.initial = parseInt(val); document.getElementById('value-initial').textContent = formatCurrency(val); },
-        'slider-monthly': (val) => { state.savings.monthly = parseInt(val); document.getElementById('value-monthly').textContent = formatCurrency(val); },
-        'slider-duration-savings': (val) => { state.savings.duration = parseInt(val); document.getElementById('value-duration-savings').textContent = `${val} ans`; },
-        'slider-rate': (val) => { state.savings.rate = parseFloat(val); document.getElementById('value-rate').textContent = `${parseFloat(val).toFixed(1)}%`; },
-        'slider-duration-withdrawal': (val) => { state.withdrawal.duration = parseInt(val); document.getElementById('value-duration-withdrawal').textContent = `${val} ans`; },
-        'slider-withdrawal': (val) => { state.withdrawal.amount = parseInt(val); document.getElementById('value-withdrawal').textContent = formatCurrency(val); },
+        'slider-initial': (val) => { state.savings.initial = parseInt(val); return amount('value-initial', val); },
+        'slider-monthly': (val) => { state.savings.monthly = parseInt(val); return amount('value-monthly', val); },
+        'slider-duration-savings': (val) => { state.savings.duration = parseInt(val); return label('value-duration-savings', `${val} ans`); },
+        'slider-rate': (val) => { state.savings.rate = parseFloat(val); return label('value-rate', `${parseFloat(val).toFixed(1)}%`); },
+        'slider-duration-withdrawal': (val) => { state.withdrawal.duration = parseInt(val); return label('value-duration-withdrawal', `${val} ans`); },
+        'slider-withdrawal': (val) => { state.withdrawal.amount = parseInt(val); return amount('value-withdrawal', val); },
       };
 
       Object.entries(sliders).forEach(([id, callback]) => {
@@ -886,16 +896,11 @@
           return;
         }
 
-        // La valeur lisible est déjà rendue dans #value-<nom>, on la réutilise
-        // pour l'annonce vocale : sinon un lecteur d'écran lit « 20000 ».
-        const readout = document.getElementById(id.replace('slider-', 'value-'));
-
         function refresh(value) {
-          callback(value);
+          // Sans aria-valuetext, un lecteur d'écran lit « 20000 »
+          const readable = callback(value);
           slider.setAttribute('aria-valuenow', value);
-          if (readout) {
-            slider.setAttribute('aria-valuetext', readout.textContent);
-          }
+          slider.setAttribute('aria-valuetext', readable);
           const pct = (value - slider.min) / (slider.max - slider.min) * 100;
           slider.style.setProperty('--value', pct + '%');
         }

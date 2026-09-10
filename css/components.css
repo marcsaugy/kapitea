@@ -104,13 +104,15 @@
   border-radius: var(--r-input);
   cursor: pointer;
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
   min-width: 250px;
 }
 
+/* Pas d'ombre au survol : elle ne peut pas être animée sans coûter un
+   repaint, et une ombre qui apparaît d'un coup se voit plus qu'elle
+   n'aide. L'assombrissement et le décalage suffisent. */
 .btn-cta:hover {
   background-color: var(--terracotta-dark);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 

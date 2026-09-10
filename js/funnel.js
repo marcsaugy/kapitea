@@ -679,7 +679,8 @@ function setupMontantSlider() {
     const value = parseInt(slider.value, 10);
     state.answers[screen.key] = value;
     const formatted = formatCurrency(value);
-    display.textContent = formatted;
+    // tweenAmount vient de js/format.js
+    tweenAmount(display, value, formatCurrency);
     // Un lecteur d'écran annoncerait « 400000 » sans aria-valuetext
     slider.setAttribute('aria-valuenow', value);
     slider.setAttribute('aria-valuetext', formatted);

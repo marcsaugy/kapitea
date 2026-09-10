@@ -91,10 +91,9 @@
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* Pas de jeton d'ombre : la hiérarchie passe par le filet et la surface.
+     Une ombre ne s'anime pas sans repaint, et celles qui restaient au
+     survol apparaissaient d'un coup. */
 
   /* Rayons — le rayon encode la nature de l'objet, pas sa taille.
      Un rayon unique partout aplatit la lecture. */
@@ -107,6 +106,12 @@
   --transition-fast: 150ms ease-in-out;
   --transition-base: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
+
+  /* Courbe de sortie, pour les révélations */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Surface de survol : teinte d'accent très diluée, plutôt qu'un gris neutre */
+  --surface-2: #FAF6F4;
 }
 
 * {
@@ -127,6 +132,54 @@ body {
   background-color: var(--bg);
 }
 
+/* Grain fin sur toute la page.
+   Bruit fractal généré par feTurbulence et encodé en data-URI : pas de
+   requête réseau, pas de fichier binaire à versionner. Statique, jamais
+   animé — il doit se sentir sans se voir. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* Enfoncement au clic. Uniquement sur transform, jamais sur la boîte. */
+.btn-nav:active,
+.btn-cta:active,
+.btn-cta-calc:active,
+.journey-card:active,
+.option:active,
+.simulator-band-cta:active {
+  transform: scale(0.985);
+}
+
+/* Soulignement qui se déploie de la gauche, via scaleX plutôt que
+   text-decoration, qui ne s'anime pas. */
+.footer-section a {
+  position: relative;
+}
+
+.footer-section a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--transition-fast);
+}
+
+.footer-section a:hover::after,
+.footer-section a:focus-visible::after {
+  transform: scaleX(1);
+}
+
 /* Focus visible sur tout élément interactif.
    Au clavier uniquement, pour ne pas cerner les boutons au clic souris. */
 :focus-visible {
@@ -145,7 +198,6 @@ body {
    par du padding, qui doit être déclaré avec le background pour survivre
    au raccourci `background:` qui réinitialiserait background-clip. */
 button,
-.btn,
 .btn-nav,
 input[type="text"],
 input[type="email"],
@@ -153,7 +205,10 @@ input[type="tel"] {
   min-height: 48px;
 }
 
-/* Une partie de l'audience cible est sensible au mouvement */
+/* Une partie de l'audience cible est sensible au mouvement.
+   Le tracé de la courbe du hero, son parallaxe et l'interpolation des
+   montants sont neutralisés côté script, qui interroge la même requête
+   média. Le grain reste : c'est une texture, pas du mouvement. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -263,52 +318,7 @@ a:hover {
   padding: var(--spacing-2xl) 0;
 }
 
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  border: none;
-  border-radius: var(--r-input);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-decoration: none;
-}
-
-.btn-primary {
-  background-color: var(--terracotta);
-  color: var(--bg-card);
-}
-
-.btn-primary:hover {
-  background-color: var(--terracotta-dark);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
-  background-color: var(--bg-card);
-  color: var(--terracotta);
-  border: 2px solid var(--terracotta);
-}
-
-.btn-secondary:hover {
-  background-color: var(--bg);
-}
-
-/* Cards */
-.card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-surface);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-md);
-  transition: box-shadow var(--transition-base);
-}
+/* .btn, .btn-primary, .btn-secondary et .card vivaient ici sans qu'aucune
+   page ne les porte. Les boutons réellement utilisés sont .btn-nav,
+   .btn-cta, .btn-cta-calc et .simulator-band-cta ; les cartes sont
+   .journey-card et .results-card, définies dans leur page. */
