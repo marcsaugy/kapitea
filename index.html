@@ -79,137 +79,184 @@
 
     /* Journey selector section */
     .journey-selector {
-      padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+      padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
       background-color: var(--bg-card);
     }
 
     .journey-selector-container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
+    /* Hiérarchie par le volume : les deux personas poussés en publicité
+       occupent la rangée haute, les trois autres sont plus compacts. */
     .journey-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: clamp(1.5rem, 4vw, 2.5rem);
-      margin-bottom: clamp(2rem, 5vw, 3rem);
+      gap: var(--spacing-lg);
     }
 
-    @media (max-width: 640px) {
-      .journey-grid {
+    .journey-grid-primary {
+      grid-template-columns: repeat(2, 1fr);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .journey-grid-secondary {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 800px) {
+      .journey-grid-primary,
+      .journey-grid-secondary {
         grid-template-columns: 1fr;
       }
     }
 
+    /* Pas d'ombre : la carte se distingue par son filet.
+       Le filet supérieur est le seul geste, il porte l'état actif. */
     .journey-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: clamp(1.5rem, 4vw, 2.5rem);
+      display: block;
       background-color: var(--bg-card);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all var(--transition-base);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--border);
+      border-radius: 4px;
       text-decoration: none;
       color: inherit;
-      min-height: 300px;
-      justify-content: center;
-      gap: var(--spacing-lg);
+      transition: border-top-color var(--transition-fast),
+                  background-color var(--transition-fast);
     }
 
-    .journey-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--terracotta);
-      box-shadow: 0 10px 25px rgba(156, 74, 46, 0.15);
-    }
-
-    .journey-card-icon {
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(156, 74, 46, 0.1);
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .journey-card-icon svg {
-      width: 36px;
-      height: 36px;
-      stroke: var(--terracotta);
-      stroke-width: 1.75;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-    }
-
-    .journey-card-content {
-      text-align: center;
+    .journey-card:hover,
+    .journey-card:focus-visible {
+      border-top-color: var(--terracotta);
+      background-color: rgba(156, 74, 46, 0.03);
     }
 
     .journey-card h3 {
-      font-size: clamp(1.1rem, 3vw, 1.4rem);
-      font-weight: 700;
       color: var(--text);
+      letter-spacing: -0.02em;
       margin-bottom: var(--spacing-sm);
-      line-height: 1.3;
     }
 
     .journey-card p {
-      font-size: clamp(0.875rem, 2vw, 1rem);
       color: var(--text2);
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    /* Inverted style for tool card */
-    .journey-card-tool {
-      background-color: var(--terracotta);
-      border-color: var(--terracotta-dark);
+    .journey-grid-primary .journey-card {
+      padding: 40px var(--spacing-lg);
     }
 
-    .journey-card-tool:hover {
-      background-color: var(--terracotta-dark);
-      border-color: var(--terracotta-dark);
+    .journey-grid-primary .journey-card h3 {
+      font-size: clamp(1.25rem, 2.4vw, 1.5rem);
     }
 
-    .journey-card-tool .journey-card-icon {
-      background-color: rgba(255, 255, 255, 0.2);
+    .journey-grid-primary .journey-card p {
+      font-size: clamp(0.95rem, 1.6vw, 1.0625rem);
     }
 
-    .journey-card-tool .journey-card-icon svg {
-      stroke: white;
-      fill: none;
+    .journey-grid-secondary .journey-card {
+      padding: var(--spacing-lg);
     }
 
-    .journey-card-tool h3 {
-      color: white;
+    .journey-grid-secondary .journey-card h3 {
+      font-size: 1.0625rem;
     }
 
-    .journey-card-tool p {
-      color: rgba(255, 255, 255, 0.9);
+    .journey-grid-secondary .journey-card p {
+      font-size: 0.9375rem;
     }
 
-    /* Tool section separator */
-    .journey-tool-separator {
-      grid-column: 1 / -1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border), transparent);
-      margin: var(--spacing-lg) 0 var(--spacing-md);
+    /* Bande simulateur — seule inversion de contraste du site.
+       Le simulateur n'est pas un persona : il sort de la grille. */
+    .simulator-band {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--text);
+      color: var(--bg-card);
+      text-decoration: none;
+      transition: background-color var(--transition-fast);
+    }
+
+    .simulator-band:hover {
+      background-color: #0A0F1A;
+    }
+
+    .simulator-band-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: clamp(2.5rem, 5vw, 3.5rem) var(--spacing-lg);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: var(--spacing-xl);
+      flex-wrap: wrap;
     }
 
-    .journey-tool-separator-text {
-      font-size: var(--font-size-sm);
-      color: var(--text3);
-      background-color: var(--bg-card);
-      padding: 0 var(--spacing-md);
-      position: relative;
+    .simulator-band h2 {
+      font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: var(--spacing-sm);
+      color: var(--bg-card);
     }
+
+    .simulator-band p {
+      font-size: clamp(0.95rem, 1.6vw, 1.0625rem);
+      color: rgba(255, 255, 255, 0.72);
+      margin: 0;
+      max-width: 34em;
+    }
+
+    .simulator-band-cta {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 0 var(--spacing-lg);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--bg-card);
+      transition: background-color var(--transition-fast),
+                  border-color var(--transition-fast);
+    }
+
+    .simulator-band:hover .simulator-band-cta {
+      background-color: var(--terracotta);
+      border-color: var(--terracotta);
+    }
+
+    /* La courbe, en filigrane : le seul motif du site.
+       Elle traverse toute la bande, sinon seule la partie raide est visible
+       et le tracé se lit comme une rayure. */
+    .simulator-band-curve {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .simulator-band-curve .curve-area {
+      fill: var(--terracotta);
+      opacity: 0.14;
+      stroke: none;
+    }
+
+    .simulator-band-curve .curve-line {
+      fill: none;
+      stroke: var(--terracotta-light);
+      stroke-width: 2;
+      opacity: 0.4;
+      vector-effect: non-scaling-stroke;
+    }
+
 
     /* Reassurance section */
     .reassurance {
@@ -358,19 +405,6 @@
       animation: slideInUp 0.6s ease-out;
     }
 
-    .journey-card {
-      animation: slideInUp 0.6s ease-out;
-      animation-fill-mode: both;
-    }
-
-    .journey-card:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .journey-card:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
     .reassurance-item {
       animation: slideInUp 0.6s ease-out;
       animation-fill-mode: both;
@@ -409,115 +443,56 @@
     </section>
 
     <!-- Journey selector section -->
+    <!-- Journey selector section -->
     <section class="journey-selector">
       <div class="journey-selector-container">
-        <div class="journey-grid">
-          <!-- LPP Card -->
+        <!-- Rangée haute : les deux personas prioritaires -->
+        <div class="journey-grid journey-grid-primary">
           <a href="/quiz?niche=lpp" class="journey-card">
-            <div class="journey-card-icon">
-              <!-- Chaise à bascule -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.5 4.5h4"/>
-                <path d="M7.5 4.5 9 13"/>
-                <path d="M11.5 4.5 13 13"/>
-                <path d="M8 7.5h4"/>
-                <path d="M8.5 10.5h4"/>
-                <path d="M8.5 13h8"/>
-                <path d="M15.5 13.5 16.5 17"/>
-                <path d="M9.5 13.5 9 17"/>
-                <path d="M5.5 16.5Q12 21 19 15.5"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>Je pars à la retraite</h3>
-              <p>Capital LPP ou 3e pilier à réinvestir</p>
-            </div>
+            <h3>Je pars à la retraite</h3>
+            <p>Capital LPP ou 3e pilier à réinvestir</p>
           </a>
 
-          <!-- Inheritance Card -->
           <a href="/quiz?niche=heritage" class="journey-card">
-            <div class="journey-card-icon">
-              <!-- Colombe -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16.5 6.5h.01"/>
-                <path d="M6.5 16.5h5a7 7 0 0 0 7-7V7a3.5 3.5 0 0 0-6.35-2.03L2.5 20"/>
-                <path d="m18.5 6.5 3 .75-3 .75"/>
-                <path d="M9 16.5a5.5 5.5 0 0 0 2.9-9.4"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>J'ai reçu un héritage</h3>
-              <p>Je ne sais pas encore quoi en faire</p>
-            </div>
+            <h3>J'ai reçu un héritage</h3>
+            <p>Je ne sais pas encore quoi en faire</p>
           </a>
+        </div>
 
-          <!-- Divorce Card -->
+        <!-- Rangée basse : les trois autres situations -->
+        <div class="journey-grid journey-grid-secondary">
           <a href="/quiz?niche=divorce" class="journey-card">
-            <div class="journey-card-icon">
-              <!-- Bague -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="15.5" r="5"/>
-                <path d="M12 3.5 15 7l-3 3.5L9 7z"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>Je me sépare / divorce</h3>
-              <p>Je dois réorganiser mes finances</p>
-            </div>
+            <h3>Je me sépare</h3>
+            <p>Je dois réorganiser mes finances</p>
           </a>
 
-          <!-- Real Estate Card -->
           <a href="/quiz?niche=vente_maison" class="journey-card">
-            <div class="journey-card-icon">
-              <!-- Maison -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 11 12 3.5 21 11"/>
-                <path d="M5.5 9.5V20h13V9.5"/>
-                <path d="M9.75 20v-5.5h4.5V20"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>Je viens de vendre un bien</h3>
-              <p>Sans réinvestir dans l'immobilier</p>
-            </div>
+            <h3>J'ai vendu un bien</h3>
+            <p>Sans réinvestir dans l'immobilier</p>
           </a>
 
-          <!-- Business Card -->
           <a href="/quiz?niche=vente_entreprise" class="journey-card">
-            <div class="journey-card-icon">
-              <!-- Mallette -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="7.5" width="18" height="12.5" rx="2"/>
-                <path d="M8.5 7.5V6a1.5 1.5 0 0 1 1.5-1.5h4A1.5 1.5 0 0 1 15.5 6v1.5"/>
-                <path d="M3 12.5h18"/>
-                <rect x="10.5" y="11" width="3" height="3" rx=".75"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>Je viens de vendre mon entreprise</h3>
-              <p>Ou j'en ai hérité et je l'ai vendue</p>
-            </div>
-          </a>
-
-          <!-- Compound Interest Calculator Card (Tool) -->
-          <a href="/calculateur" class="journey-card journey-card-tool">
-            <div class="journey-card-icon">
-              <!-- Croissance du capital -->
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4v16h16"/>
-                <path d="M8 20v-4.5"/>
-                <path d="M12.5 20v-8"/>
-                <path d="M17 20v-11.5"/>
-              </svg>
-            </div>
-            <div class="journey-card-content">
-              <h3>Simuler mes intérêts composés</h3>
-              <p>Voir l'effet du temps sur votre capital</p>
-            </div>
+            <h3>J'ai vendu mon entreprise</h3>
+            <p>Ou j'en ai hérité et je l'ai vendue</p>
           </a>
         </div>
       </div>
     </section>
+
+    <!-- Bande simulateur, hors grille -->
+    <a href="/calculateur" class="simulator-band">
+      <svg class="simulator-band-curve" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
+        <path class="curve-area" d="M0 196 C 180 193, 320 178, 420 136 C 500 102, 556 52, 600 6 L600 200 L0 200 Z"/>
+        <path class="curve-line" d="M0 196 C 180 193, 320 178, 420 136 C 500 102, 556 52, 600 6"/>
+      </svg>
+      <div class="simulator-band-inner">
+        <div>
+          <h2>Voir l'effet du temps sur un capital</h2>
+          <p>Versements, durée, rendement, retraits : ajustez les curseurs et regardez votre capital évoluer année après année.</p>
+        </div>
+        <span class="simulator-band-cta">Ouvrir le simulateur</span>
+      </div>
+    </a>
 
     <!-- Reassurance section -->
     <section class="reassurance">
