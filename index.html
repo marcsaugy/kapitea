@@ -96,7 +96,7 @@
       background-color: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--r-surface);
-      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(0.85rem, 2vw, 1.5rem) clamp(0.2rem, 0.5vw, 0.5rem);
+      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(0.85rem, 2vw, 1.5rem) clamp(0.45rem, 1.2vw, 0.9rem);
     }
 
     .hero-choice h2 {
@@ -207,6 +207,11 @@
       text-decoration: none;
       color: inherit;
       transition: background-color var(--transition-fast);
+    }
+
+    /* Le panneau ferme la liste : un dernier filet doublerait sa bordure. */
+    .journey-row:last-child {
+      border-bottom: none;
     }
 
     /* Le filet d'accent se déploie du haut vers le bas, en scaleY : une
