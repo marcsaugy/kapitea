@@ -81,7 +81,7 @@ Nouveau lead Kapitea — {{prenom}} · {{type_persona}} · {{lead_temp}}
     </div>
     
     <div class="footer">
-      <p>Lead reçu via le questionnaire Kapitea — <a href="https://kapitea.ch">kapitea.ch</a></p>
+      <p>Lead reçu via le questionnaire Kapitea — <a href="https://www.kapitea.ch">kapitea.ch</a></p>
     </div>
   </div>
 </body>
@@ -148,7 +148,7 @@ Nouveau lead Kapitea — {{prenom}} · {{type_persona}} · {{lead_temp}}
       <div class="section">
         <h2>Accélérez le processus</h2>
         <p>Vous pouvez réserver directement un créneau de 30 minutes avec le conseiller. Les créneaux disponibles sont affichés après l'envoi de ce message.</p>
-        <a href="https://kapitea.ch/merci" class="button">Voir les créneaux disponibles</a>
+        <a href="https://www.kapitea.ch/merci" class="button">Voir les créneaux disponibles</a>
       </div>
       
       <div class="section">
