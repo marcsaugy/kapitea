@@ -49,6 +49,16 @@
     function measure() {
       section.classList.add('approach--drum');
 
+      /* Les volets portent encore la rotation du passage précédent, et
+         getBoundingClientRect() renvoie la boîte APRÈS transformation :
+         un volet incliné à 70° se mesurait 20px de haut au lieu de 114.
+         On remet à plat avant de mesurer, et on lit scrollHeight, qui
+         décrit la mise en page et ignore les transformations. */
+      items.forEach(function (el) {
+        el.style.transform = '';
+        el.style.opacity = '';
+      });
+
       // Hauteur libre pendant la mesure. Mesurer avant de poser la classe
       // donnait 237px au lieu de 141 : la liste verticale sépare ses
       // volets par 40px de marge haute et basse, or sur le cylindre c'est
@@ -56,8 +66,22 @@
       list.style.setProperty('--item-h', 'auto');
 
       var itemHeight = items.reduce(function (max, el) {
-        return Math.max(max, el.getBoundingClientRect().height);
+        return Math.max(max, el.scrollHeight);
       }, 0);
+
+      /* Vérification plutôt que confiance. Le rayon se déduit de cette
+         hauteur : sous-estimée, les volets se posent plus près que leur
+         propre taille et se chevauchent — ce qui est arrivé sur iPhone et
+         pas dans l'émulateur. On fige la hauteur, on relit ce que le
+         contenu occupe vraiment, et on reprend s'il dépasse. */
+      for (var pass = 0; pass < 3; pass++) {
+        list.style.setProperty('--item-h', itemHeight + 'px');
+        var reel = items.reduce(function (max, el) {
+          return Math.max(max, el.scrollHeight);
+        }, 0);
+        if (reel <= itemHeight + 1) break;
+        itemHeight = reel;
+      }
 
       var introBox = intro.getBoundingClientRect().height +
                      parseFloat(getComputedStyle(intro).marginBottom || 0);
@@ -66,8 +90,7 @@
       /* La hauteur d'un cylindre vaut h·(2 + cos Δ) : le volet courant, et
          de part et d'autre la projection de ses voisins. On en tire le pas
          le plus serré qui tienne dans la place disponible, plutôt que
-         d'imposer 34° et de laisser le volet du haut recouvrir le chapô —
-         c'est ce qui arrivait dès qu'on sortait du grand écran. */
+         d'imposer 34° et de laisser le volet du haut recouvrir le chapô. */
       var ratio = available / itemHeight - 2;
       var fitted = ratio >= 1 ? STEP_DEG
                  : ratio <= Math.cos(MAX_STEP * Math.PI / 180) ? Infinity
@@ -87,7 +110,6 @@
       radius = (itemHeight / 2) / Math.tan((step / 2) * Math.PI / 180);
 
       var reach = radius * Math.sin(step * Math.PI / 180) + itemHeight / 2;
-      list.style.setProperty('--item-h', itemHeight + 'px');
       list.style.setProperty('--drum-h', Math.ceil(reach * 2) + 'px');
       sized = true;
     }
@@ -157,6 +179,16 @@
 
     measure();
     render(true);
+
+    /* La fonte arrive après le DOMContentLoaded : le premier calcul se fait
+       sur le repli métrique, proche mais pas identique. On reprend la
+       géométrie une fois la vraie fonte posée. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        measure();
+        render(true);
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

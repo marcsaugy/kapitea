@@ -157,6 +157,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* iOS gonfle le corps du texte de sa propre initiative dans certaines
+     mises en page. Tout ce qui mesure du texte avant de calculer une
+     géométrie se retrouve alors faux — c'est ce qui faisait chevaucher
+     les volets du tambour sur iPhone et pas dans un émulateur. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
