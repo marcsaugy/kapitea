@@ -9,7 +9,19 @@
 -- advisors, zones, communes_ch, leads, activities).
 --
 -- Idempotent : réexécutable sans dommage.
+--
+-- AUCUNE DONNÉE N'EST SUPPRIMÉE. L'éditeur SQL de Supabase affiche un
+-- avertissement « destructive operations » parce qu'il voit des DROP :
+-- ce sont uniquement des DROP POLICY et DROP CONSTRAINT, chacun suivi
+-- immédiatement de sa recréation. Pas de DROP TABLE, pas de DROP COLUMN,
+-- pas de DELETE, pas de TRUNCATE — les leads et les activités existants
+-- sont conservés tels quels et reçoivent brand = 'hypoteka'.
+--
+-- Le tout est encadré par BEGIN/COMMIT : si une instruction échoue, rien
+-- n'est appliqué et la base reste exactement dans son état d'avant.
 -- ============================================================
+
+begin;
 
 -- ============================================================
 -- 1. LA COLONNE QUI SÉPARE LES DEUX MARQUES
@@ -350,6 +362,8 @@ update public.advisors
 --   update public.advisors set brands = array['kapitea'] where slug = '...';
 -- Pour retirer l'accès Kapitea (le sort aussi du tourniquet) :
 --   update public.advisors set brands = array['hypoteka'] where slug = '...';
+
+commit;
 
 -- ============================================================
 -- 7. VÉRIFICATION
