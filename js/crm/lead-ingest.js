@@ -74,7 +74,11 @@ async function insertLead(state) {
     montant_capital: montantCapital,
     score_faisabilite: scoreValeur,
     lead_temp: leadTemp,
-    raw_payload: state, // Store complete state as JSON
+    // L'état complet, plus les réponses en clair pour le CRM (readableAnswers
+    // vit dans funnel.js ; le test de type garde l'insert fonctionnel si ce
+    // fichier est chargé seul).
+    raw_payload: Object.assign({}, state,
+      typeof readableAnswers === 'function' ? { reponses: readableAnswers(state) } : {}),
     stage: 'nouveau',
   };
 

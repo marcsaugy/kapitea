@@ -720,6 +720,42 @@ async function handleSubmit() {
 }
 
 // Combined Supabase + EmailJS submission
+/* Les réponses en clair, pour le CRM.
+ *
+ * Le payload brut ne contient que des codes — Q_CHOIX_PRESENTE:
+ * "decide_soon" ne dit rien au conseiller qui ouvre la fiche avant
+ * d'appeler. On envoie donc aussi les libellés.
+ *
+ * Ils sont lus dans le DOM, pas recopiés dans une table de traduction :
+ * la question et sa réponse sont déjà écrites dans le questionnaire, et
+ * une seconde copie côté CRM finirait par diverger de ce que le prospect
+ * a réellement lu.
+ */
+function readableAnswers(st) {
+  const out = {};
+  (SEGMENT_CONFIG[st.segment] || []).forEach((entry) => {
+    if (entry.radio) {
+      const checked = document.querySelector('input[name="' + entry.radio + '"]:checked');
+      if (!checked) return;
+      const label = document.querySelector('label[for="' + checked.id + '"]');
+      const screen = checked.closest('.questionnaire-screen');
+      const question = screen && screen.querySelector('h2');
+      if (question && label) {
+        out[question.textContent.trim()] = label.textContent.trim();
+      }
+    } else if (entry.slider) {
+      // Le curseur : son titre porte déjà le prénom, son affichage le
+      // montant formaté en francs.
+      const title = document.getElementById(entry.title);
+      const display = document.getElementById(entry.display);
+      if (title && display) {
+        out[title.textContent.trim()] = display.textContent.trim();
+      }
+    }
+  });
+  return out;
+}
+
 async function insertLeadAndEmail(state) {
   // Step 1: Insert into Supabase
   let supabaseResult = {
