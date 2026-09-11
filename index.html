@@ -44,7 +44,7 @@
     .hero {
       position: relative;
       overflow: hidden;
-      padding: clamp(1.1rem, 3vw, 2.25rem) var(--spacing-lg) clamp(1.1rem, 3.5vw, 3rem);
+      padding: clamp(1.1rem, 3vw, 2.25rem) var(--spacing-lg) clamp(0.85rem, 3.5vw, 3rem);
     }
 
     .hero-inner {
@@ -53,7 +53,7 @@
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      gap: clamp(1rem, 3vw, 2rem);
+      gap: clamp(1.2rem, 3vw, 2rem);
     }
 
     @media (min-width: 1000px) {
@@ -72,6 +72,9 @@
     .hero h1 {
       font-size: clamp(1.7rem, 3.4vw, 2.9rem);
       line-height: 1.08;
+      /* Les lignes s'équilibrent plutôt que de laisser un orphelin.
+         Ignoré par les navigateurs qui ne connaissent pas, sans dégât. */
+      text-wrap: balance;
       margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
     }
 
@@ -79,15 +82,20 @@
        ce qu'on n'aura pas à fournir. Le titre pose la question, lui y
        répond — sans ça le hero laissait le visiteur deviner. */
     .hero-subtitle {
-      font-size: var(--font-size-sm);
-      line-height: 1.5;
+      font-size: var(--font-size-base);
+      line-height: 1.55;
       margin-bottom: 0;
     }
 
-    @media (min-width: 1000px) {
-      .hero-subtitle {
-        font-size: var(--font-size-base);
-      }
+    /* Le seul mot appuyé de la page. Il est en encre et non en terracotta :
+       l'accent signale ce sur quoi on peut cliquer, pas ce qui est
+       important à lire. Un délai est une promesse, pas une action. */
+    .hero-subtitle strong {
+      font-weight: 600;
+      color: var(--text);
+      /* Le délai ne se coupe pas en deux : « sous » en fin de ligne et
+         « 24 h » à la suivante cassait l'appui. */
+      white-space: nowrap;
     }
 
     /* Le choix est un panneau posé sur le papier : c'est la seule surface
@@ -96,22 +104,19 @@
       background-color: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--r-surface);
-      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(0.85rem, 2vw, 1.5rem) clamp(0.45rem, 1.2vw, 0.9rem);
+      padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(1rem, 2.2vw, 1.5rem) clamp(0.45rem, 1.4vw, 0.9rem);
     }
 
+    /* Il était à 17px, la taille des titres de rangée : le panneau
+       s'ouvrait sans qu'on voie où commençait la question. */
     .hero-choice h2 {
-      font-size: var(--font-size-base);
+      font-size: var(--font-size-lg);
       font-weight: 600;
       letter-spacing: -0.02em;
       line-height: 1.2;
+      text-wrap: balance;
       color: var(--text);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    @media (min-width: 1000px) {
-      .hero-choice h2 {
-        font-size: var(--font-size-lg);
-      }
+      margin-bottom: var(--spacing-md);
     }
 
     /* Seul élément décoratif du site. Une croissance exponentielle,
@@ -151,41 +156,6 @@
       }
     }
 
-    /* Écrans courts — un iPhone SE n'offre que 553px sous la barre de
-       Safari. La contrainte est la hauteur, pas la largeur : c'est donc
-       elle qu'on interroge. On resserre, on ne cache rien : les cinq
-       situations et leurs libellés restent tous là. */
-    @media (max-height: 640px) and (max-width: 999px) {
-      .hero {
-        padding-block: 0.5rem;
-      }
-
-      .hero-inner {
-        gap: 0.55rem;
-      }
-
-      .hero h1 {
-        font-size: 1.5rem;
-        margin-bottom: 0.35rem;
-      }
-
-      .hero-subtitle {
-        font-size: var(--font-size-micro);
-      }
-
-      .hero-choice {
-        padding-top: 0.6rem;
-      }
-
-      .hero-choice h2 {
-        margin-bottom: 0.35rem;
-      }
-
-      .journey-row {
-        padding-block: 0.35rem;
-      }
-    }
-
     /* Les cinq situations, en rangées. Une grille se balaie dans deux
        directions, or il y a ici une question et cinq réponses : ça se lit
        de haut en bas. Les rangées sont identiques — dans une liste, c'est
@@ -201,7 +171,7 @@
       align-items: center;
       justify-content: space-between;
       gap: var(--spacing-md);
-      padding: clamp(0.55rem, 1.6vw, 0.9rem) clamp(0.5rem, 1.2vw, 0.75rem);
+      padding: clamp(0.85rem, 2.2vw, 1.05rem) clamp(0.5rem, 1.2vw, 0.75rem);
       margin-inline: calc(clamp(0.5rem, 1.2vw, 0.75rem) * -1);
       border-bottom: 1px solid var(--border);
       text-decoration: none;
@@ -245,6 +215,7 @@
       font-weight: 600;
       letter-spacing: -0.015em;
       line-height: 1.25;
+      margin-bottom: 3px;
       color: var(--text);
       transition: color var(--transition-fast);
     }
@@ -265,7 +236,7 @@
       flex-shrink: 0;
       width: 18px;
       height: 18px;
-      stroke: var(--text3);
+      stroke: var(--terracotta);
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -277,6 +248,48 @@
     .journey-row:focus-visible .journey-row-arrow {
       stroke: var(--terracotta);
       transform: translateX(4px);
+    }
+
+    /* Écrans courts — un iPhone SE n'offre que 553px sous la barre de
+       Safari. La contrainte est la hauteur, pas la largeur : c'est donc
+       elle qu'on interroge. On resserre, on ne cache rien : les cinq
+       situations et leurs libellés restent tous là.
+
+       Ce bloc doit rester après les règles qu'il resserre. Il était plus
+       haut dans la feuille, et son `padding-block` sur .journey-row se
+       faisait écraser par le raccourci `padding` déclaré plus bas : à
+       spécificité égale c'est l'ordre qui tranche, et le profil compact
+       de l'iPhone SE ne s'appliquait pas du tout aux rangées. */
+    @media (max-height: 640px) and (max-width: 999px) {
+      .hero {
+        padding-block: 0.5rem;
+      }
+
+      .hero-inner {
+        gap: 0.55rem;
+      }
+
+      .hero h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .hero-subtitle {
+        font-size: var(--font-size-micro);
+      }
+
+      .hero-choice {
+        padding-top: 0.6rem;
+      }
+
+      .hero-choice h2 {
+        font-size: var(--font-size-base);
+        margin-bottom: 0.35rem;
+      }
+
+      .journey-row {
+        padding-block: 0.35rem;
+      }
     }
 
     /* Bande simulateur — seule inversion de contraste du site.
@@ -587,7 +600,7 @@
                     </a>
           <h1>Un capital important à placer&#8239;? Prenons le temps d'y voir clair.</h1>
           <p class="hero-subtitle">Deux minutes de questions. Un conseiller FINMA indépendant vous
-            rappelle sous 24 heures, sans document à fournir et sans engagement.</p>
+            rappelle <strong>sous 24&#8239;h</strong>, sans document ni engagement.</p>
         </div>
 
         <div class="hero-choice">
