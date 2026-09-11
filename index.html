@@ -27,6 +27,7 @@
   <meta name="twitter:image" content="https://kapitea.ch/assets/og-image.png">
 
   <link rel="icon" href="/assets/logo/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css">
@@ -496,19 +497,27 @@
        contenu qui avance.
 
        Tout est en amélioration progressive. Ces règles ne s'appliquent que
-       si le script a posé .approach--drum, ce qu'il ne fait ni sous 1000px
-       — le défilement tactile et la barre d'adresse d'iOS rendent
-       l'épinglage instable — ni en mouvement réduit. Partout ailleurs, la
-       liste reste la liste, avec son fil. */
+       si le script a posé .approach--drum, ce qu'il ne fait pas en
+       mouvement réduit, ni quand le cylindre ne tient pas dans l'écran.
+       Partout ailleurs, la liste reste la liste, avec son fil.
+
+       Les hauteurs sont en `svh` et non en `vh`. Sur iOS, `vh` vaut la
+       hauteur barre d'outils rétractée : un panneau épinglé calé dessus
+       dépasse du visible tant que la barre est là, puis saute quand elle
+       se replie. `svh` prend la plus petite des deux et ne bouge plus. La
+       déclaration en `vh` reste dessous pour les navigateurs qui ne
+       connaissent pas l'unité. */
     .approach--drum .approach-track {
       /* un écran pour le panneau, puis un pas de défilement par volet */
       height: calc(100vh + 3 * 55vh);
+      height: calc(100svh + 3 * 55svh);
     }
 
     .approach--drum .approach-sticky {
       position: sticky;
       top: 0;
       height: 100vh;
+      height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -518,6 +527,23 @@
        titre et le cylindre. */
     .approach--drum .approach-intro {
       margin-bottom: var(--spacing-lg);
+    }
+
+    /* Sur téléphone, les volets sont bien plus hauts — la même prose dans
+       une colonne trois fois plus étroite. Le chapô doit rendre 40px pour
+       que le cylindre tienne encore. */
+    @media (max-width: 999px) {
+      .approach--drum .approach-intro {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .approach--drum .approach-intro h2 {
+        font-size: var(--font-size-xl);
+      }
+
+      .approach--drum .approach-intro p {
+        font-size: var(--font-size-base);
+      }
     }
 
     .approach--drum .approach-list {
