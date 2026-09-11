@@ -44,9 +44,12 @@
       overflow: hidden;
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
+    /* Le chapô porte la promesse concrète : combien de temps, qui répond,
+       ce qu'on n'aura pas à fournir. Le titre pose la question, lui y
+       répond — sans ça le hero laissait le visiteur deviner. */
+    .hero-subtitle {
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Seul élément décoratif du site. Une croissance exponentielle,
@@ -88,130 +91,140 @@
       }
     }
 
-    /* Journey selector section */
+    /* Le choix du parcours.
+
+       C'était une grille de cinq cartes, deux grandes puis trois petites.
+       Une grille se balaie dans deux directions, or il n'y a ici qu'une
+       question et cinq réponses : c'est une liste, et elle se lit de haut
+       en bas. En rangées, chaque situation occupe toute la largeur du
+       regard et se compare aux autres sur un seul axe. */
     .journey-selector {
       padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
       background-color: var(--bg-card);
     }
 
+    /* Même colonne que les autres sections : la page n'a qu'un seul bord
+       gauche. La liste, elle, reste à une largeur de lecture — cinq
+       rangées étalées sur 1200px se liraient comme un tableau — mais elle
+       commence au même endroit que les titres. */
     .journey-selector-container {
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    /* Hiérarchie par le volume : les deux personas poussés en publicité
-       occupent la rangée haute, les trois autres sont plus compacts. */
-    .journey-grid {
-      display: grid;
-      gap: var(--spacing-lg);
+    .journey-intro {
+      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
     }
 
-    .journey-grid-primary {
-      grid-template-columns: repeat(2, 1fr);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .journey-grid-secondary {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-
-    /* Pas d'ombre : la carte se distingue par son filet.
-       Le filet supérieur est le seul geste, il porte l'état actif. */
-    .journey-card {
-      display: block;
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--border);
-      border-radius: var(--r-card);
-      text-decoration: none;
-      color: inherit;
-      transition: border-top-color var(--transition-fast),
-                  background-color var(--transition-fast);
-    }
-
-    .journey-card:hover,
-    .journey-card:focus-visible {
-      border-top-color: var(--terracotta);
-      background-color: var(--surface-2);
-    }
-
-    .journey-card h3 {
+    .journey-intro h2 {
+      font-size: var(--title-size);
+      font-weight: 600;
+      letter-spacing: var(--title-track);
       color: var(--text);
-      letter-spacing: -0.02em;
       margin-bottom: var(--spacing-sm);
     }
 
-    .journey-card p {
+    .journey-intro p {
+      font-size: var(--font-size-lg);
       color: var(--text2);
+      max-width: var(--measure);
       margin: 0;
-      line-height: 1.55;
     }
 
-    .journey-grid-primary .journey-card {
-      padding: 40px var(--spacing-lg);
+    .journey-list {
+      max-width: 760px;
+      border-top: 1px solid var(--border);
     }
 
-    .journey-grid-primary .journey-card h3 {
-      font-size: var(--font-size-xl);
+    .journey-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-lg);
+      /* La gouttière latérale est reprise en marge négative : le texte
+         reste aligné sur le titre de la section, et seul le fond de
+         survol déborde. Un retrait de 20px sur le texte seul aurait
+         désaligné la liste de son propre titre. */
+      padding: clamp(1.35rem, 3vw, 1.75rem) clamp(0.6rem, 1.5vw, 1rem);
+      margin-inline: calc(clamp(0.6rem, 1.5vw, 1rem) * -1);
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background-color var(--transition-fast);
     }
 
-    .journey-grid-primary .journey-card p {
+    /* Le filet d'accent se déploie du haut vers le bas, en scaleY : une
+       bordure qui apparaît décalerait la rangée d'un pixel. */
+    .journey-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: var(--terracotta);
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform var(--transition-fast);
+    }
+
+    .journey-row:hover,
+    .journey-row:focus-visible {
+      background-color: var(--surface-2);
+    }
+
+    .journey-row:hover::before,
+    .journey-row:focus-visible::before {
+      transform: scaleY(1);
+    }
+
+    .journey-row-title {
+      display: block;
       font-size: var(--font-size-base);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      margin-bottom: 2px;
+      transition: color var(--transition-fast);
     }
 
-    .journey-grid-secondary .journey-card {
-      padding: var(--spacing-lg);
+    .journey-row:hover .journey-row-title,
+    .journey-row:focus-visible .journey-row-title {
+      color: var(--terracotta);
     }
 
-    .journey-grid-secondary .journey-card h3 {
-      font-size: var(--font-size-base);
-    }
-
-    .journey-grid-secondary .journey-card p {
+    .journey-row-sub {
+      display: block;
       font-size: var(--font-size-sm);
+      color: var(--text2);
+      line-height: 1.45;
     }
 
-    /* En colonne unique, la hiérarchie par le volume ne se lit plus comme
-       une hiérarchie : elle se lit comme des cartes de tailles inégales.
-       L'ordre suffit à porter la priorité sur mobile, donc les cinq cartes
-       reprennent la même boîte.
-
-       display:contents fait des cinq cartes les enfants directs d'une
-       seule grille : deux grilles séparées ne peuvent pas s'accorder sur
-       une hauteur de rangée. grid-auto-rows:1fr les aligne ensuite toutes
-       sur la plus haute, quel que soit le repli d'un sous-titre.
-
-       Ce bloc doit rester après les règles primary/secondary : à
-       spécificité égale, c'est l'ordre d'écriture qui tranche. */
-    @media (max-width: 800px) {
-      .journey-selector-container {
-        display: grid;
-        gap: var(--spacing-lg);
-        grid-auto-rows: 1fr;
-      }
-
-      .journey-grid {
-        display: contents;
-      }
-
-      .journey-grid-primary .journey-card,
-      .journey-grid-secondary .journey-card {
-        padding: var(--spacing-lg);
-      }
-
-      /* Une seule taille de titre : à 26px sur une colonne étroite, celui
-         des cartes primaires se repliait sur trois lignes. */
-      .journey-grid-primary .journey-card h3,
-      .journey-grid-secondary .journey-card h3 {
-        font-size: var(--font-size-lg);
-      }
-
-      .journey-grid-primary .journey-card p,
-      .journey-grid-secondary .journey-card p {
-        font-size: var(--font-size-sm);
-      }
+    .journey-row-arrow {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      stroke: var(--text3);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: transform var(--transition-fast), stroke var(--transition-fast);
     }
+
+    .journey-row:hover .journey-row-arrow,
+    .journey-row:focus-visible .journey-row-arrow {
+      stroke: var(--terracotta);
+      transform: translateX(4px);
+    }
+
+    /* Les cinq rangées sont identiques. La hiérarchie par le volume avait
+       un sens dans une grille, où la position ne dit rien de l'ordre ;
+       dans une liste elle est portée par le rang, et des rangées de
+       hauteurs différentes se lisent comme une irrégularité plutôt que
+       comme une priorité. Retraite et héritage ouvrent la liste, cela
+       suffit. */
 
     /* Bande simulateur — seule inversion de contraste du site.
        Le simulateur n'est pas un persona : il sort de la grille. */
@@ -219,6 +232,9 @@
       display: block;
       position: relative;
       overflow: hidden;
+      /* La gouttière est sur la bande, pas sur son contenu : dans l'autre
+         sens, le texte tombait 24px à droite du bord gauche de la page. */
+      padding: 0 var(--spacing-lg);
       background-color: var(--text);
       color: var(--bg-card);
       text-decoration: none;
@@ -234,7 +250,7 @@
       z-index: 1;
       max-width: 1200px;
       margin: 0 auto;
-      padding: clamp(2.5rem, 5vw, 3.5rem) var(--spacing-lg);
+      padding: clamp(2.5rem, 5vw, 3.5rem) 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -336,33 +352,43 @@
       margin: 0;
     }
 
+    /* Le fil qui relie les quatre volets. C'est ce qui fait la différence
+       entre une liste de points et une méthode : les quatre questions
+       s'enchaînent, elles ne sont pas interchangeables. Le fil court
+       derrière les chiffres, qui le percent grâce à leur fond. */
     .approach-list {
+      position: relative;
       list-style: none;
       margin: 0;
       padding: 0;
     }
 
-    /* Deux colonnes en desktop : le repère à gauche, le propos à droite.
-       Chaque volet est une ligne, séparée de la suivante par un filet. */
+    .approach-list::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(clamp(2.75rem, 6vw, 3.5rem) / 2);
+      width: 2px;
+      background-color: var(--border);
+      transform: translateX(-1px);
+    }
+
+    /* Le chiffre dans sa gouttière, le propos à droite. Titre et texte
+       sont dans la même colonne : le titre annonce, le texte développe,
+       les séparer en deux colonnes cassait ce lien. */
     .approach-item {
+      position: relative;
       display: grid;
-      grid-template-columns: minmax(220px, 1fr) 2fr;
-      gap: var(--spacing-lg) clamp(2rem, 5vw, 4rem);
+      grid-template-columns: clamp(2.75rem, 6vw, 3.5rem) 1fr;
+      gap: 0 clamp(1rem, 2.5vw, 1.75rem);
       padding: clamp(1.75rem, 4vw, 2.5rem) 0;
-      border-top: 1px solid var(--border);
     }
 
-    .approach-item:last-child {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .approach-head {
-      display: flex;
-      align-items: baseline;
-      gap: var(--spacing-md);
-    }
-
+    /* Le fond opaque et l'espace vertical creusent le fil de part et
+       d'autre du chiffre. */
     .approach-number {
+      position: relative;
       font-size: var(--font-size-2xl);
       font-weight: 600;
       color: var(--terracotta);
@@ -370,14 +396,23 @@
       font-variant-numeric: tabular-nums;
       font-feature-settings: "tnum" 1;
       line-height: 1;
+      text-align: center;
+      background-color: var(--bg-card);
+      padding: var(--spacing-sm) 0;
     }
 
     .approach-item h3 {
+      grid-column: 2;
+      align-self: center;
       font-size: var(--font-size-lg);
       font-weight: 600;
       letter-spacing: -0.02em;
       color: var(--text);
-      margin: 0;
+      margin: 0 0 var(--spacing-sm);
+    }
+
+    .approach-item p {
+      grid-column: 2;
     }
 
     .approach-item p {
@@ -409,10 +444,10 @@
       background-color: var(--bg);
     }
 
-    /* Animations */
-    .hero h1 {
-      animation: slideInUp 0.6s ease-out;
-    }
+    /* Pas d'entrée sur le titre. Le site n'a qu'un seul moment orchestré,
+       et c'est le tracé de la courbe : deux choses qui bougent au
+       chargement se gênent, et un titre qui monte est la signature la plus
+       reconnaissable d'une page générée. */
   </style>
 </head>
 <body>
@@ -442,42 +477,60 @@
               stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
       <div class="hero-content">
-        <h1>Vous avez reçu un capital important. Voyons ensemble comment le faire fructifier.</h1>
+        <h1>Un capital important à placer&#8239;? Prenons le temps d'y voir clair.</h1>
+        <p class="hero-subtitle">Quelques questions sur votre situation, deux minutes. Un conseiller
+          FINMA indépendant vous rappelle sous 24 heures. Aucun document à fournir, aucun engagement.</p>
       </div>
     </section>
 
-    <!-- Journey selector section -->
-    <!-- Journey selector section -->
+    <!-- Choix du parcours : une question, cinq réponses, en liste -->
     <section class="journey-selector">
       <div class="journey-selector-container">
-        <!-- Rangée haute : les deux personas prioritaires -->
-        <div class="journey-grid journey-grid-primary">
-          <a href="/quiz?niche=lpp" class="journey-card">
-            <h3>Je pars à la retraite</h3>
-            <p>Capital LPP ou 3e pilier à réinvestir</p>
-          </a>
-
-          <a href="/quiz?niche=heritage" class="journey-card">
-            <h3>J'ai reçu un héritage</h3>
-            <p>Je ne sais pas encore quoi en faire</p>
-          </a>
+        <div class="journey-intro">
+          <h2>Dans quelle situation êtes-vous&#8239;?</h2>
+          <p>Les questions ne sont pas les mêmes selon ce qui vous amène. Choisissez la vôtre.</p>
         </div>
 
-        <!-- Rangée basse : les trois autres situations -->
-        <div class="journey-grid journey-grid-secondary">
-          <a href="/quiz?niche=divorce" class="journey-card">
-            <h3>Je me sépare</h3>
-            <p>Je dois réorganiser mes finances</p>
+        <div class="journey-list">
+          <!-- Les deux parcours poussés en publicité ouvrent la liste -->
+          <a href="/quiz?niche=lpp" class="journey-row">
+            <span>
+              <span class="journey-row-title">Je pars à la retraite</span>
+              <span class="journey-row-sub">Capital LPP ou 3e pilier à réinvestir</span>
+            </span>
+            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
 
-          <a href="/quiz?niche=vente_maison" class="journey-card">
-            <h3>J'ai vendu un bien</h3>
-            <p>Sans réinvestir dans l'immobilier</p>
+          <a href="/quiz?niche=heritage" class="journey-row">
+            <span>
+              <span class="journey-row-title">J'ai reçu un héritage</span>
+              <span class="journey-row-sub">Je ne sais pas encore quoi en faire</span>
+            </span>
+            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
 
-          <a href="/quiz?niche=vente_entreprise" class="journey-card">
-            <h3>J'ai vendu mon entreprise</h3>
-            <p>Ou j'en ai hérité et je l'ai vendue</p>
+          <a href="/quiz?niche=divorce" class="journey-row">
+            <span>
+              <span class="journey-row-title">Je me sépare</span>
+              <span class="journey-row-sub">Je dois réorganiser mes finances</span>
+            </span>
+            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a href="/quiz?niche=vente_maison" class="journey-row">
+            <span>
+              <span class="journey-row-title">J'ai vendu un bien</span>
+              <span class="journey-row-sub">Sans réinvestir dans l'immobilier</span>
+            </span>
+            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a href="/quiz?niche=vente_entreprise" class="journey-row">
+            <span>
+              <span class="journey-row-title">J'ai vendu mon entreprise</span>
+              <span class="journey-row-sub">Ou j'en ai hérité et je l'ai vendue</span>
+            </span>
+            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </div>
       </div>
@@ -508,34 +561,26 @@
 
         <ol class="approach-list">
           <li class="approach-item">
-            <div class="approach-head">
-              <span class="approach-number" aria-hidden="true">01</span>
-              <h3>Vos objectifs</h3>
-            </div>
+            <span class="approach-number" aria-hidden="true">01</span>
+            <h3>Vos objectifs</h3>
             <p>Un capital qui doit produire un revenu dans six mois ne se place pas comme un capital destiné à vos enfants. On commence par établir à quoi cet argent sert réellement, et sur quel horizon.</p>
           </li>
 
           <li class="approach-item">
-            <div class="approach-head">
-              <span class="approach-number" aria-hidden="true">02</span>
-              <h3>La fiscalité du retrait</h3>
-            </div>
+            <span class="approach-number" aria-hidden="true">02</span>
+            <h3>La fiscalité du retrait</h3>
             <p>Retirer son 2e pilier en capital déclenche un impôt distinct, calculé à taux réduit mais progressif selon le montant et le canton. Étaler les retraits sur plusieurs années change parfois la note de plusieurs milliers de francs. Cela se décide avant, jamais après.</p>
           </li>
 
           <li class="approach-item">
-            <div class="approach-head">
-              <span class="approach-number" aria-hidden="true">03</span>
-              <h3>La succession</h3>
-            </div>
+            <span class="approach-number" aria-hidden="true">03</span>
+            <h3>La succession</h3>
             <p>Selon le véhicule choisi, un capital se transmet en dehors ou à l'intérieur de la masse successorale. Cela détermine qui reçoit quoi, dans quel délai, et avec quelle fiscalité. C'est le point le plus souvent négligé.</p>
           </li>
 
           <li class="approach-item">
-            <div class="approach-head">
-              <span class="approach-number" aria-hidden="true">04</span>
-              <h3>La structure de placement</h3>
-            </div>
+            <span class="approach-number" aria-hidden="true">04</span>
+            <h3>La structure de placement</h3>
             <p>Fonds, ETF, mandat de gestion, rente viagère : chacun répond à un besoin précis. Le véhicule vient en dernier, une fois les trois points précédents établis.</p>
           </li>
         </ol>

@@ -50,14 +50,34 @@
 
 /* Hero */
 /* Fond plat : un dégradé d'ambiance est une décoration de fond, ce que la
-   direction artistique exclut. La matière vient du papier chaud et du
-   grain, pas d'un délavé diagonal. */
+   direction artistique exclut. La matière vient du papier chaud, du grain
+   et de la trame ci-dessous, pas d'un délavé diagonal. */
 .hero {
+  position: relative;
   padding: clamp(3rem, 10vw, 6rem) var(--spacing-md);
   background-color: var(--paper);
 }
 
+/* Papier millimétré, très pâle. Une trame réglée n'est pas un décor posé
+   sur le fond : c'est la surface sur laquelle on calcule. Elle donne au
+   hero une matière que l'aplat n'a pas, et elle est la même sur les trois
+   pages d'entrée. Le dégradé ne sert qu'à l'effacer vers le bas — il ne
+   peint aucune couleur. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M40 0H0v40' fill='none' stroke='%23241A15' stroke-width='1' stroke-opacity='0.07'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+}
+
 .hero-content {
+  /* Au-dessus de la trame et de la courbe */
+  position: relative;
+  z-index: 1;
   /* Assez large pour que le titre display tienne en deux ou trois lignes :
      à 700px il en prenait quatre. */
   max-width: 920px;

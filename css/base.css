@@ -190,7 +190,7 @@ body::after {
 .btn-nav:active,
 .btn-cta:active,
 .btn-cta-calc:active,
-.journey-card:active,
+.journey-row:active,
 .option:active,
 .simulator-band-cta:active {
   transform: scale(0.985);
@@ -361,4 +361,4 @@ a:hover {
 /* .btn, .btn-primary, .btn-secondary et .card vivaient ici sans qu'aucune
    page ne les porte. Les boutons réellement utilisés sont .btn-nav,
    .btn-cta, .btn-cta-calc et .simulator-band-cta ; les cartes sont
-   .journey-card et .results-card, définies dans leur page. */
+   .journey-row et .results-card, définies dans leur page. */
