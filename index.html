@@ -35,21 +35,80 @@
   <link rel="stylesheet" href="css/mobile.css">
 
   <style>
-    /* Le hero de l'accueil est la seule exception au fer à gauche */
+    /* Le hero porte la promesse ET le choix du parcours. Les deux vivaient
+       dans des sections empilées : sur un MacBook 13", la première
+       situation apparaissait 543px sous le pli, et rien du choix n'était
+       visible au chargement sur aucun des six appareils mesurés. En deux
+       colonnes sur grand écran, la hauteur est celle de la plus haute des
+       deux, pas leur somme. */
     .hero {
-      text-align: center;
       position: relative;
-      /* La courbe déborde à droite : elle se coupe au bord du hero
-         plutôt que d'allonger la page. */
       overflow: hidden;
+      padding: clamp(1.1rem, 3.5vw, 3rem) var(--spacing-lg);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(1rem, 3vw, 2rem);
+      align-items: center;
+    }
+
+    @media (min-width: 1000px) {
+      .hero-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(2.5rem, 5vw, 4.5rem);
+      }
+    }
+
+    /* Plus petit que --display-size : le titre n'occupe plus la pleine
+       largeur, et à 60px dans une demi-colonne il partait en cinq lignes. */
+    .hero h1 {
+      font-size: clamp(1.7rem, 3.4vw, 2.9rem);
+      line-height: 1.08;
+      margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
     }
 
     /* Le chapô porte la promesse concrète : combien de temps, qui répond,
        ce qu'on n'aura pas à fournir. Le titre pose la question, lui y
        répond — sans ça le hero laissait le visiteur deviner. */
     .hero-subtitle {
-      margin-left: auto;
-      margin-right: auto;
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    @media (min-width: 1000px) {
+      .hero-subtitle {
+        font-size: var(--font-size-base);
+      }
+    }
+
+    /* Le choix est un panneau posé sur le papier : c'est la seule surface
+       élevée de la page, parce que c'est la seule chose à faire ici. */
+    .hero-choice {
+      background-color: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-surface);
+      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(0.85rem, 2vw, 1.5rem) clamp(0.2rem, 0.5vw, 0.5rem);
+    }
+
+    .hero-choice h2 {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    @media (min-width: 1000px) {
+      .hero-choice h2 {
+        font-size: var(--font-size-lg);
+      }
     }
 
     /* Seul élément décoratif du site. Une croissance exponentielle,
@@ -64,8 +123,6 @@
       z-index: 0;
       pointer-events: none;
       color: var(--terracotta);
-      /* 0.06 disparaissait sur le papier chaud. La courbe est le seul
-         geste graphique du site : elle a le droit de se voir. */
       opacity: 0.16;
     }
 
@@ -91,48 +148,47 @@
       }
     }
 
-    /* Le choix du parcours.
+    /* Écrans courts — un iPhone SE n'offre que 553px sous la barre de
+       Safari. La contrainte est la hauteur, pas la largeur : c'est donc
+       elle qu'on interroge. On resserre, on ne cache rien : les cinq
+       situations et leurs libellés restent tous là. */
+    @media (max-height: 640px) and (max-width: 999px) {
+      .hero {
+        padding-block: 0.5rem;
+      }
 
-       C'était une grille de cinq cartes, deux grandes puis trois petites.
-       Une grille se balaie dans deux directions, or il n'y a ici qu'une
-       question et cinq réponses : c'est une liste, et elle se lit de haut
-       en bas. En rangées, chaque situation occupe toute la largeur du
-       regard et se compare aux autres sur un seul axe. */
-    .journey-selector {
-      padding: clamp(4rem, 8vw, 6rem) var(--spacing-lg);
-      background-color: var(--bg-card);
+      .hero-inner {
+        gap: 0.55rem;
+      }
+
+      .hero h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .hero-subtitle {
+        font-size: var(--font-size-micro);
+      }
+
+      .hero-choice {
+        padding-top: 0.6rem;
+      }
+
+      .hero-choice h2 {
+        margin-bottom: 0.35rem;
+      }
+
+      .journey-row {
+        padding-block: 0.35rem;
+      }
     }
 
-    /* Même colonne que les autres sections : la page n'a qu'un seul bord
-       gauche. La liste, elle, reste à une largeur de lecture — cinq
-       rangées étalées sur 1200px se liraient comme un tableau — mais elle
-       commence au même endroit que les titres. */
-    .journey-selector-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .journey-intro {
-      margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
-    }
-
-    .journey-intro h2 {
-      font-size: var(--title-size);
-      font-weight: 600;
-      letter-spacing: var(--title-track);
-      color: var(--text);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .journey-intro p {
-      font-size: var(--font-size-lg);
-      color: var(--text2);
-      max-width: var(--measure);
-      margin: 0;
-    }
-
+    /* Les cinq situations, en rangées. Une grille se balaie dans deux
+       directions, or il y a ici une question et cinq réponses : ça se lit
+       de haut en bas. Les rangées sont identiques — dans une liste, c'est
+       le rang qui porte la priorité, et des hauteurs inégales se lisent
+       comme une irrégularité. */
     .journey-list {
-      max-width: 760px;
       border-top: 1px solid var(--border);
     }
 
@@ -141,13 +197,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--spacing-lg);
-      /* La gouttière latérale est reprise en marge négative : le texte
-         reste aligné sur le titre de la section, et seul le fond de
-         survol déborde. Un retrait de 20px sur le texte seul aurait
-         désaligné la liste de son propre titre. */
-      padding: clamp(1.35rem, 3vw, 1.75rem) clamp(0.6rem, 1.5vw, 1rem);
-      margin-inline: calc(clamp(0.6rem, 1.5vw, 1rem) * -1);
+      gap: var(--spacing-md);
+      padding: clamp(0.55rem, 1.6vw, 0.9rem) clamp(0.5rem, 1.2vw, 0.75rem);
+      margin-inline: calc(clamp(0.5rem, 1.2vw, 0.75rem) * -1);
       border-bottom: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
@@ -184,8 +236,8 @@
       font-size: var(--font-size-base);
       font-weight: 600;
       letter-spacing: -0.015em;
+      line-height: 1.25;
       color: var(--text);
-      margin-bottom: 2px;
       transition: color var(--transition-fast);
     }
 
@@ -198,7 +250,7 @@
       display: block;
       font-size: var(--font-size-sm);
       color: var(--text2);
-      line-height: 1.45;
+      line-height: 1.35;
     }
 
     .journey-row-arrow {
@@ -218,13 +270,6 @@
       stroke: var(--terracotta);
       transform: translateX(4px);
     }
-
-    /* Les cinq rangées sont identiques. La hiérarchie par le volume avait
-       un sens dans une grille, où la position ne dit rien de l'ordre ;
-       dans une liste elle est portée par le rang, et des rangées de
-       hauteurs différentes se lisent comme une irrégularité plutôt que
-       comme une priorité. Retraite et héritage ouvrent la liste, cela
-       suffit. */
 
     /* Bande simulateur — seule inversion de contraste du site.
        Le simulateur n'est pas un persona : il sort de la grille. */
@@ -469,69 +514,61 @@
 
   <!-- Main content -->
   <main>
-    <!-- Hero section -->
+    <!-- Hero : la promesse et le choix du parcours tiennent dans le même
+         écran. Séparés, il fallait 400 à 700px de défilement pour voir la
+         première situation, selon l'appareil. -->
     <section class="hero">
       <svg class="hero-curve" viewBox="0 0 1200 300" fill="none" aria-hidden="true" focusable="false">
         <path class="hero-curve-area" d="M0 296C380 295 640 284 820 230C980 182 1130 100 1200 4L1200 300L0 300Z"/>
         <path class="hero-curve-path" d="M0 296C380 295 640 284 820 230C980 182 1130 100 1200 4"
               stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <div class="hero-content">
-        <h1>Un capital important à placer&#8239;? Prenons le temps d'y voir clair.</h1>
-        <p class="hero-subtitle">Quelques questions sur votre situation, deux minutes. Un conseiller
-          FINMA indépendant vous rappelle sous 24 heures. Aucun document à fournir, aucun engagement.</p>
-      </div>
-    </section>
-
-    <!-- Choix du parcours : une question, cinq réponses, en liste -->
-    <section class="journey-selector">
-      <div class="journey-selector-container">
-        <div class="journey-intro">
-          <h2>Dans quelle situation êtes-vous&#8239;?</h2>
-          <p>Les questions ne sont pas les mêmes selon ce qui vous amène. Choisissez la vôtre.</p>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>Un capital important à placer&#8239;? Prenons le temps d'y voir clair.</h1>
+          <p class="hero-subtitle">Deux minutes de questions. Un conseiller FINMA indépendant vous
+            rappelle sous 24 heures, sans document à fournir et sans engagement.</p>
         </div>
 
-        <div class="journey-list">
-          <!-- Les deux parcours poussés en publicité ouvrent la liste -->
-          <a href="/quiz?niche=lpp" class="journey-row">
-            <span>
-              <span class="journey-row-title">Je pars à la retraite</span>
-              <span class="journey-row-sub">Capital LPP ou 3e pilier à réinvestir</span>
-            </span>
-            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-
-          <a href="/quiz?niche=heritage" class="journey-row">
-            <span>
-              <span class="journey-row-title">J'ai reçu un héritage</span>
-              <span class="journey-row-sub">Je ne sais pas encore quoi en faire</span>
-            </span>
-            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-
-          <a href="/quiz?niche=divorce" class="journey-row">
-            <span>
-              <span class="journey-row-title">Je me sépare</span>
-              <span class="journey-row-sub">Je dois réorganiser mes finances</span>
-            </span>
-            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-
-          <a href="/quiz?niche=vente_maison" class="journey-row">
-            <span>
-              <span class="journey-row-title">J'ai vendu un bien</span>
-              <span class="journey-row-sub">Sans réinvestir dans l'immobilier</span>
-            </span>
-            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-
-          <a href="/quiz?niche=vente_entreprise" class="journey-row">
-            <span>
-              <span class="journey-row-title">J'ai vendu mon entreprise</span>
-              <span class="journey-row-sub">Ou j'en ai hérité et je l'ai vendue</span>
-            </span>
-            <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+        <div class="hero-choice">
+          <h2>Dans quelle situation êtes-vous&#8239;?</h2>
+          <div class="journey-list">
+            <a href="/quiz?niche=lpp" class="journey-row">
+              <span>
+                <span class="journey-row-title">Je pars à la retraite</span>
+                <span class="journey-row-sub">Capital LPP ou 3e pilier à réinvestir</span>
+              </span>
+              <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="/quiz?niche=heritage" class="journey-row">
+              <span>
+                <span class="journey-row-title">J'ai reçu un héritage</span>
+                <span class="journey-row-sub">Je ne sais pas encore quoi en faire</span>
+              </span>
+              <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="/quiz?niche=divorce" class="journey-row">
+              <span>
+                <span class="journey-row-title">Je me sépare</span>
+                <span class="journey-row-sub">Je dois réorganiser mes finances</span>
+              </span>
+              <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="/quiz?niche=vente_maison" class="journey-row">
+              <span>
+                <span class="journey-row-title">J'ai vendu un bien</span>
+                <span class="journey-row-sub">Sans réinvestir dans l'immobilier</span>
+              </span>
+              <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="/quiz?niche=vente_entreprise" class="journey-row">
+              <span>
+                <span class="journey-row-title">J'ai vendu mon entreprise</span>
+                <span class="journey-row-sub">Ou j'en ai hérité et je l'ai vendue</span>
+              </span>
+              <svg class="journey-row-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>

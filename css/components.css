@@ -3,10 +3,13 @@
    ces règles dans leur <style> ; elles vivent ici désormais. */
 
 /* Header */
+/* 16px plutôt que 24 : avec la cible tactile de 48px du lockup, l'en-tête
+   fait 80px au lieu de 97. Sur un iPhone SE, ces 17px sont une demi-ligne
+   de plus visible au chargement. */
 .header {
   background-color: var(--bg-card);
   border-bottom: 1px solid var(--border);
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-md) 0;
   position: relative;
   z-index: 100;
 }
