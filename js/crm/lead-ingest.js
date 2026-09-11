@@ -1,5 +1,18 @@
 // Lead Ingestion for Kapitea
 // Handles insertion of qualified leads into Supabase
+//
+// La base est partagée avec Hypoteka : voir supabase/migration-01-multi-marques.sql.
+// C'est la colonne "brand" qui sépare les deux marques et décide, via la
+// RLS, qui peut relire la ligne dans le CRM.
+
+// Clé du montant dans state.answers, par persona.
+const MONTANT_KEYS = {
+  lpp: 'Q_MONTANT',
+  heritage: 'Q_MONTANT_HERITAGE',
+  divorce: 'Q_MONTANT_DIVORCE',
+  vente_maison: 'Q_MONTANT_VENTE',
+  vente_entreprise: 'Q_MONTANT_CESSION',
+};
 
 /**
  * Insert lead into Supabase after form submission
@@ -29,23 +42,32 @@ async function insertLead(state) {
   const email = contact.email || '';
   const tel = contact.phone || null;
 
-  // Get montant based on segment
-  let montantCapital = null;
-  if (state.segment === 'lpp') {
-    montantCapital = state.answers.Q_MONTANT || null;
-  } else if (state.segment === 'heritage') {
-    montantCapital = state.answers.Q_MONTANT_HERITAGE || null;
-  }
+  /* Le montant vit sous une clé différente par persona. Trois d'entre eux
+     manquaient ici et partaient à null : un lead sans montant n'a pas de
+     score_faisabilite exploitable et se retrouve en bas de toutes les
+     files du CRM, alors que le prospect avait bougé le curseur. */
+  const montantCapital = MONTANT_KEYS[state.segment]
+    ? state.answers[MONTANT_KEYS[state.segment]] ?? null
+    : null;
 
   // Get scores
   const scoreValeur = state.scores?.score_valeur || null;
   const leadTemp = state.scores?.lead_temp || 'froid';
 
-  // Prepare lead record
+  /* Les colonnes sont celles de la table partagée. Trois absences sont
+     volontaires :
+       - advisor_id : un trigger l'attribue à l'insertion, en écartant les
+         conseillers qui n'ont pas accès à la marque. L'envoyer ici ne
+         servait à rien, le trigger l'écrase.
+       - created_at : la base a un default now(), qui fait foi. L'horloge
+         du navigateur du prospect, non.
+       - localisation : Kapitea ne demande pas de commune ; la laisser
+         nulle est ce qui dit au routage de ne pas chercher. */
   const leadRecord = {
     source: 'questionnaire',
-    site_source: 'kapitea',
-    type_persona: state.segment, // 'lpp' or 'heritage'
+    brand: 'kapitea',
+    // "segment" existe déjà côté Hypoteka et porte exactement ça.
+    segment: state.segment,
     prenom: prenom,
     tel: tel,
     email: email,
@@ -53,9 +75,7 @@ async function insertLead(state) {
     score_faisabilite: scoreValeur,
     lead_temp: leadTemp,
     raw_payload: state, // Store complete state as JSON
-    advisor_id: null, // Marc handles leads manually
     stage: 'nouveau',
-    created_at: new Date().toISOString(),
   };
 
   try {

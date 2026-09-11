@@ -4,26 +4,33 @@ This folder contains the Supabase and EmailJS integration for Kapitea lead manag
 
 ## Setup Instructions
 
-### Step 1: Supabase Configuration
+### Step 1: Supabase
 
-1. **Add database schema** (if not already present)
-   - Open your existing Hypoteka Supabase project
-   - Go to SQL Editor
-   - Copy and execute the SQL from `SCHEMA.sql`
-   - This adds three new columns to the `leads` table:
-     - `site_source` (defaults to 'hypoteka' for backward compatibility)
-     - `montant_capital` (stores the capital amount from questionnaire)
-     - `type_persona` (stores 'lpp' or 'heritage')
+Kapitea n'a **pas** de projet Supabase à lui. Les deux marques écrivent
+dans la même table `leads`, dans le projet d'Hypoteka, et se relisent dans
+le même CRM (`hypoteka.ch/crm`). Ce qui les sépare est la colonne `brand`,
+et ce qui décide qui voit quoi est `advisors.brands`.
 
-2. **Create CRM configuration file**
-   ```bash
-   cp js/crm/config.example.js js/crm/config.js
+1. **Exécuter la migration**, une fois, dans l'éditeur SQL du projet
+   Supabase existant : `supabase/migration-01-multi-marques.sql`.
+   Elle ajoute `leads.brand`, `leads.montant_capital` et
+   `advisors.brands`, réécrit les policies RLS pour que la marque prime
+   sur tout le reste, et rend le routage des leads conscient des marques.
+   Prérequis : le `supabase/schema.sql` d'Hypoteka déjà passé.
+
+2. **Donner les accès** — par défaut la migration laisse les neuf
+   conseillers sur Hypoteka seul et donne les deux marques à Marc :
+   ```sql
+   update public.advisors set brands = array['hypoteka','kapitea'] where slug = '...';
+   update public.advisors set brands = array['kapitea']            where slug = '...';
    ```
 
-3. **Fill in Supabase credentials** in `js/crm/config.js`
-   - `URL`: Your Supabase project URL (e.g., `https://xyz.supabase.co`)
-   - `ANON_KEY`: Your Supabase anonymous/public API key
-   - Find these in your Supabase project Settings → API
+3. **La configuration est déjà versionnée** (`js/crm/config.js`) et pointe
+   sur le même projet qu'Hypoteka — rien à copier. La clé `anon` est
+   publique par conception : elle part dans le navigateur de chaque
+   visiteur, et ce qui protège les données est la RLS, pas son secret.
+   La clé `service_role`, qui contourne la RLS, ne doit jamais apparaître
+   dans ce dépôt.
 
 ### Step 2: EmailJS Configuration
 
@@ -60,11 +67,11 @@ This folder contains the Supabase and EmailJS integration for Kapitea lead manag
 
 ## File Structure
 
-- `config.example.js` — Template for Supabase config (copy to `config.js`)
+- `config.js` — Projet Supabase partagé avec Hypoteka (versionné, clé publique)
 - `supabase-client.js` — Supabase client singleton
 - `lead-ingest.js` — Lead insertion logic
 - `emailjs-sender.js` — Email sending logic
-- `SCHEMA.sql` — Database schema changes (execute manually)
+- `../../supabase/migration-01-multi-marques.sql` — Migration base commune (à exécuter une fois)
 - `EMAILJS_TEMPLATES.md` — Email template HTML (copy to EmailJS)
 - `README.md` — This file
 
@@ -76,26 +83,32 @@ When a prospect completes the questionnaire, Kapitea inserts a record into Supab
 
 ```javascript
 {
-  source: 'questionnaire',           // Fixed value
-  site_source: 'kapitea',             // Identifies Kapitea leads (vs Hypoteka)
-  type_persona: 'lpp' | 'heritage',   // Segment
-  prenom: '...',                      // First name
-  tel: '...',                         // Phone (optional)
-  email: '...',                       // Email address
-  montant_capital: 400000,            // Capital amount from slider
-  score_faisabilite: 50,              // Score value (0-100)
-  lead_temp: 'chaud' | 'tiede' | 'froid', // Lead temperature
-  raw_payload: {...},                 // Complete funnel state as JSON
-  advisor_id: null,                   // Marc handles manually for now
-  stage: 'nouveau',                   // Initial stage
-  created_at: '2026-...',             // Timestamp
+  source: 'questionnaire',            // Valeur fixe (contrainte CHECK côté base)
+  brand: 'kapitea',                   // Sépare les deux marques, et pilote la RLS
+  segment: 'lpp' | 'heritage' | 'divorce' | 'vente_maison' | 'vente_entreprise',
+  prenom: '...',
+  tel: '...',                         // Optionnel
+  email: '...',
+  montant_capital: 400000,            // CHF, curseur du questionnaire
+  score_faisabilite: 50,              // 0-100
+  lead_temp: 'chaud' | 'tiede' | 'froid',
+  raw_payload: {...},                 // État complet du funnel, en JSON
+  stage: 'nouveau',
 }
 ```
+
+Trois colonnes sont volontairement absentes de l'insert :
+
+| Colonne | Pourquoi |
+|---|---|
+| `advisor_id` | Un trigger l'attribue à l'insertion, en écartant les conseillers qui n'ont pas accès à la marque. L'envoyer ici ne sert à rien, il l'écrase. |
+| `created_at` | La base a un `default now()`, qui fait foi — pas l'horloge du navigateur du prospect. |
+| `localisation` | Kapitea ne demande pas de commune. La laisser nulle est ce qui dit au routage de ne pas chercher. |
 
 ## Scoring Logic
 
 - **score_faisabilite** (0-100):
-  - LPP & Heritage: Based on `montant_capital` value
+  - Tous les personas : à partir de `montant_capital`
   - <100k → 20, 100k-300k → 50, 300k-600k → 75, >600k → 100
 
 - **lead_temp**:
@@ -108,7 +121,7 @@ When a prospect completes the questionnaire, Kapitea inserts a record into Supab
 ### Leads not appearing in Supabase
 - Check browser console for errors during submission
 - Verify `SUPABASE_CONFIG` is loaded: check `js/crm/config.js` exists and has correct credentials
-- Verify Supabase table `leads` exists and has the new columns (run `SCHEMA.sql` if needed)
+- Verify que `supabase/migration-01-multi-marques.sql` a bien été exécuté (colonnes `brand`, `montant_capital`)
 - Check Supabase RLS policies allow anonymous inserts to `leads` table
 
 ### Emails not sending
@@ -125,11 +138,19 @@ When a prospect completes the questionnaire, Kapitea inserts a record into Supab
 
 ## Security Notes
 
-- `js/crm/config.js` is git-ignored (see `.gitignore`)
-- Supabase anonymous key is public by design (used client-side)
+- `js/crm/config.js` **est versionné**, et c'est voulu — le site est
+  statique, sans étape de build : un fichier ignoré par git n'existerait
+  jamais en production. La clé `anon` est publique par conception.
+- Ce qui protège les données n'est donc pas le secret de cette clé mais la
+  RLS : le rôle `anon` peut uniquement **insérer** dans `leads`, jamais
+  lire, modifier ou supprimer. La clé `service_role`, qui contourne la
+  RLS, ne doit jamais toucher ce dépôt.
+- Un lead inséré porte la marque que le client déclare. Comme `anon` ne
+  peut rien relire, le seul abus possible est d'insérer de faux leads —
+  le même risque qu'aujourd'hui côté Hypoteka, à traiter par de
+  l'anti-spam (voir « Future Improvements »), pas par la RLS.
 - EmailJS public key is public by design (used client-side)
-- Never commit real API keys to the repository
-- Consider Row-Level Security (RLS) policies in Supabase if sensitive data is added
+- La clé `service_role` et tout secret serveur n'ont rien à faire ici.
 
 ## Future Improvements
 
