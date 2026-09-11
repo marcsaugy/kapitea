@@ -407,6 +407,50 @@
       background-color: var(--text3);
     }
 
+    /* ---- Écran d'accroche publicitaire ----------------------------------
+       Réservé aux arrivées depuis une annonce. Il reprend le titre de la
+       pub pour que la page tienne la promesse du clic ; depuis le site, la
+       promesse a déjà été faite par la rangée cliquée et on entre direct
+       dans la question 1.
+
+       Il remplace le questionnaire au lieu de s'y ajouter : barre de
+       progression et navigation disparaissent le temps de l'accroche. Une
+       barre à huit points au-dessus d'un écran sans question annoncerait
+       la longueur avant d'avoir donné la raison. */
+    .questionnaire-wrapper.is-intro .progress-bar-container,
+    .questionnaire-wrapper.is-intro .questionnaire-screen,
+    .questionnaire-wrapper.is-intro .questionnaire-navigation {
+      display: none;
+    }
+
+    .quiz-intro {
+      text-align: center;
+      /* Assez d'air pour que le titre tombe au tiers haut de l'écran, sans
+         jamais pousser le bouton sous la ligne de flottaison. */
+      padding: clamp(1.5rem, 9vh, 5rem) 0 clamp(1.5rem, 6vh, 3rem);
+    }
+
+    .quiz-intro h1 {
+      /* --font-size-3xl est un 40px fixe : il tient sur « Après la vente de
+         votre entreprise » mais casse mal sur les titres longs en 375px.
+         Le clamp redescend à 28px sur téléphone et retrouve les 40px dès
+         que la colonne le permet. */
+      font-size: clamp(1.75rem, 6.4vw, var(--font-size-3xl));
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--spacing-md);
+      text-wrap: balance;
+    }
+
+    .quiz-intro-sub {
+      font-size: var(--font-size-lg);
+      line-height: 1.55;
+      color: var(--text2);
+      max-width: 34rem;
+      margin: 0 auto clamp(2rem, 7vh, 3.5rem);
+      text-wrap: pretty;
+    }
+
     @media (max-width: 640px) {
       .questionnaire-container {
         padding: var(--spacing-md) var(--spacing-sm);
@@ -423,12 +467,28 @@
       .questionnaire-screen h2 {
         margin-bottom: var(--spacing-lg);
       }
+
+      /* Le CTA prend toute la largeur, comme les boutons de navigation :
+         c'est la seule action de l'écran, elle n'a pas à être timide. */
+      .quiz-intro .btn-cta {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="questionnaire-container">
     <div class="questionnaire-wrapper">
+      <!-- Accroche publicitaire. Vide et masquée par défaut : funnel.js la
+           remplit avec le titre du persona et la dévoile uniquement quand
+           l'URL porte un identifiant de clic publicitaire. Sans JS, ou
+           depuis le site, elle n'existe pas et le questionnaire commence. -->
+      <div class="quiz-intro" id="quiz-intro" hidden>
+        <h1 id="quiz-intro-title"></h1>
+        <p class="quiz-intro-sub" id="quiz-intro-subtitle"></p>
+        <button type="button" class="btn-cta" id="quiz-intro-cta">Commencer</button>
+      </div>
+
       <!-- Progress bar (steps rendered by funnel.js based on segment) -->
       <div class="progress-bar-container">
         <div class="progress-steps" id="progress-steps"></div>

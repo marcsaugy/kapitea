@@ -21,6 +21,8 @@ function validatePhone(phone) {
 const initialState = {
   segment: null,
   currentScreen: 0,
+  // Persona dont l'accroche publicitaire a déjà été vue dans cette session.
+  introSeenFor: null,
   answers: {
     // Collected on its own screen in every segment
     Q_PRENOM: null,
@@ -196,6 +198,102 @@ function detectNiche() {
     state.segment = 'lpp'; // Default to LPP
   }
   saveState();
+}
+
+/* ---- Accroche publicitaire ---------------------------------------------
+ *
+ * Quelqu'un qui arrive d'une annonce n'a encore rien lu de nous : il a
+ * cliqué sur une promesse et atterrit sur une question. L'accroche reprend
+ * cette promesse avant de commencer. Depuis le site, la rangée cliquée
+ * l'a déjà faite — on entre directement dans la première question.
+ *
+ * Le texte doit rester aligné sur celui de l'annonce du persona : c'est
+ * cette répétition qui fait dire au visiteur « je suis au bon endroit ».
+ */
+const AD_INTRO = {
+  lpp: {
+    title: 'Que faire de votre capital LPP ?',
+    subtitle: 'En 2 minutes, faites le point sur votre situation. Un conseiller FINMA indépendant vous rappelle sous 24 h, sans engagement.',
+  },
+  heritage: {
+    title: 'Un héritage à placer ? Rien ne presse.',
+    subtitle: 'En 2 minutes, clarifiez vos options avant de décider. Un conseiller FINMA indépendant vous rappelle sous 24 h, sans engagement.',
+  },
+  divorce: {
+    title: 'Réorganiser vos finances après une séparation',
+    subtitle: 'En 2 minutes, faites le point sur ce qui change pour vous. Un conseiller FINMA indépendant vous rappelle sous 24 h, sans engagement.',
+  },
+  vente_maison: {
+    title: 'Vous avez vendu un bien. Et maintenant ?',
+    subtitle: 'En 2 minutes, voyez comment faire travailler le produit de la vente. Un conseiller FINMA indépendant vous rappelle sous 24 h, sans engagement.',
+  },
+  vente_entreprise: {
+    title: 'Après la vente de votre entreprise',
+    subtitle: 'En 2 minutes, structurez ce que vous venez d\'encaisser. Un conseiller FINMA indépendant vous rappelle sous 24 h, sans engagement.',
+  },
+};
+
+/* Les régies ajoutent elles-mêmes ces paramètres au clic : gclid pour
+   Google Ads (gbraid et wbraid le remplacent sur iOS quand le suivi est
+   restreint), fbclid pour Meta, msclkid pour Microsoft. C'est ce qui rend
+   la détection automatique : le jour où une campagne part sans qu'on y
+   pense, l'accroche est quand même là. Les liens du site n'en portent
+   aucun. utm_source ferme la marche pour les campagnes taguées à la main. */
+const AD_PARAMS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid', 'ttclid', 'utm_source'];
+
+function comesFromAds(params) {
+  // Interrupteur manuel, pour tester l'accroche ou la poser sur un lien
+  // qui ne vient pas d'une régie (newsletter, QR code d'un flyer).
+  const forced = params.get('intro');
+  if (forced === '1') return true;
+  if (forced === '0') return false;
+  return AD_PARAMS.some((key) => params.get(key));
+}
+
+// Vrai tant que l'accroche occupe l'écran : la navigation clavier s'y fie
+// pour ne pas faire avancer un questionnaire que personne ne voit encore.
+let introVisible = false;
+
+function setupAdIntro() {
+  const intro = document.getElementById('quiz-intro');
+  const wrapper = document.querySelector('.questionnaire-wrapper');
+  const copy = AD_INTRO[state.segment];
+  if (!intro || !wrapper || !copy) return;
+
+  /* Une seule fois par persona : revenir en arrière depuis la question 3 ne
+     doit pas rejouer l'accroche. On retient le persona et pas un simple
+     booléen, parce qu'une deuxième annonce ouverte dans le même onglet
+     porte une autre promesse — et c'est justement là qu'arriver sans titre
+     sur un questionnaire qui a changé de sujet désoriente le plus. */
+  if (state.introSeenFor === state.segment) return;
+  if (!comesFromAds(new URLSearchParams(window.location.search))) return;
+
+  document.getElementById('quiz-intro-title').textContent = copy.title;
+  document.getElementById('quiz-intro-subtitle').textContent = copy.subtitle;
+  intro.hidden = false;
+  wrapper.classList.add('is-intro');
+  introVisible = true;
+
+  document.getElementById('quiz-intro-cta').addEventListener('click', dismissAdIntro);
+}
+
+function dismissAdIntro() {
+  const intro = document.getElementById('quiz-intro');
+  const wrapper = document.querySelector('.questionnaire-wrapper');
+  if (!introVisible || !intro || !wrapper) return;
+
+  intro.hidden = true;
+  wrapper.classList.remove('is-intro');
+  introVisible = false;
+  state.introSeenFor = state.segment;
+  saveState();
+
+  /* Le focus vivait sur un bouton qu'on vient de masquer : sans reprise il
+     retombe sur <body> et la navigation clavier repart du haut de la page.
+     On le pose sur la première réponse de l'écran affiché. */
+  const active = document.querySelector('.questionnaire-screen.active');
+  const first = active && active.querySelector('input, textarea, select');
+  (first || document.getElementById('btn-next')).focus();
 }
 
 // Calculate score
@@ -722,6 +820,12 @@ function setupKeyboardNav() {
       return;
     }
     e.preventDefault();
+    // Sous l'accroche, le questionnaire est masqué : Entrée le ferait
+    // avancer à l'aveugle, sans que la question ait jamais été lue.
+    if (introVisible) {
+      dismissAdIntro();
+      return;
+    }
     handleNext();
   });
 }
@@ -829,6 +933,9 @@ function init() {
   }
 
   showScreen(state.currentScreen);
+  // Après showScreen : l'accroche se pose par-dessus un questionnaire déjà
+  // dans son état correct, il n'y a plus qu'à retirer le voile au clic.
+  setupAdIntro();
   setupOptionListeners();
   setupCheckboxListener();
 
