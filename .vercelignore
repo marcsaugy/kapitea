@@ -1,0 +1,7 @@
+# Outillage local : le gabarit de l'image de partage n'a rien à faire en
+# ligne, il serait une page publique de plus à indexer.
+tools/
+
+# Documentation de travail
+design.md
+README.md
