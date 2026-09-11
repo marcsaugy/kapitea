@@ -87,17 +87,13 @@
                      parseFloat(getComputedStyle(intro).marginBottom || 0);
       var available = sticky.getBoundingClientRect().height - introBox - SAFETY;
 
-      /* La hauteur d'un cylindre vaut h·(2 + cos Δ) : le volet courant, et
-         de part et d'autre la projection de ses voisins. On en tire le pas
-         le plus serré qui tienne dans la place disponible, plutôt que
-         d'imposer 34° et de laisser le volet du haut recouvrir le chapô. */
-      var ratio = available / itemHeight - 2;
-      var fitted = ratio >= 1 ? STEP_DEG
-                 : ratio <= Math.cos(MAX_STEP * Math.PI / 180) ? Infinity
-                 : Math.acos(ratio) * 180 / Math.PI;
-
-      if (fitted === Infinity) {
-        // Même à plat le cylindre déborde : la liste verticale reste la
+      /* Ce qui doit tenir, c'est le volet courant — pas le cylindre entier.
+         Les voisins sont des indices, la fenêtre les coupe, exactement
+         comme un minuteur iOS coupe ses rangées. Exiger le cylindre complet
+         revenait à refuser l'effet sur téléphone : un volet y fait 266px
+         dans une colonne étroite, il en fallait 570 de dégagement. */
+      if (available < itemHeight + 24) {
+        // Même le volet courant ne tient pas : la liste verticale reste la
         // meilleure réponse, elle au moins se lit.
         section.classList.remove('approach--drum');
         list.style.removeProperty('--item-h');
@@ -106,11 +102,20 @@
         return;
       }
 
+      /* Un cylindre complet occupe h·(2 + cos Δ). Quand la place le permet
+         on garde 34°, qui laisse les voisins lisibles ; sinon on ouvre le
+         pas, ce qui les couche vers le profil et raccourcit le cylindre,
+         et la fenêtre absorbe ce qui dépasse encore. */
+      var ratio = available / itemHeight - 2;
+      var fitted = ratio >= 1 ? STEP_DEG
+                 : ratio <= Math.cos(MAX_STEP * Math.PI / 180) ? MAX_STEP
+                 : Math.acos(ratio) * 180 / Math.PI;
+
       step = Math.max(STEP_DEG, fitted);
       radius = (itemHeight / 2) / Math.tan((step / 2) * Math.PI / 180);
 
       var reach = radius * Math.sin(step * Math.PI / 180) + itemHeight / 2;
-      list.style.setProperty('--drum-h', Math.ceil(reach * 2) + 'px');
+      list.style.setProperty('--drum-h', Math.ceil(Math.min(reach * 2, available)) + 'px');
       sized = true;
     }
 

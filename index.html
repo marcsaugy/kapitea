@@ -546,10 +546,17 @@
       }
     }
 
+    /* La fenêtre du sélecteur. Elle coupe les voisins par le haut et par
+       le bas, comme le fait un vrai minuteur iOS : seul le volet courant
+       a besoin de tenir en entier, les autres sont des indices.
+
+       Pas de `transform-style: preserve-3d` avec `overflow` : WebKit
+       aplatit la 3D quand les deux sont sur le même élément. `perspective`
+       suffit, les volets sont ses enfants directs. */
     .approach--drum .approach-list {
       height: var(--drum-h, 26rem);
+      overflow: hidden;
       perspective: 1000px;
-      transform-style: preserve-3d;
     }
 
     /* Un fil droit ne suit pas une rotation : il traverserait le cylindre. */
