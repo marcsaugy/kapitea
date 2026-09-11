@@ -476,6 +476,66 @@
       margin: 0;
     }
 
+    /* --- Le tambour ---------------------------------------------------
+       Les quatre volets sont posés sur un cylindre, comme les heures d'un
+       minuteur iOS. La piste donne au panneau de quoi rester épinglé
+       pendant que le cylindre tourne : la page ne descend pas, c'est le
+       contenu qui avance.
+
+       Tout est en amélioration progressive. Ces règles ne s'appliquent que
+       si le script a posé .approach--drum, ce qu'il ne fait ni sous 1000px
+       — le défilement tactile et la barre d'adresse d'iOS rendent
+       l'épinglage instable — ni en mouvement réduit. Partout ailleurs, la
+       liste reste la liste, avec son fil. */
+    .approach--drum .approach-track {
+      /* un écran pour le panneau, puis un pas de défilement par volet */
+      height: calc(100vh + 3 * 55vh);
+    }
+
+    .approach--drum .approach-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Le chapô se resserre : c'est l'écran entier qui doit contenir le
+       titre et le cylindre. */
+    .approach--drum .approach-intro {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .approach--drum .approach-list {
+      height: var(--drum-h, 26rem);
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    /* Un fil droit ne suit pas une rotation : il traverserait le cylindre. */
+    .approach--drum .approach-list::before {
+      display: none;
+    }
+
+    .approach--drum .approach-item {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: var(--item-h, auto);
+      margin-top: calc(var(--item-h, 0px) / -2);
+      padding: 0;
+      align-content: center;
+      backface-visibility: hidden;
+    }
+
+    /* Le fond du chiffre ne sert qu'à percer le fil, qui n'est plus là. */
+    .approach--drum .approach-number {
+      background: none;
+      padding: 0;
+    }
+
     .approach-standing {
       margin: clamp(2rem, 4vw, 3rem) 0 0;
       font-size: var(--font-size-sm);
@@ -590,38 +650,47 @@
 
     <!-- Notre approche -->
     <section class="approach">
-      <div class="approach-container">
-        <div class="approach-intro">
-          <h2>Ce qu'on regarde avant de parler placement</h2>
-          <p>Un capital ne se place pas dans le vide. Quatre questions viennent toujours avant.</p>
+      <!-- La piste donne au panneau épinglé de quoi défiler ; le tambour
+           tourne pendant que la page semble immobile. Sans JS ou en
+           mouvement réduit, les deux enveloppes ne font rien et la liste
+           reste la liste. -->
+      <div class="approach-track">
+        <div class="approach-sticky">
+          <div class="approach-container">
+            <div class="approach-intro">
+              <h2>Ce qu'on regarde avant de parler placement</h2>
+              <p>Un capital ne se place pas dans le vide. Quatre questions viennent toujours avant.</p>
+            </div>
+            <ol class="approach-list">
+              <li class="approach-item">
+                <span class="approach-number" aria-hidden="true">01</span>
+                <h3>Vos objectifs</h3>
+                <p>Un capital qui doit produire un revenu dans six mois ne se place pas comme un capital destiné à vos enfants. On commence par établir à quoi cet argent sert réellement, et sur quel horizon.</p>
+              </li>
+
+              <li class="approach-item">
+                <span class="approach-number" aria-hidden="true">02</span>
+                <h3>La fiscalité du retrait</h3>
+                <p>Retirer son 2e pilier en capital déclenche un impôt distinct, calculé à taux réduit mais progressif selon le montant et le canton. Étaler les retraits sur plusieurs années change parfois la note de plusieurs milliers de francs. Cela se décide avant, jamais après.</p>
+              </li>
+
+              <li class="approach-item">
+                <span class="approach-number" aria-hidden="true">03</span>
+                <h3>La succession</h3>
+                <p>Selon le véhicule choisi, un capital se transmet en dehors ou à l'intérieur de la masse successorale. Cela détermine qui reçoit quoi, dans quel délai, et avec quelle fiscalité. C'est le point le plus souvent négligé.</p>
+              </li>
+
+              <li class="approach-item">
+                <span class="approach-number" aria-hidden="true">04</span>
+                <h3>La structure de placement</h3>
+                <p>Fonds, ETF, mandat de gestion, rente viagère : chacun répond à un besoin précis. Le véhicule vient en dernier, une fois les trois points précédents établis.</p>
+              </li>
+            </ol>
+          </div>
         </div>
+      </div>
 
-        <ol class="approach-list">
-          <li class="approach-item">
-            <span class="approach-number" aria-hidden="true">01</span>
-            <h3>Vos objectifs</h3>
-            <p>Un capital qui doit produire un revenu dans six mois ne se place pas comme un capital destiné à vos enfants. On commence par établir à quoi cet argent sert réellement, et sur quel horizon.</p>
-          </li>
-
-          <li class="approach-item">
-            <span class="approach-number" aria-hidden="true">02</span>
-            <h3>La fiscalité du retrait</h3>
-            <p>Retirer son 2e pilier en capital déclenche un impôt distinct, calculé à taux réduit mais progressif selon le montant et le canton. Étaler les retraits sur plusieurs années change parfois la note de plusieurs milliers de francs. Cela se décide avant, jamais après.</p>
-          </li>
-
-          <li class="approach-item">
-            <span class="approach-number" aria-hidden="true">03</span>
-            <h3>La succession</h3>
-            <p>Selon le véhicule choisi, un capital se transmet en dehors ou à l'intérieur de la masse successorale. Cela détermine qui reçoit quoi, dans quel délai, et avec quelle fiscalité. C'est le point le plus souvent négligé.</p>
-          </li>
-
-          <li class="approach-item">
-            <span class="approach-number" aria-hidden="true">04</span>
-            <h3>La structure de placement</h3>
-            <p>Fonds, ETF, mandat de gestion, rente viagère : chacun répond à un besoin précis. Le véhicule vient en dernier, une fois les trois points précédents établis.</p>
-          </li>
-        </ol>
-
+      <div class="approach-container">
         <p class="approach-standing">Kapitea est un intermédiaire non lié, inscrit au registre FINMA et BX. Nous ne dépendons d'aucun établissement et ne sommes pas rémunérés pour placer un produit plutôt qu'un autre.</p>
       </div>
     </section>
@@ -672,5 +741,6 @@
   <!-- Configuration (loaded at runtime) -->
   <script src="js/config.js" defer></script>
   <script src="js/hero-curve.js" defer></script>
+  <script src="js/approach-drum.js" defer></script>
 </body>
 </html>
