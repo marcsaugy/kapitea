@@ -170,14 +170,107 @@ create policy "activities_insert_own_lead_or_admin"
   ));
 
 -- ============================================================
--- 5. ROUTAGE — NE JAMAIS ASSIGNER UN LEAD À QUI NE PEUT PAS LE LIRE
+-- 5. ROUTAGE — À CHAQUE MARQUE SA LOGIQUE
 -- ============================================================
--- Le trigger d'origine résout un conseiller à partir de la commune, et
--- retombe sur Marc quand rien ne correspond. Deux choses le cassent en
--- multi-marques : Kapitea ne demande jamais de commune (localisation est
--- toujours null), et surtout rien n'empêche d'assigner un lead Kapitea à
--- un conseiller Hypoteka-seul — qui ne le verrait pas, la RLS le lui
--- masquant. Le lead disparaîtrait alors de toutes les files à la fois.
+-- Hypoteka route à la commune (c'est le seul parcours qui en collecte
+-- une). Kapitea distribue au tour de rôle : lead 1 au conseiller A,
+-- lead 2 au B, et ainsi de suite, en boucle.
+--
+-- Le mode est une donnée, pas un "if" gravé dans une fonction : le
+-- changer plus tard est un UPDATE d'une ligne, pas une migration.
+create table if not exists public.lead_routing (
+  brand           text primary key,
+  mode            text not null default 'round_robin'
+                    check (mode in ('geo', 'round_robin')),
+  -- Mémoire du tourniquet : le dernier conseiller servi pour cette marque.
+  last_advisor_id uuid references public.advisors(id) on delete set null,
+  updated_at      timestamptz not null default now()
+);
+
+insert into public.lead_routing (brand, mode) values
+  ('hypoteka', 'geo'),
+  ('kapitea',  'round_robin')
+on conflict (brand) do nothing;
+
+comment on table public.lead_routing is
+  'Mode d''attribution par marque, et état du tourniquet. geo = à la commune (zones), round_robin = chacun son tour.';
+
+alter table public.lead_routing enable row level security;
+
+-- Lecture réservée aux admins de la marque : sert à afficher « prochain
+-- servi » dans le CRM. Personne n'écrit ici à la main — seule la fonction
+-- d'attribution le fait, en SECURITY DEFINER.
+drop policy if exists "lead_routing_select_admin" on public.lead_routing;
+create policy "lead_routing_select_admin"
+  on public.lead_routing for select
+  using (public.is_admin() and public.can_access_brand(brand));
+
+-- ── Le tourniquet ─────────────────────────────────────────────────────
+-- Prend le conseiller qui suit le dernier servi, dans un ordre stable, et
+-- revient au premier en fin de tour.
+--
+-- « Le suivant après le dernier » plutôt qu'un compteur modulo le nombre
+-- de conseillers : un compteur redistribue tout le tour dès qu'on ajoute
+-- ou désactive quelqu'un, alors qu'ici la rotation reprend simplement à sa
+-- place. Si le dernier servi quitte la marque, sa position dans l'ordre
+-- reste connue et le tour continue après elle.
+create or replace function public.next_advisor_round_robin(p_brand text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_last      uuid;
+  v_last_name text;
+  v_next      uuid;
+begin
+  insert into public.lead_routing (brand) values (p_brand)
+    on conflict (brand) do nothing;
+
+  -- "for update" verrouille la ligne du tourniquet : deux soumissions
+  -- simultanées doivent recevoir deux conseillers différents, pas deux
+  -- fois le même. La seconde attend ici que la première ait avancé.
+  select last_advisor_id into v_last
+    from public.lead_routing
+   where brand = p_brand
+     for update;
+
+  -- Position du dernier servi dans l'ordre. On la lit même s'il n'a plus
+  -- la marque ou n'est plus actif : ce qui compte est où reprendre.
+  select full_name into v_last_name from public.advisors where id = v_last;
+
+  select a.id into v_next
+    from public.advisors a
+   where a.active = true
+     and p_brand = any(a.brands)
+     and (v_last is null or (a.full_name, a.id) > (v_last_name, v_last))
+   order by a.full_name, a.id
+   limit 1;
+
+  -- Fin du tour : on repart du début.
+  if v_next is null then
+    select a.id into v_next
+      from public.advisors a
+     where a.active = true and p_brand = any(a.brands)
+     order by a.full_name, a.id
+     limit 1;
+  end if;
+
+  if v_next is not null then
+    update public.lead_routing
+       set last_advisor_id = v_next, updated_at = now()
+     where brand = p_brand;
+  end if;
+
+  return v_next;
+end;
+$$;
+
+-- ── Le résolveur, commun aux deux marques ─────────────────────────────
+-- Quel que soit le mode, un lead ne doit JAMAIS atterrir chez quelqu'un
+-- qui n'a pas accès à la marque : la RLS le lui masquerait et le lead
+-- disparaîtrait de toutes les files à la fois.
 create or replace function public.resolve_advisor_for_lead(p_brand text, p_localisation text)
 returns uuid
 language plpgsql
@@ -185,15 +278,21 @@ security definer
 set search_path = public
 as $$
 declare
+  v_mode    text;
   v_advisor uuid;
 begin
-  -- Le routage géographique n'a de sens que pour Hypoteka : c'est le seul
-  -- parcours qui collecte une commune.
-  if p_brand = 'hypoteka' then
+  select mode into v_mode from public.lead_routing where brand = p_brand;
+
+  if v_mode = 'geo' then
     v_advisor := public.resolve_advisor_for_localisation(p_localisation);
+  else
+    -- round_robin, et repli par défaut pour une marque non déclarée.
+    v_advisor := public.next_advisor_round_robin(p_brand);
   end if;
 
-  -- Filet de sécurité : on écarte un conseiller qui ne couvre pas la marque.
+  -- Filet de sécurité : on écarte un conseiller qui ne couvre pas la
+  -- marque. Le tourniquet ne peut pas en produire, le routage géographique
+  -- si — il ignore tout des marques.
   if v_advisor is not null and not exists (
     select 1 from public.advisors
     where id = v_advisor and active = true and p_brand = any(brands)
@@ -201,7 +300,7 @@ begin
     v_advisor := null;
   end if;
 
-  -- Repli : le premier admin actif qui couvre la marque, Marc en priorité.
+  -- Dernier repli : un admin actif qui couvre la marque, Marc en priorité.
   -- Mieux vaut un lead dans la file de quelqu'un que non assigné : un lead
   -- sans advisor_id n'apparaît chez personne sauf les admins de sa marque.
   if v_advisor is null then
