@@ -121,19 +121,19 @@
       text-align: right;
     }
 
-    /* Calendly section */
-    .calendly-section {
+    /* Réservation — Microsoft Bookings */
+    .booking-section {
       margin-bottom: var(--spacing-2xl);
       animation: slideInUp var(--transition-base) ease-out;
       animation-delay: 0.2s;
       animation-fill-mode: both;
     }
 
-    .calendly-header {
+    .booking-header {
       margin-bottom: var(--spacing-lg);
     }
 
-    .calendly-header h2 {
+    .booking-header h2 {
       font-size: var(--font-size-xl);
       font-weight: 600;
       letter-spacing: -0.02em;
@@ -141,18 +141,36 @@
       margin-bottom: var(--spacing-sm);
     }
 
-    .calendly-header p {
+    .booking-header p {
       font-size: var(--font-size-base);
       color: var(--text2);
       margin-bottom: 0;
     }
 
-    .calendly-container {
+    /* Hauteur DÉFINIE, pas un min-height : l'iframe est en height:100%, et
+       un pourcentage ne se résout pas sur une hauteur minimale. Avec
+       l'ancien `min-height: 600px`, le cadre serait retombé sur la hauteur
+       par défaut d'un iframe — 150px — et le calendrier aurait été
+       inutilisable. */
+    .booking-container {
       background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--r-surface);
       overflow: hidden;
-      min-height: 600px;
+      height: 780px;
+    }
+
+    .booking-container iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    @media (max-width: 640px) {
+      /* Bookings empile calendrier, créneaux puis formulaire sur une
+         colonne : il lui faut plus de hauteur sur téléphone, pas moins. */
+      .booking-container { height: 700px; }
     }
 
     /* Reassurance banner */
@@ -229,13 +247,22 @@
         <p>Les données de votre questionnaire n'ont pas pu être récupérées. Vous pouvez toujours réserver un créneau ci-dessous.</p>
       </div>
 
-      <!-- Calendly section -->
-      <div class="calendly-section">
-        <div class="calendly-header">
+      <!-- Réservation — Microsoft Bookings.
+           L'iframe est posé directement dans la page, sans passer par un
+           script ni par CONFIG : c'est la seule action utile de cet écran,
+           elle ne doit dépendre ni du JS ni d'un fichier de configuration
+           absent en production. -->
+      <div class="booking-section">
+        <div class="booking-header">
           <h2>Réservez 30 minutes</h2>
           <p>Faites le point sur votre capital avec un conseiller</p>
         </div>
-        <div class="calendly-container" id="calendly-widget"></div>
+        <div class="booking-container">
+          <iframe
+            src="https://outlook.office.com/book/Analysedevotrecapital30minutes@SwissLife.onmicrosoft.com/?ismsaljsauthenabled"
+            title="Réserver un entretien de 30 minutes"
+            scrolling="yes"></iframe>
+        </div>
       </div>
 
       <!-- Reassurance banner -->
@@ -334,8 +361,6 @@
         displaySummary(state);
       }
 
-      // Load Calendly widget
-      loadCalendly();
     }
 
     // Display summary based on segment
@@ -410,57 +435,6 @@
         .join('');
 
       summaryContainer.style.display = 'block';
-    }
-
-    // Load Calendly widget
-    function loadCalendly() {
-      // Check if CONFIG is available
-      if (typeof CONFIG === 'undefined') {
-        console.error('CONFIG not loaded');
-        return;
-      }
-
-      if (!CONFIG.CALENDLY_URL) {
-        console.warn('CALENDLY_URL not configured');
-        return;
-      }
-
-      // Load Calendly script
-      const script = document.createElement('script');
-      script.src = 'https://assets.calendly.com/assets/external/widget.js';
-      script.async = true;
-      script.onload = () => {
-        // Initialize Calendly widget
-        const widget = document.getElementById('calendly-widget');
-        if (window.Calendly) {
-          window.Calendly.initInlineWidget({
-            url: CONFIG.CALENDLY_URL,
-            parentElement: widget,
-            prefill: {
-              // Optional: pre-fill contact info from state
-              name: getContactInfo().firstname,
-              email: getContactInfo().email,
-            },
-          });
-        }
-      };
-      document.head.appendChild(script);
-    }
-
-    // Get contact info from state
-    function getContactInfo() {
-      const storedState = sessionStorage.getItem('funnel_state_kapitea');
-      if (!storedState) {
-        return { firstname: '', email: '' };
-      }
-
-      try {
-        const state = JSON.parse(storedState);
-        const contact = state.answers && state.answers.Q_CONTACT;
-        return contact || { firstname: '', email: '' };
-      } catch (e) {
-        return { firstname: '', email: '' };
-      }
     }
 
     // Run on page load
