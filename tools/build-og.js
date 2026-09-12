@@ -1,4 +1,10 @@
-/* Rend tools/og-image.html en assets/og-image.png.
+/* Rend tools/og-image.html en assets/og-image.jpg.
+ *
+ * JPEG et non PNG : WhatsApp bascule sur son aperçu compact — une petite
+ * vignette carrée au lieu de la bannière — au-delà d'environ 300 Ko. Le
+ * PNG de cette carte pesait 288 Ko, assez pour déclencher ce repli.
+ * L'image n'a ni transparence ni aplats nets à préserver, le JPEG la rend
+ * à l'identique pour un dixième du poids.
  *
  * L'image de partage était un PNG produit à la main, donc figé : elle a
  * gardé les gris bleutés et l'ancien mark bien après que les deux aient
@@ -19,7 +25,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const OUT = path.join(ROOT, 'assets', 'og-image.png');
+const OUT = path.join(ROOT, 'assets', 'og-image.jpg');
 const PORT = 8791;
 
 const TYPES = {
@@ -58,11 +64,15 @@ function serve() {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(200);
 
-  await page.locator('.card').screenshot({ path: OUT });
+  await page.locator('.card').screenshot({ path: OUT, type: 'jpeg', quality: 90 });
 
   await browser.close();
   server.close();
 
   const { size } = fs.statSync(OUT);
-  console.log(`assets/og-image.png — ${(size / 1024).toFixed(0)} Ko`);
+  console.log(`assets/og-image.jpg — ${(size / 1024).toFixed(0)} Ko`);
+  if (size > 300 * 1024) {
+    console.error('ATTENTION : au-delà de ~300 Ko, WhatsApp repasse en aperçu compact.');
+    process.exit(1);
+  }
 })();
