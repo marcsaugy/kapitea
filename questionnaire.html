@@ -477,7 +477,11 @@
 
     @media (max-width: 640px) {
       .questionnaire-container {
-        padding: var(--spacing-md) var(--spacing-sm);
+        /* Même retrait latéral que le hero de la page d'accueil, mesuré à
+           24px : le questionnaire prolonge l'écran d'où l'on vient, il ne
+           doit pas coller aux bords quand celui-ci ne le fait pas.
+           Seul le rythme vertical se resserre sur téléphone. */
+        padding: var(--spacing-md) var(--spacing-lg);
       }
 
       .questionnaire-navigation {

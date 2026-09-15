@@ -243,7 +243,10 @@
     /* Responsive */
     @media (max-width: 640px) {
       .merci-container {
-        padding: var(--spacing-lg) var(--spacing-sm);
+        /* Même retrait latéral que le hero de la page d'accueil, mesuré à
+           24px. Les trois écrans du parcours doivent poser leur texte sur
+           la même verticale. */
+        padding: var(--spacing-lg) var(--spacing-lg);
       }
 
       .summary-item {

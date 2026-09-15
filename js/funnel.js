@@ -904,6 +904,26 @@ function cancelAutoNext() {
   autoNextTimer = null;
 }
 
+/* Le clic qui arrive vient-il d'un doigt, ou d'une touche ?
+ *
+ * Écouté sur le document et non sur chaque réponse : on tape le libellé,
+ * pas la petite case. Le pointerdown part alors du <label> et n'atteint
+ * jamais l'<input> — seul le clic, lui, est réémis dessus. Un écouteur posé
+ * sur l'input ne verrait donc jamais le geste.
+ *
+ * Toute frappe clavier remet le drapeau à zéro : sans cela, un clic
+ * quelque part dans la page laisserait le drapeau armé, et la flèche
+ * suivante ferait avancer le questionnaire sans qu'on ait rien validé.
+ */
+let viaPointeur = false;
+function marquerPointeur() {
+  viaPointeur = true;
+}
+document.addEventListener('pointerdown', marquerPointeur, { passive: true });
+document.addEventListener('mousedown', marquerPointeur, { passive: true });
+document.addEventListener('touchstart', marquerPointeur, { passive: true });
+document.addEventListener('keydown', () => { viaPointeur = false; }, { passive: true });
+
 function setupOptionListeners() {
   const radioInputs = document.querySelectorAll('input[type="radio"]');
 
@@ -918,20 +938,29 @@ function setupOptionListeners() {
       e.target.parentElement.classList.add('selected');
     });
 
-    /* Passage automatique. On écoute `click` plutôt que `change`, pour
-       deux raisons :
+    /* Passage automatique. On écoute `click` plutôt que `change` : après un
+       retour en arrière la réponse est déjà cochée, et re-cliquer dessus
+       n'émet aucun `change` — la valeur n'a pas bougé — alors que
+       l'utilisateur vient bel et bien de confirmer son choix.
 
-       - après un retour en arrière, la réponse est déjà cochée ; re-cliquer
-         dessus n'émet aucun `change` — la valeur n'a pas changé — et l'écran
-         resterait figé alors que l'utilisateur vient de confirmer son choix.
+       Reste à ne pas déclencher sur les flèches du clavier, qui parcourent
+       un groupe radio en cochant au passage et émettent un clic à chaque
+       fois : sans garde-fou, explorer les réponses ferait défiler le
+       questionnaire sans que rien n'ait été validé.
 
-       - `e.detail` vaut 0 pour un clic émis par le clavier. Les flèches
-         parcourent nativement les réponses d'un groupe radio en cochant au
-         passage : sans ce test, explorer les options au clavier ferait
-         défiler le questionnaire sans que rien n'ait été validé. Au clavier,
-         on choisit avec les flèches et on valide avec Entrée. */
-    input.addEventListener('click', (e) => {
-      if (!e.detail || !input.checked) {
+       Le garde-fou ne peut pas être `e.detail`. Sur un Mac ou un PC il vaut
+       0 pour un clic clavier et 1 pour un vrai clic, mais Safari iOS émet
+       des clics tactiles à 0 — surtout lorsqu'ils traversent un <label>.
+       Le test paraissait juste dans l'émulateur et ne passait jamais sur
+       un iPhone : aucune réponse ne faisait avancer.
+
+       On s'appuie donc sur ce qui distingue réellement les deux gestes :
+       un pointeur. pointerdown ne part que d'un doigt, d'une souris ou
+       d'un stylet, jamais d'une touche. */
+    input.addEventListener('click', () => {
+      const geste = viaPointeur;
+      viaPointeur = false;
+      if (!geste || !input.checked) {
         return;
       }
       // Un changement d'avis pendant le délai annule le passage en cours.
