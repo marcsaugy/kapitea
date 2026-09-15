@@ -36,22 +36,24 @@ comment on column public.advisors.booking_url is
 -- pas savoir à qui son dossier a été confié.
 --
 -- Cette fonction est la seule ouverture : on lui donne l'identifiant d'un
--- lead, elle rend une URL de réservation. Rien d'autre — ni nom, ni
--- e-mail, ni contenu du lead.
+-- lead, elle rend deux choses et deux seulement — l'URL de réservation du
+-- conseiller, et son prénom. Ni nom de famille, ni e-mail, ni téléphone,
+-- ni le moindre champ du lead.
 --
--- SECURITY DEFINER lui permet de traverser la RLS ; les trois garde-fous
--- sont dans le corps :
---   · elle ne renvoie qu'une colonne, déjà publique par nature (la page
---     de réservation est ouverte à qui a le lien) ;
+-- Le prénom sert à la page de remerciement, qui annonce « Samuel vous
+-- appelle dans les 24 heures » plutôt qu'« un conseiller » : sur un numéro
+-- inconnu, savoir qui appelle est ce qui décide qu'on décroche. Il est de
+-- toute façon public, les fiches de l'équipe le portent déjà.
+--
+-- SECURITY DEFINER lui permet de traverser la RLS ; trois garde-fous
+-- bornent ce qu'elle peut servir :
+--   · deux colonnes, toutes deux déjà publiques par nature (la page de
+--     réservation est ouverte à qui a le lien) ;
 --   · le conseiller doit être actif ;
 --   · le lead doit dater de moins de deux heures, ce qui réduit la
 --     fonction à son seul usage légitime — le prospect qui vient d'être
 --     redirigé sur /merci.
--- Elle rend aussi le prénom du conseiller. La page de remerciement
--- annonce alors « Samuel vous appelle dans les 24 heures » plutôt qu'« un
--- conseiller » : sur un numéro inconnu, savoir qui appelle est ce qui
--- décide qu'on décroche. Ce prénom est de toute façon public — les fiches
--- de l'équipe le portent déjà.
+--
 -- `create or replace` ne sait pas changer le type de retour d'une fonction
 -- existante : sans ce drop, rejouer la migration sur une base qui porte
 -- déjà une version antérieure échoue sur « cannot change return type ».
@@ -81,17 +83,20 @@ grant execute on function public.booking_url_for_lead(uuid) to anon;
 -- 3. LES AGENDAS CONNUS
 -- ============================================================
 update public.advisors set booking_url =
-  'https://outlook.office.com/book/Analysedevotrecapital30minutes@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
+  'https://bookings.cloud.microsoft/book/Analysedevotrecapital30minutes@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
  where slug = 'marc-saugy';
 
 update public.advisors set booking_url =
-  'https://outlook.office.com/book/Analysedevotrecapital30minutes1@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
+  'https://bookings.cloud.microsoft/book/Analysedevotrecapital30minutes1@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
  where slug = 'samuel-moyo';
 
+-- L'hôte est bookings.cloud.microsoft : c'est celui vers lequel
+-- outlook.office.com redirige, une redirection de moins à traverser.
+--
 -- Julien Schaedgen et Brahim Dutruit n'ont pas encore de page : leurs
 -- leads tombent sur la page générique du site jusqu'à ce qu'on remplisse
 -- leur case. Une ligne suffira :
---   update public.advisors set booking_url = 'https://outlook.office.com/book/…'
+--   update public.advisors set booking_url = 'https://bookings.cloud.microsoft/book/…'
 --    where slug = 'julien-schaedgen';
 
 commit;
