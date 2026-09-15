@@ -148,30 +148,25 @@
       margin-bottom: 0;
     }
 
-    /* Hauteur DÉFINIE, pas un min-height : l'iframe est en height:100%, et
-       un pourcentage ne se résout pas sur une hauteur minimale. Avec
-       l'ancien `min-height: 600px`, le cadre serait retombé sur la hauteur
-       par défaut d'un iframe — 150px — et le calendrier aurait été
-       inutilisable. */
-    /* Le calendrier reste incorporé, à la largeur des cartes.
-       Bookings garde ses colonnes DATE et HEURE côte à côte tant qu'il a
-       de la place ; en dessous il les empile et les centre, ce qui laisse
-       son propre gris de chaque côté — c'est ce qui le faisait paraître
-       fin dans 700px.
+    /* Ce qu'on voyait n'était pas le calendrier.
+       La page Bookings commence par un en-tête — logo, nom, carte du
+       service — étroit et centré par conception. Le sélecteur de date, lui,
+       vient en dessous et occupe bien plus de largeur. Dans un cadre de
+       780px, on ne voyait que cet en-tête : d'où l'impression d'un
+       calendrier fin, alors qu'il était simplement hors champ.
 
-       On lui donne donc la largeur qu'il veut À L'INTÉRIEUR du cadre, puis
-       on réduit l'ensemble à la largeur du cadre. Le calendrier remplit,
-       et reste net : une transformation CSS sur un iframe rend un document
-       vivant, pas une image agrandie.
+       Le cadre est donc assez haut pour atteindre les créneaux sans avoir
+       à faire défiler l'intérieur de l'iframe. --embed-h est le chiffre à
+       ajuster : le réduire si trop de vide apparaît en bas, l'augmenter si
+       les créneaux restent coupés.
 
-       --embed-w est le seul chiffre à toucher si le réglage ne tombe pas
-       juste : l'augmenter si les colonnes s'empilent encore, le diminuer
-       si le texte paraît trop petit. Le JS plus bas s'en sert. */
+       Aucune mise à l'échelle : elle rapetissait le texte sans rien
+       résoudre, puisque la partie étroite l'est volontairement. */
     .booking-container {
-      --embed-w: 960px;
+      --embed-h: 1250px;
       border-radius: var(--r-surface);
       overflow: hidden;
-      height: 780px;
+      height: var(--embed-h);
     }
 
     .booking-container iframe {
@@ -179,14 +174,12 @@
       width: 100%;
       height: 100%;
       border: 0;
-      transform-origin: top left;
     }
 
     @media (max-width: 640px) {
-      /* Sous cette largeur, aucune réduction n'est appliquée : Bookings
-         passe de lui-même en colonne unique pleine largeur, et rapetisser
-         son texte le rendrait illisible sur téléphone. */
-      .booking-container { height: 700px; }
+      /* Sur téléphone, Bookings empile tout : l'en-tête et le calendrier
+         se suivent sur une colonne, il faut donc davantage de hauteur. */
+      .booking-container { --embed-h: 1400px; }
     }
 
     /* Reassurance banner */
@@ -393,54 +386,8 @@
       }
 
       chargerAgendaDuConseiller(state && state.leadId);
-      ajusterLargeurEmbed();
     }
 
-    /* Faire remplir le cadre au calendrier.
-     *
-     * Bookings est servi par Microsoft : aucune règle CSS d'ici ne franchit
-     * la frontière de l'iframe. On ne peut donc pas élargir son contenu —
-     * on peut seulement choisir la largeur à laquelle il se met en page,
-     * puis ramener le tout à la taille du cadre.
-     *
-     * Sous 640px on ne touche à rien : Bookings y passe en colonne unique
-     * pleine largeur, et le réduire rendrait son texte illisible.
-     *
-     * La hauteur est divisée par le même facteur, sinon le bas du cadre
-     * resterait vide après la réduction — et le passage donne au contraire
-     * un peu plus de calendrier à voir à hauteur égale.
-     */
-    function ajusterLargeurEmbed() {
-      const boite = document.querySelector('.booking-container');
-      const cadre = document.getElementById('booking-frame');
-      if (!boite || !cadre) {
-        return;
-      }
-
-      const largeurVoulue = parseFloat(
-        getComputedStyle(boite).getPropertyValue('--embed-w')
-      ) || 960;
-      const dispo = boite.clientWidth;
-
-      // Jamais agrandir : au-delà de la largeur voulue, le cadre suffit.
-      if (dispo < 640 || dispo >= largeurVoulue) {
-        cadre.style.width = '100%';
-        cadre.style.height = '100%';
-        cadre.style.transform = '';
-        return;
-      }
-
-      const facteur = dispo / largeurVoulue;
-      cadre.style.width = largeurVoulue + 'px';
-      cadre.style.height = boite.clientHeight / facteur + 'px';
-      cadre.style.transform = 'scale(' + facteur.toFixed(4) + ')';
-    }
-
-    let redimTimer = null;
-    window.addEventListener('resize', () => {
-      clearTimeout(redimTimer);
-      redimTimer = setTimeout(ajusterLargeurEmbed, 150);
-    }, { passive: true });
 
     /* L'agenda du conseiller à qui le lead a été attribué.
      *
