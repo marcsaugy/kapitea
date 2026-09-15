@@ -63,7 +63,21 @@ async function insertLead(state) {
          du navigateur du prospect, non.
        - localisation : Kapitea ne demande pas de commune ; la laisser
          nulle est ce qui dit au routage de ne pas chercher. */
+  /* L'identifiant est engendré ici, et non laissé à la base.
+     Le rôle anon ne peut pas relire "leads" : sans cela, le navigateur
+     n'aurait aucun moyen de désigner la ligne qu'il vient de créer, et la
+     page /merci ne pourrait pas demander l'agenda du conseiller attribué.
+     Un uuid v4 ne se devine pas, et la clé primaire refuse les doublons. */
+  const leadId = (window.crypto && window.crypto.randomUUID)
+    ? window.crypto.randomUUID()
+    // Repli pour un contexte non sécurisé, où randomUUID est absent.
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      });
+
   const leadRecord = {
+    id: leadId,
     source: 'questionnaire',
     brand: 'kapitea',
     // "segment" existe déjà côté Hypoteka et porte exactement ça.
@@ -102,6 +116,8 @@ async function insertLead(state) {
     return {
       success: true,
       data: data,
+      // /merci s'en sert pour demander l'agenda du conseiller attribué.
+      leadId: leadId,
     };
   } catch (err) {
     console.error('Lead insertion exception:', err);

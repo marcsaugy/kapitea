@@ -274,6 +274,10 @@
 
   <!-- Configuration and Thank You Logic -->
   <script src="js/config.js" defer></script>
+  <!-- Pour interroger l'agenda du conseiller attribué. La bibliothèque
+       Supabase n'est pas chargée ici : un fetch sur l'endpoint REST suffit
+       pour une seule question, et évite 100 Ko sur une page de sortie. -->
+  <script src="js/crm/config.js" defer></script>
   <script src="js/format.js" defer></script>
   <script defer>
     // formatCHF vient de js/format.js
@@ -361,6 +365,49 @@
         displaySummary(state);
       }
 
+      chargerAgendaDuConseiller(state && state.leadId);
+    }
+
+    /* L'agenda du conseiller à qui le lead a été attribué.
+     *
+     * Le prospect ne peut pas lire la table des leads — la RLS le lui
+     * interdit, et c'est très bien ainsi. Une fonction publique lui rend
+     * donc une seule chose à partir de l'identifiant de son lead : l'URL de
+     * réservation du conseiller. Rien d'autre ne sort de la base.
+     *
+     * Tout ce qui peut manquer mène au même endroit : l'iframe garde
+     * l'agenda générique déjà posé dans le HTML. Un rendez-vous pris avec
+     * la mauvaise personne se rattrape ; une page de réservation vide, non.
+     */
+    function chargerAgendaDuConseiller(leadId) {
+      if (!leadId || typeof SUPABASE_CONFIG === 'undefined'
+          || !SUPABASE_CONFIG.URL || !SUPABASE_CONFIG.ANON_KEY) {
+        return;
+      }
+
+      fetch(SUPABASE_CONFIG.URL + '/rest/v1/rpc/booking_url_for_lead', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_CONFIG.ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_CONFIG.ANON_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ p_lead_id: leadId }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((url) => {
+          // La fonction rend null quand le conseiller n'a pas encore de page.
+          if (typeof url !== 'string' || url.indexOf('https://') !== 0) {
+            return;
+          }
+          const cadre = document.querySelector('.booking-container iframe');
+          if (cadre && cadre.src !== url) {
+            cadre.src = url;
+          }
+        })
+        .catch((err) => {
+          console.warn('Agenda du conseiller indisponible, page générique conservée', err);
+        });
     }
 
     // Display summary based on segment

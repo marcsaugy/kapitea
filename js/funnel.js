@@ -709,6 +709,12 @@ async function handleSubmit() {
       // The data is still in sessionStorage for manual recovery
     } else {
       console.log('Lead inserted successfully');
+      /* On emporte l'identifiant du lead sur /merci, qui s'en sert pour
+         demander l'agenda du conseiller attribué. Enregistré avant la
+         redirection : sessionStorage est ce qui traverse le changement
+         de page. */
+      state.leadId = supabaseResult.leadId || null;
+      saveState();
     }
 
     // Step 2: Redirect to thank you page
