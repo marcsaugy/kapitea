@@ -148,22 +148,24 @@
       margin-bottom: 0;
     }
 
-    /* Ce qu'on voyait n'était pas le calendrier.
-       La page Bookings commence par un en-tête — logo, nom, carte du
-       service — étroit et centré par conception. Le sélecteur de date, lui,
-       vient en dessous et occupe bien plus de largeur. Dans un cadre de
-       780px, on ne voyait que cet en-tête : d'où l'impression d'un
-       calendrier fin, alors qu'il était simplement hors champ.
+    /* Recadrer plutôt que réduire.
+       Bookings donne à sa page blanche une part fixe de la largeur qu'on
+       lui accorde — mesuré à ~63% — et peint le reste en gris. Comme c'est
+       une proportion, réduire l'échelle ne sert à rien : rendre 1110px de
+       large puis ramener à 700 redonne exactement les mêmes 433px de blanc.
 
-       Le cadre est donc assez haut pour atteindre les créneaux sans avoir
-       à faire défiler l'intérieur de l'iframe. --embed-h est le chiffre à
-       ajuster : le réduire si trop de vide apparaît en bas, l'augmenter si
-       les créneaux restent coupés.
+       On rend donc l'iframe PLUS LARGE que le cadre, centrée, et le cadre
+       coupe ce qui dépasse. Le gris tombe hors champ des deux côtés, la
+       page blanche remplit bord à bord, à sa taille naturelle. La barre de
+       défilement de l'iframe, collée à son bord droit, sort du champ elle
+       aussi.
 
-       Aucune mise à l'échelle : elle rapetissait le texte sans rien
-       résoudre, puisque la partie étroite l'est volontairement. */
+       --sheet-ratio est le seul chiffre à ajuster : s'il reste un liseré
+       gris, le baisser ; si le blanc est rogné sur les côtés, le monter. */
     .booking-container {
+      --sheet-ratio: 0.63;
       --embed-h: 1250px;
+      position: relative;
       border-radius: var(--r-surface);
       overflow: hidden;
       height: var(--embed-h);
@@ -171,14 +173,20 @@
 
     .booking-container iframe {
       display: block;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
       height: 100%;
       border: 0;
     }
 
     @media (max-width: 640px) {
-      /* Sur téléphone, Bookings empile tout : l'en-tête et le calendrier
-         se suivent sur une colonne, il faut donc davantage de hauteur. */
+      /* Sur téléphone, Bookings passe en pleine largeur : il n'y a plus de
+         gris à couper, et recadrer amputerait le contenu. Le JS n'élargit
+         donc pas l'iframe sous ce seuil — seule la hauteur change ici,
+         parce que tout s'y empile sur une colonne. */
       .booking-container { --embed-h: 1400px; }
     }
 
@@ -386,7 +394,46 @@
       }
 
       chargerAgendaDuConseiller(state && state.leadId);
+      recadrerEmbed();
     }
+
+    /* Élargir l'iframe pour que sa page blanche remplisse le cadre.
+     *
+     * Bookings est servi par Microsoft : aucune règle d'ici ne franchit la
+     * frontière de l'iframe, on ne peut donc pas élargir sa page blanche.
+     * Mais on peut lui donner plus de place et ne montrer que le milieu :
+     * si le blanc occupe 63% de la largeur, une iframe de largeur
+     * cadre/0,63 rend un blanc exactement large comme le cadre, et le gris
+     * part des deux côtés, hors du champ visible.
+     *
+     * Sous 640px on n'y touche pas : Bookings y passe en pleine largeur,
+     * il n'y a plus de gris à couper et recadrer amputerait le contenu.
+     */
+    function recadrerEmbed() {
+      const boite = document.querySelector('.booking-container');
+      const cadre = document.getElementById('booking-frame');
+      if (!boite || !cadre) {
+        return;
+      }
+
+      const dispo = boite.clientWidth;
+      const part = parseFloat(
+        getComputedStyle(boite).getPropertyValue('--sheet-ratio')
+      ) || 0.63;
+
+      if (dispo < 640 || !(part > 0) || part >= 1) {
+        cadre.style.width = '100%';
+        return;
+      }
+
+      cadre.style.width = Math.round(dispo / part) + 'px';
+    }
+
+    let redimTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(redimTimer);
+      redimTimer = setTimeout(recadrerEmbed, 150);
+    }, { passive: true });
 
 
     /* L'agenda du conseiller à qui le lead a été attribué.
