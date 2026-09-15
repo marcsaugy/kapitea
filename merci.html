@@ -150,8 +150,8 @@
 
     /* Recadrer plutôt que réduire.
        Bookings donne à sa page blanche une part fixe de la largeur qu'on
-       lui accorde — mesuré à ~68% — et peint le reste en gris. Comme c'est
-       une proportion, réduire l'échelle ne sert à rien : rendre 1030px de
+       lui accorde — mesuré à ~70% — et peint le reste en gris. Comme c'est
+       une proportion, réduire l'échelle ne sert à rien : rendre 1000px de
        large puis ramener à 700 redonne exactement la même largeur de blanc.
 
        On rend donc l'iframe PLUS LARGE que le cadre, centrée, et le cadre
@@ -163,7 +163,7 @@
        --sheet-ratio est le seul chiffre à ajuster : s'il reste un liseré
        gris, le baisser ; si le blanc est rogné sur les côtés, le monter. */
     .booking-container {
-      --sheet-ratio: 0.68;
+      --sheet-ratio: 0.70;
       --embed-h: 1250px;
       position: relative;
       border-radius: var(--r-surface);
@@ -402,8 +402,8 @@
      * Bookings est servi par Microsoft : aucune règle d'ici ne franchit la
      * frontière de l'iframe, on ne peut donc pas élargir sa page blanche.
      * Mais on peut lui donner plus de place et ne montrer que le milieu :
-     * si le blanc occupe 68% de la largeur, une iframe de largeur
-     * cadre/0,68 rend un blanc exactement large comme le cadre, et le gris
+     * si le blanc occupe 70% de la largeur, une iframe de largeur
+     * cadre/0,70 rend un blanc exactement large comme le cadre, et le gris
      * part des deux côtés, hors du champ visible.
      *
      * Sous 640px on n'y touche pas : Bookings y passe en pleine largeur,
@@ -419,7 +419,7 @@
       const dispo = boite.clientWidth;
       const part = parseFloat(
         getComputedStyle(boite).getPropertyValue('--sheet-ratio')
-      ) || 0.68;
+      ) || 0.70;
 
       if (dispo < 640 || !(part > 0) || part >= 1) {
         cadre.style.width = '100%';
