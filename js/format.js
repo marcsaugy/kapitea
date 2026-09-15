@@ -21,6 +21,17 @@ function formatAmount(value) {
 const TWEEN_MS = 120;
 const tweenState = new WeakMap();
 
+/* Le montant est désormais un champ éditable : textContent n'y écrit rien.
+   Un seul point de sortie pour les deux cas, plutôt qu'un test dispersé
+   dans chaque branche de l'interpolation. */
+function writeAmount(el, text) {
+  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    el.value = text;
+  } else {
+    el.textContent = text;
+  }
+}
+
 function tweenAmount(el, target, format) {
   const render = format || formatCHF;
   const to = Number(target) || 0;
@@ -34,7 +45,7 @@ function tweenAmount(el, target, format) {
   const from = previous ? previous.value : to;
 
   if (from === to || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    el.textContent = render(to);
+    writeAmount(el, render(to));
     tweenState.set(el, { value: to, frame: 0 });
     return;
   }
@@ -48,7 +59,7 @@ function tweenAmount(el, target, format) {
     const t = Math.min(Math.max((now - start) / TWEEN_MS, 0), 1);
     // Sortie cubique : l'essentiel du chemin est parcouru tout de suite
     const value = t === 1 ? to : from + (to - from) * (1 - Math.pow(1 - t, 3));
-    el.textContent = render(value);
+    writeAmount(el, render(value));
     tweenState.set(el, { value: value, frame: t === 1 ? 0 : requestAnimationFrame(step) });
   }
 

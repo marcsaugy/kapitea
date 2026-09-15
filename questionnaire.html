@@ -181,9 +181,13 @@
       margin-bottom: var(--spacing-2xl);
     }
 
+    /* Le montant est un champ, pas un affichage : on peut faire glisser la
+       poignée pour approcher, ou taper le chiffre exact. Un input n'hérite
+       ni de la police ni de la couleur — tout est donc posé explicitement. */
     .slider-value {
       font-variant-numeric: tabular-nums;
       font-feature-settings: "tnum" 1;
+      font-family: var(--font-family);
       font-size: var(--amount-size);
       font-weight: 500;
       letter-spacing: var(--amount-track);
@@ -191,6 +195,26 @@
       color: var(--terracotta);
       margin-bottom: var(--spacing-lg);
       text-align: center;
+      width: 100%;
+      display: block;
+      padding: var(--spacing-sm) 0;
+      background: transparent;
+      border: none;
+      border-radius: var(--r-input);
+      /* Le champ ne s'annonce pas : c'est le curseur en dessous qui dit
+         qu'on est sur un montant. Un liseré au survol suffit à signaler
+         qu'on peut aussi écrire dedans. */
+      box-shadow: inset 0 0 0 1px transparent;
+      transition: box-shadow var(--transition-fast);
+    }
+
+    .slider-value:hover {
+      box-shadow: inset 0 0 0 1px var(--line-2);
+    }
+
+    .slider-value:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--terracotta);
     }
 
     input[type="range"] {
@@ -577,7 +601,9 @@
         <h2 class="tight" id="montant-title">Quel est le montant approximatif de votre capital de prévoyance ?</h2>
         <div class="question-hint">Une estimation suffit, on affinera ensemble.</div>
         <div class="slider-container">
-          <div class="slider-value" id="montant-display">CHF 400'000</div>
+          <input type="text" class="slider-value" id="montant-display" value="CHF 400'000"
+                 inputmode="numeric" autocomplete="off" spellcheck="false"
+                 aria-label="Montant de votre capital de prévoyance, en francs — modifiable au clavier">
           <input type="range" aria-label="Montant de votre capital de prévoyance, en francs" id="montant-slider" min="50000" max="2000000" step="10000" value="400000">
           <div class="slider-labels">
             <span>CHF 50'000</span>
@@ -718,7 +744,9 @@
         <h2 class="tight" id="montant-heritage-title">Quel montant approximatif avez-vous reçu ou allez-vous recevoir ?</h2>
         <div class="question-hint">Une estimation suffit.</div>
         <div class="slider-container">
-          <div class="slider-value" id="montant-heritage-display">CHF 250'000</div>
+          <input type="text" class="slider-value" id="montant-heritage-display" value="CHF 250'000"
+                 inputmode="numeric" autocomplete="off" spellcheck="false"
+                 aria-label="Montant de l'héritage, en francs — modifiable au clavier">
           <input type="range" aria-label="Montant de l'héritage, en francs" id="montant-heritage-slider" min="20000" max="3000000" step="10000" value="250000">
           <div class="slider-labels">
             <span>CHF 20'000</span>
@@ -849,7 +877,9 @@
       <div class="questionnaire-screen segment-divorce" id="screen-montant-divorce">
         <h2 id="montant-divorce-title">Quel montant approximatif recevez-vous du partage ?</h2>
         <div class="slider-container">
-          <div class="slider-value" id="montant-divorce-display">CHF 150'000</div>
+          <input type="text" class="slider-value" id="montant-divorce-display" value="CHF 150'000"
+                 inputmode="numeric" autocomplete="off" spellcheck="false"
+                 aria-label="Montant que vous recevez du partage, en francs — modifiable au clavier">
           <input type="range" aria-label="Montant reçu du partage, en francs" id="montant-divorce-slider" min="20000" max="1500000" step="10000" value="150000">
           <div class="slider-labels">
             <span>CHF 20'000</span>
@@ -966,7 +996,9 @@
         <h2 class="tight" id="montant-vente-title">Quel montant net vous restera-t-il après remboursement de l'hypothèque ?</h2>
         <div class="question-hint">Après hypothèque et impôt sur les gains immobiliers, une estimation suffit.</div>
         <div class="slider-container">
-          <div class="slider-value" id="montant-vente-display">CHF 300'000</div>
+          <input type="text" class="slider-value" id="montant-vente-display" value="CHF 300'000"
+                 inputmode="numeric" autocomplete="off" spellcheck="false"
+                 aria-label="Montant net après remboursement, en francs — modifiable au clavier">
           <input type="range" aria-label="Montant net après remboursement de l'hypothèque, en francs" id="montant-vente-slider" min="50000" max="2000000" step="10000" value="300000">
           <div class="slider-labels">
             <span>CHF 50'000</span>
@@ -1098,7 +1130,9 @@
       <div class="questionnaire-screen segment-vente_entreprise" id="screen-montant-cession">
         <h2 id="montant-cession-title">Quel montant net avez-vous reçu ou allez-vous recevoir ?</h2>
         <div class="slider-container">
-          <div class="slider-value" id="montant-cession-display">CHF 500'000</div>
+          <input type="text" class="slider-value" id="montant-cession-display" value="CHF 500'000"
+                 inputmode="numeric" autocomplete="off" spellcheck="false"
+                 aria-label="Montant net de la cession, en francs — modifiable au clavier">
           <input type="range" aria-label="Montant net de la cession, en francs" id="montant-cession-slider" min="100000" max="5000000" step="50000" value="500000">
           <div class="slider-labels">
             <span>CHF 100'000</span>

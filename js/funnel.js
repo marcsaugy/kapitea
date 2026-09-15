@@ -754,7 +754,8 @@ function readableAnswers(st) {
       const title = document.getElementById(entry.title);
       const display = document.getElementById(entry.display);
       if (title && display) {
-        out[title.textContent.trim()] = display.textContent.trim();
+        // L'affichage du montant est un champ : son texte vit dans value.
+        out[title.textContent.trim()] = (display.value || display.textContent).trim();
       }
     }
   });
@@ -810,25 +811,79 @@ function setupMontantSlider() {
     return;
   }
 
+  const min = parseInt(slider.min, 10);
+  const max = parseInt(slider.max, 10);
+
   if (state.answers[screen.key]) {
     slider.value = state.answers[screen.key];
   }
 
-  function updateDisplay() {
-    const value = parseInt(slider.value, 10);
+  /* Enregistre la valeur retenue. Le curseur ne sert qu'à la montrer : sa
+     position est bornée à sa propre plage et alignée sur son pas, alors
+     que la réponse, elle, est prise telle quelle. C'est ce qui permet de
+     taper 437'500 sans se le voir arrondi à 440'000 — et de déclarer un
+     capital au-delà de la graduation sans être plafonné par elle. */
+  function commit(value) {
     state.answers[screen.key] = value;
-    const formatted = formatCurrency(value);
-    // tweenAmount vient de js/format.js
-    tweenAmount(display, value, formatCurrency);
-    // Un lecteur d'écran annoncerait « 400000 » sans aria-valuetext
+    slider.value = Math.min(Math.max(value, min), max);
     slider.setAttribute('aria-valuenow', value);
-    slider.setAttribute('aria-valuetext', formatted);
+    // Un lecteur d'écran annoncerait « 400000 » sans aria-valuetext
+    slider.setAttribute('aria-valuetext', formatCurrency(value));
     state.scores = calculateScore(state);
     saveState();
   }
 
-  updateDisplay();
-  slider.addEventListener('input', updateDisplay);
+  // ── Le curseur : des montants ronds, et l'affichage qui suit ──────────
+  function onSlide() {
+    const value = parseInt(slider.value, 10);
+    commit(value);
+    // tweenAmount vient de js/format.js
+    tweenAmount(display, value, formatCurrency);
+  }
+
+  // ── Le champ : le chiffre exact ───────────────────────────────────────
+  /* À la prise de focus, on retire « CHF » et les apostrophes. Éditer une
+     chaîne formatée oblige à se battre avec le curseur de texte à chaque
+     frappe ; sur des chiffres nus, on tape simplement. */
+  display.addEventListener('focus', () => {
+    display.value = String(state.answers[screen.key] || '');
+    display.select();
+  });
+
+  display.addEventListener('input', () => {
+    // Neuf chiffres au plus : au-delà on sort du domaine du plausible, et
+    // la valeur ne rentrerait plus dans l'affichage.
+    const digits = display.value.replace(/\D/g, '').slice(0, 9);
+    if (display.value !== digits) {
+      display.value = digits;
+    }
+    if (digits) {
+      commit(parseInt(digits, 10));
+    }
+  });
+
+  /* Au départ du champ, on remet la forme lisible. Un champ vidé ou à zéro
+     reprend la dernière valeur retenue : mieux vaut un montant approchant
+     qu'un lead sans montant, que personne ne saura ni scorer ni rappeler
+     en connaissance de cause. */
+  function formatField() {
+    const value = state.answers[screen.key];
+    display.value = formatCurrency(value && value > 0 ? value : min);
+    if (!value || value <= 0) {
+      commit(min);
+    }
+  }
+
+  display.addEventListener('blur', formatField);
+  display.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      // Entrée fait avancer l'écran : la valeur doit être fixée avant.
+      formatField();
+    }
+  });
+
+  onSlide();
+  slider.addEventListener('input', onSlide);
 }
 
 // Update option styling on selection
