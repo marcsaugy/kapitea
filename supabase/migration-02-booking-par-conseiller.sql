@@ -37,13 +37,14 @@ comment on column public.advisors.booking_url is
 --
 -- Cette fonction est la seule ouverture : on lui donne l'identifiant d'un
 -- lead, elle rend deux choses et deux seulement — l'URL de réservation du
--- conseiller, et son prénom. Ni nom de famille, ni e-mail, ni téléphone,
--- ni le moindre champ du lead.
+-- conseiller, et son nom. Ni e-mail, ni téléphone, ni le moindre champ du
+-- lead.
 --
--- Le prénom sert à la page de remerciement, qui annonce « Samuel vous
--- appelle dans les 24 heures » plutôt qu'« un conseiller » : sur un numéro
--- inconnu, savoir qui appelle est ce qui décide qu'on décroche. Il est de
--- toute façon public, les fiches de l'équipe le portent déjà.
+-- Le nom sert à la page de remerciement, qui annonce « Samuel Moyo vous
+-- appelle dans les 24 heures » plutôt qu'« un conseiller », et nomme la
+-- personne dont on voit l'agenda juste en dessous : sur un numéro inconnu,
+-- savoir qui appelle est ce qui décide qu'on décroche. Il est de toute
+-- façon public, les fiches de l'équipe le portent déjà.
 --
 -- SECURITY DEFINER lui permet de traverser la RLS ; trois garde-fous
 -- bornent ce qu'elle peut servir :
@@ -62,14 +63,14 @@ comment on column public.advisors.booking_url is
 drop function if exists public.booking_url_for_lead(uuid);
 
 create function public.booking_url_for_lead(p_lead_id uuid)
-returns table (booking_url text, prenom text)
+returns table (booking_url text, nom text)
 language sql
 security definer
 set search_path = public
 stable
 as $$
   select a.booking_url,
-         split_part(a.full_name, ' ', 1)
+         a.full_name
   from public.leads l
   join public.advisors a on a.id = l.advisor_id
   where l.id = p_lead_id

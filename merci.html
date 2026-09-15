@@ -301,9 +301,12 @@
       <div class="booking-section">
         <div class="booking-header">
           <h2>Préférez-vous fixer un créneau maintenant&#8239;?</h2>
-          <p>30&nbsp;minutes avec un conseiller FINMA indépendant, à l'heure qui vous
-             arrange. Vous raccrochez en sachant quoi faire de votre capital — et
-             ce qu'il vaut mieux éviter.</p>
+          <!-- Nommer la personne dont on voit l'agenda : c'est la même que
+               celle annoncée juste au-dessus, et celle qui suivra le dossier.
+               Le JS remplace la formule générique quand le nom est connu. -->
+          <p>30&nbsp;minutes avec <span id="advisor-intro">un conseiller FINMA
+             indépendant</span>, à l'heure qui vous arrange. Vous raccrochez en
+             sachant quoi faire de votre capital — et ce qu'il vaut mieux éviter.</p>
         </div>
         <div class="booking-container">
           <iframe id="booking-frame"
@@ -522,9 +525,16 @@
             return;
           }
 
-          // Le prénom d'abord : il vaut même quand l'agenda manque encore.
-          if (ligne.prenom) {
-            document.getElementById('advisor-name').textContent = ligne.prenom;
+          /* Le nom d'abord : il vaut même quand l'agenda manque encore.
+             Il paraît à deux endroits — qui appelle, et avec qui on prend
+             le rendez-vous — parce que c'est la même personne, celle à qui
+             le tour de rôle a confié le dossier et qui l'aura dans son CRM. */
+          if (ligne.nom) {
+            document.getElementById('advisor-name').textContent = ligne.nom;
+            const intro = document.getElementById('advisor-intro');
+            if (intro) {
+              intro.textContent = ligne.nom + ', conseiller FINMA indépendant';
+            }
           }
 
           const url = ligne.booking_url;
