@@ -488,6 +488,11 @@ function getSegmentScreens() {
 
 // Update screen display
 function showScreen(screenIndex) {
+  /* L'écran change : un passage automatique encore en attente viserait la
+     question précédente. Le cas se produit quand on clique « Retour » dans
+     les 260 ms qui suivent une réponse — on repartirait aussitôt en avant. */
+  cancelAutoNext();
+
   const segmentScreens = getSegmentScreens();
   const allScreens = document.querySelectorAll('.questionnaire-screen');
   const lastScreenIndex = segmentScreens.length - 1;
@@ -827,6 +832,18 @@ function setupMontantSlider() {
 }
 
 // Update option styling on selection
+/* Délai avant de passer à la question suivante.
+   Sans lui, l'écran change dans la même image que le clic : le choix n'a
+   jamais l'air d'avoir été pris en compte, et le passage ressemble à un
+   raté de clic. 260 ms suffisent à voir la réponse se marquer. */
+const AUTO_NEXT_DELAY = 260;
+let autoNextTimer = null;
+
+function cancelAutoNext() {
+  clearTimeout(autoNextTimer);
+  autoNextTimer = null;
+}
+
 function setupOptionListeners() {
   const radioInputs = document.querySelectorAll('input[type="radio"]');
 
@@ -839,6 +856,30 @@ function setupOptionListeners() {
         option.classList.remove('selected');
       });
       e.target.parentElement.classList.add('selected');
+    });
+
+    /* Passage automatique. On écoute `click` plutôt que `change`, pour
+       deux raisons :
+
+       - après un retour en arrière, la réponse est déjà cochée ; re-cliquer
+         dessus n'émet aucun `change` — la valeur n'a pas changé — et l'écran
+         resterait figé alors que l'utilisateur vient de confirmer son choix.
+
+       - `e.detail` vaut 0 pour un clic émis par le clavier. Les flèches
+         parcourent nativement les réponses d'un groupe radio en cochant au
+         passage : sans ce test, explorer les options au clavier ferait
+         défiler le questionnaire sans que rien n'ait été validé. Au clavier,
+         on choisit avec les flèches et on valide avec Entrée. */
+    input.addEventListener('click', (e) => {
+      if (!e.detail || !input.checked) {
+        return;
+      }
+      // Un changement d'avis pendant le délai annule le passage en cours.
+      cancelAutoNext();
+      autoNextTimer = setTimeout(() => {
+        autoNextTimer = null;
+        handleNext();
+      }, AUTO_NEXT_DELAY);
     });
   });
 }
