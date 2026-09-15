@@ -121,11 +121,14 @@
       text-align: right;
     }
 
-    /* Réservation — Microsoft Bookings */
+    /* Réservation — Microsoft Bookings.
+       Dernière de la page : on confirme, on rappelle ce qui a été dit, on
+       annonce l'appel, puis on propose d'aller plus vite. Le délai
+       d'entrée suit ce nouvel ordre. */
     .booking-section {
       margin-bottom: var(--spacing-2xl);
       animation: slideInUp var(--transition-base) ease-out;
-      animation-delay: 0.2s;
+      animation-delay: 0.3s;
       animation-fill-mode: both;
     }
 
@@ -190,14 +193,17 @@
       .booking-container { --embed-h: 1400px; }
     }
 
-    /* Reassurance banner */
+    /* Le rappel sous 24 h, désormais avant la réservation : il faut que le
+       prospect sache ce qui va se passer avant qu'on lui propose d'aller
+       plus vite. */
     .reassurance-banner {
       background-color: var(--brique-wash);
       border: 1px solid var(--line-2);
       border-radius: var(--r-input);
       padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-2xl);
       animation: slideInUp var(--transition-base) ease-out;
-      animation-delay: 0.3s;
+      animation-delay: 0.2s;
       animation-fill-mode: both;
     }
 
@@ -264,6 +270,20 @@
         <p>Les données de votre questionnaire n'ont pas pu être récupérées. Vous pouvez toujours réserver un créneau ci-dessous.</p>
       </div>
 
+      <!-- Le rappel sous 24 h.
+           L'ancienne version disait « on vous rappelle SI vous ne réservez
+           pas » : elle donnait une raison de ne pas réserver. Celle-ci
+           annonce l'appel comme certain, et sert surtout à ce qu'on
+           décroche — qui appelle, d'où, combien de temps, pour quoi faire.
+           Le prénom du conseiller est posé par JS quand il est connu. -->
+      <div class="reassurance-banner">
+        <p><strong><span id="advisor-name">Un conseiller</span> vous appelle dans les
+           24&nbsp;heures</strong>, depuis un numéro suisse. Comptez dix minutes&nbsp;: le
+           temps de comprendre votre situation et de vous dire ce qui mérite d'être
+           creusé. Si ce moment ne vous convient pas, choisissez votre créneau
+           ci-dessous.</p>
+      </div>
+
       <!-- Réservation — Microsoft Bookings.
            L'iframe est posé directement dans la page, sans passer par un
            script ni par CONFIG : c'est la seule action utile de cet écran,
@@ -284,19 +304,6 @@
         </div>
       </div>
 
-      <!-- Le rappel sous 24 h.
-           L'ancienne version disait « on vous rappelle SI vous ne réservez
-           pas » : elle donnait une raison de ne pas réserver. Celle-ci
-           annonce l'appel comme certain, et sert surtout à ce qu'on
-           décroche — qui appelle, d'où, combien de temps, pour quoi faire.
-           Le prénom du conseiller est posé par JS quand il est connu. -->
-      <div class="reassurance-banner">
-        <p><strong><span id="advisor-name">Un conseiller</span> vous appelle dans les
-           24&nbsp;heures</strong>, depuis un numéro suisse. Comptez dix minutes&nbsp;: le
-           temps de comprendre votre situation et de vous dire ce qui mérite d'être
-           creusé. Si ce moment ne vous convient pas, prenez plutôt un créneau
-           ci-dessus.</p>
-      </div>
     </div>
   </div>
 
