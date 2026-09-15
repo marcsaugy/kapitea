@@ -345,12 +345,13 @@ $$;
 -- 6. ATTRIBUTION DES ACCÈS
 -- ============================================================
 -- Par défaut (étape 2), les neuf conseillers restent Hypoteka-seuls.
--- Trois personnes travaillent sur les deux marques — ce sont elles, et
--- elles seules, qui se partagent les leads Kapitea au tour de rôle
--- (section 5). Ajouter quelqu'un ici l'ajoute au tourniquet.
+-- Ces quatre-là travaillent sur les deux marques — ce sont eux, et eux
+-- seuls, qui se partagent les leads Kapitea au tour de rôle (section 5).
+-- Ajouter quelqu'un ici l'ajoute au tourniquet, il n'y a pas deux listes
+-- à tenir.
 update public.advisors
    set brands = array['hypoteka', 'kapitea']
- where slug in ('marc-saugy', 'julien-schaedgen', 'samuel-moyo');
+ where slug in ('marc-saugy', 'julien-schaedgen', 'samuel-moyo', 'brahim-dutruit');
 
 -- Le tourniquet repart de zéro si la liste change en cours de route :
 -- inutile de toucher à lead_routing, il reprend simplement à la position
