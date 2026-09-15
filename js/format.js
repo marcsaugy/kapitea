@@ -32,6 +32,36 @@ function writeAmount(el, text) {
   }
 }
 
+/* Écarte à la volée ce qui n'est pas un nombre, sans renvoyer le curseur
+   de texte en fin de ligne.
+
+   Réécrire la valeur d'un input y replace le curseur à la fin : corriger
+   un chiffre au milieu d'un montant deviendrait impossible dès qu'une
+   frappe est refusée. On compte donc ce qui a été retiré AVANT le curseur,
+   et on le repose à la même place logique.
+
+   `nettoyer` reçoit du texte et renvoie du texte — pas un nombre : pendant
+   la frappe, « 4. » est un état légitime qu'un parseur réduirait à « 4 »,
+   effaçant le séparateur au moment même où on le tape. */
+function sanitizeField(el, nettoyer) {
+  const avant = el.value;
+  const propre = nettoyer(avant);
+  if (propre === avant) {
+    return propre;
+  }
+  const pos = el.selectionStart;
+  const retiresAvantCurseur = pos - nettoyer(avant.slice(0, pos)).length;
+  el.value = propre;
+  const nouveau = Math.max(pos - retiresAvantCurseur, 0);
+  // setSelectionRange lève sur un input qui ne le gère pas (type number…)
+  try {
+    el.setSelectionRange(nouveau, nouveau);
+  } catch (e) {
+    /* sans importance : la valeur est posée, seul le curseur est perdu */
+  }
+  return propre;
+}
+
 function tweenAmount(el, target, format) {
   const render = format || formatCHF;
   const to = Number(target) || 0;

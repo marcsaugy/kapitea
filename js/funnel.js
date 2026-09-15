@@ -851,12 +851,11 @@ function setupMontantSlider() {
   });
 
   display.addEventListener('input', () => {
-    // Neuf chiffres au plus : au-delà on sort du domaine du plausible, et
-    // la valeur ne rentrerait plus dans l'affichage.
-    const digits = display.value.replace(/\D/g, '').slice(0, 9);
-    if (display.value !== digits) {
-      display.value = digits;
-    }
+    /* sanitizeField vient de js/format.js : il écarte ce qui n'est pas un
+       chiffre sans renvoyer le curseur de texte en fin de ligne — corriger
+       un chiffre au milieu d'un montant resterait sinon impossible.
+       Neuf chiffres au plus : au-delà on sort du domaine du plausible. */
+    const digits = sanitizeField(display, (txt) => txt.replace(/\D/g, '').slice(0, 9));
     if (digits) {
       commit(parseInt(digits, 10));
     }

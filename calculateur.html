@@ -159,14 +159,41 @@
       gap: var(--spacing-md);
     }
 
+    /* La valeur est un champ : on fait glisser pour approcher, ou on tape
+       le chiffre exact. Un input n'hérite ni de la police ni de la taille,
+       tout est donc posé explicitement. */
     .input-value {
       font-variant-numeric: tabular-nums;
       font-feature-settings: "tnum" 1;
+      font-family: var(--font-family);
       font-size: var(--font-size-base);
       color: var(--terracotta);
       font-weight: 600;
       min-width: 100px;
+      width: 8.5em;
       text-align: right;
+      background: transparent;
+      border: none;
+      border-radius: var(--r-input);
+      padding: 4px 6px;
+      /* Rien ne signale un champ au repos ; un liseré au survol suffit à
+         dire qu'on peut aussi écrire dedans. */
+      box-shadow: inset 0 0 0 1px transparent;
+      transition: box-shadow var(--transition-fast);
+    }
+
+    .input-value:hover:not(:disabled) {
+      box-shadow: inset 0 0 0 1px var(--line-2);
+    }
+
+    .input-value:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--terracotta);
+    }
+
+    .input-value:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .slider-container {
@@ -466,10 +493,12 @@
 
             <!-- Initial amount -->
             <div class="input-group">
-              <label class="input-label" for="slider-initial">
-                <span>Montant initial</span>
-                <span class="input-value" id="value-initial">CHF 20'000</span>
-              </label>
+              <div class="input-label">
+                <label for="slider-initial">Montant initial</label>
+                <input type="text" class="input-value" id="value-initial" value="CHF 20'000"
+                       inputmode="decimal" autocomplete="off" spellcheck="false"
+                       aria-label="Montant initial, en francs — modifiable au clavier">
+              </div>
               <div class="slider-container">
                 <input type="range" id="slider-initial" min="0" max="500000" step="5000" value="20000">
                 <div class="slider-labels">
@@ -481,10 +510,12 @@
 
             <!-- Monthly contribution -->
             <div class="input-group">
-              <label class="input-label" for="slider-monthly">
-                <span>Versement mensuel</span>
-                <span class="input-value" id="value-monthly">CHF 300</span>
-              </label>
+              <div class="input-label">
+                <label for="slider-monthly">Versement mensuel</label>
+                <input type="text" class="input-value" id="value-monthly" value="CHF 300"
+                       inputmode="decimal" autocomplete="off" spellcheck="false"
+                       aria-label="Versement mensuel, en francs par mois — modifiable au clavier">
+              </div>
               <div class="slider-container">
                 <input type="range" id="slider-monthly" min="0" max="5000" step="50" value="300">
                 <div class="slider-labels">
@@ -496,10 +527,12 @@
 
             <!-- Savings duration -->
             <div class="input-group">
-              <label class="input-label" for="slider-duration-savings">
-                <span>Durée d'épargne</span>
-                <span class="input-value" id="value-duration-savings">20 ans</span>
-              </label>
+              <div class="input-label">
+                <label for="slider-duration-savings">Durée d'épargne</label>
+                <input type="text" class="input-value" id="value-duration-savings" value="20 ans"
+                       inputmode="decimal" autocomplete="off" spellcheck="false"
+                       aria-label="Durée d'épargne, en années — modifiable au clavier">
+              </div>
               <div class="slider-container">
                 <input type="range" id="slider-duration-savings" min="1" max="40" step="1" value="20">
                 <div class="slider-labels">
@@ -511,10 +544,12 @@
 
             <!-- Interest rate -->
             <div class="input-group">
-              <label class="input-label" for="slider-rate">
-                <span>Taux d'intérêt annuel</span>
-                <span class="input-value" id="value-rate">4.0%</span>
-              </label>
+              <div class="input-label">
+                <label for="slider-rate">Taux d'intérêt annuel</label>
+                <input type="text" class="input-value" id="value-rate" value="4.0%"
+                       inputmode="decimal" autocomplete="off" spellcheck="false"
+                       aria-label="Taux d'intérêt annuel, en pourcent — modifiable au clavier">
+              </div>
               <div class="slider-container">
                 <input type="range" id="slider-rate" min="0" max="10" step="0.1" value="4">
                 <div class="slider-labels">
@@ -536,10 +571,12 @@
             <div class="withdrawal-section" id="withdrawal-section">
               <!-- Withdrawal duration -->
               <div class="input-group">
-                <label class="input-label" for="slider-duration-withdrawal">
-                  <span>Durée de retrait</span>
-                  <span class="input-value" id="value-duration-withdrawal">15 ans</span>
-                </label>
+                <div class="input-label">
+                <label for="slider-duration-withdrawal">Durée de retrait</label>
+                <input type="text" class="input-value" id="value-duration-withdrawal" value="15 ans"
+                       inputmode="decimal" autocomplete="off" spellcheck="false" disabled
+                       aria-label="Durée de retrait, en années — modifiable au clavier">
+              </div>
                 <div class="slider-container">
                   <input type="range" id="slider-duration-withdrawal" min="1" max="30" step="1" value="15" disabled>
                   <div class="slider-labels">
@@ -551,10 +588,12 @@
 
               <!-- Monthly withdrawal -->
               <div class="input-group">
-                <label class="input-label" for="slider-withdrawal">
-                  <span>Retrait mensuel</span>
-                  <span class="input-value" id="value-withdrawal">CHF 1'500</span>
-                </label>
+                <div class="input-label">
+                <label for="slider-withdrawal">Retrait mensuel</label>
+                <input type="text" class="input-value" id="value-withdrawal" value="CHF 1'500"
+                       inputmode="decimal" autocomplete="off" spellcheck="false" disabled
+                       aria-label="Retrait mensuel, en francs par mois — modifiable au clavier">
+              </div>
                 <div class="slider-container">
                   <input type="range" id="slider-withdrawal" min="0" max="10000" step="50" value="1500" disabled>
                   <div class="slider-labels">
@@ -870,51 +909,151 @@
 
     // Setup sliders
     function setupSliders() {
-      // Les montants s'interpolent (tweenAmount vient de js/format.js) ;
-      // les durées et le taux avancent d'un pas trop court pour que le
-      // mouvement se voie, ils sont écrits directement.
-      function amount(id, val) {
-        tweenAmount(document.getElementById(id), val, formatCurrency);
-        return formatCurrency(val);
+      /* Un taux tapé à la main peut porter plus d'une décimale. L'afficher
+         systématiquement à un chiffre dirait « 4.4 % » là où le calcul
+         utilise 4.35 — l'affichage doit montrer ce qui sert vraiment. */
+      function pourcent(val) {
+        const n = parseFloat(val);
+        const decimales = Math.round(n * 100) % 10 === 0 ? 1 : 2;
+        return `${n.toFixed(decimales)}%`;
       }
 
-      function label(id, text) {
-        document.getElementById(id).textContent = text;
-        return text;
-      }
-
-      // Chaque callback renvoie la valeur lisible finale : l'annonce vocale
-      // ne doit pas reprendre un chiffre pris au milieu d'une interpolation.
-      const sliders = {
-        'slider-initial': (val) => { state.savings.initial = parseInt(val); return amount('value-initial', val); },
-        'slider-monthly': (val) => { state.savings.monthly = parseInt(val); return amount('value-monthly', val); },
-        'slider-duration-savings': (val) => { state.savings.duration = parseInt(val); return label('value-duration-savings', `${val} ans`); },
-        'slider-rate': (val) => { state.savings.rate = parseFloat(val); return label('value-rate', `${parseFloat(val).toFixed(1)}%`); },
-        'slider-duration-withdrawal': (val) => { state.withdrawal.duration = parseInt(val); return label('value-duration-withdrawal', `${val} ans`); },
-        'slider-withdrawal': (val) => { state.withdrawal.amount = parseInt(val); return amount('value-withdrawal', val); },
+      /* Chaque curseur décrit aussi comment lire ce qu'on tape dans son
+         champ : les montants et les durées sont entiers, le taux accepte
+         une virgule ou un point. */
+      const ENTIER = {
+        nettoyer: (txt) => txt.replace(/\D/g, '').slice(0, 9),
+        lire: (txt) => (txt ? parseInt(txt, 10) : null),
+      };
+      const DECIMAL = {
+        /* La virgule devient un point, et « 4. » est conservé tel quel : au
+           moment où on tape le séparateur, la partie décimale est encore
+           vide, et le normaliser l'effacerait sous les doigts. */
+        nettoyer: (txt) => {
+          const parts = txt.replace(/,/g, '.').replace(/[^\d.]/g, '').split('.');
+          // Un seul séparateur, deux décimales au plus.
+          return parts.length > 1
+            ? parts[0].slice(0, 3) + '.' + parts.slice(1).join('').slice(0, 2)
+            : parts[0].slice(0, 3);
+        },
+        lire: (txt) => {
+          const n = parseFloat(txt);
+          return isNaN(n) ? null : n;
+        },
       };
 
-      Object.entries(sliders).forEach(([id, callback]) => {
+      /* `appliquer` pose la valeur et RENVOIE le texte lisible, sans
+         toucher au DOM. C'est ce qui permet de ne rien réécrire pendant la
+         frappe : la version précédente passait par tweenAmount, qui écrit
+         dans l'élément — chaque caractère tapé était aussitôt reformaté et
+         le curseur de texte sautait en fin de champ.
+
+         `interpole` distingue les montants, dont le saut d'un pas mérite
+         d'être adouci, des durées et du taux, dont le pas est trop court
+         pour que le mouvement se voie. */
+      const sliders = {
+        'slider-initial': {
+          saisie: ENTIER, brut: (v) => String(Math.round(v)), interpole: true,
+          appliquer: (val) => { state.savings.initial = Math.round(val); return formatCurrency(val); },
+        },
+        'slider-monthly': {
+          saisie: ENTIER, brut: (v) => String(Math.round(v)), interpole: true,
+          appliquer: (val) => { state.savings.monthly = Math.round(val); return formatCurrency(val); },
+        },
+        'slider-duration-savings': {
+          saisie: ENTIER, brut: (v) => String(Math.round(v)), interpole: false,
+          appliquer: (val) => { state.savings.duration = Math.round(val); return `${Math.round(val)} ans`; },
+        },
+        'slider-rate': {
+          saisie: DECIMAL, brut: (v) => String(parseFloat(v)), interpole: false,
+          appliquer: (val) => { state.savings.rate = parseFloat(val); return pourcent(val); },
+        },
+        'slider-duration-withdrawal': {
+          saisie: ENTIER, brut: (v) => String(Math.round(v)), interpole: false,
+          appliquer: (val) => { state.withdrawal.duration = Math.round(val); return `${Math.round(val)} ans`; },
+        },
+        'slider-withdrawal': {
+          saisie: ENTIER, brut: (v) => String(Math.round(v)), interpole: true,
+          appliquer: (val) => { state.withdrawal.amount = Math.round(val); return formatCurrency(val); },
+        },
+      };
+
+      Object.entries(sliders).forEach(([id, spec]) => {
         const slider = document.getElementById(id);
-        if (!slider) {
+        const champ = document.getElementById(id.replace('slider-', 'value-'));
+        if (!slider || !champ) {
           return;
         }
 
-        function refresh(value) {
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        let derniere = parseFloat(slider.value);
+
+        /* Le curseur ne sert qu'à montrer : sa position est bornée à sa
+           plage et alignée sur son pas, alors que la valeur retenue est
+           prise telle quelle. C'est ce qui permet de taper 437'500 sans se
+           le voir arrondi à 440'000, ou 4.35% sur un pas de 0.1. */
+        function refresh(value, enSaisie) {
+          derniere = value;
+          const readable = spec.appliquer(value);
+          // Pendant la frappe on ne touche pas au champ : y réécrire
+          // renverrait le curseur de texte en fin de ligne à chaque
+          // caractère. La valeur lisible y est remise au départ du champ.
+          if (!enSaisie) {
+            if (spec.interpole) {
+              // tweenAmount vient de js/format.js
+              tweenAmount(champ, value, formatCurrency);
+            } else {
+              champ.value = readable;
+            }
+          }
+          slider.value = Math.min(Math.max(value, min), max);
           // Sans aria-valuetext, un lecteur d'écran lit « 20000 »
-          const readable = callback(value);
           slider.setAttribute('aria-valuenow', value);
           slider.setAttribute('aria-valuetext', readable);
-          const pct = (value - slider.min) / (slider.max - slider.min) * 100;
+          const pct = (slider.value - min) / (max - min) * 100;
           slider.style.setProperty('--value', pct + '%');
         }
 
         slider.addEventListener('input', (e) => {
-          refresh(e.target.value);
+          refresh(parseFloat(e.target.value), false);
           updateDisplay();
         });
 
-        refresh(slider.value);
+        // ── Saisie au clavier ───────────────────────────────────────────
+        champ.addEventListener('focus', () => {
+          champ.value = spec.brut(derniere);
+          champ.select();
+        });
+
+        champ.addEventListener('input', () => {
+          // sanitizeField vient de js/format.js : il écarte ce qui n'est
+          // pas un nombre sans renvoyer le curseur de texte en fin de ligne.
+          const texte = sanitizeField(champ, spec.saisie.nettoyer);
+          const valeur = spec.saisie.lire(texte);
+          if (valeur === null) {
+            return;
+          }
+          refresh(valeur, true);
+          updateDisplay();
+        });
+
+        // Au départ du champ, on remet la forme lisible. Un champ vidé
+        // reprend la dernière valeur : le calcul ne doit jamais tourner
+        // sur un trou.
+        function reformater() {
+          refresh(derniere, false);
+          updateDisplay();
+        }
+        champ.addEventListener('blur', reformater);
+        champ.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            champ.blur();
+          }
+        });
+
+        refresh(parseFloat(slider.value), false);
       });
     }
 
@@ -931,6 +1070,11 @@
         withdrawalSection.classList.toggle('active');
         durationSlider.disabled = !state.withdrawal.enabled;
         withdrawalSlider.disabled = !state.withdrawal.enabled;
+        // Les champs suivent leur curseur : laisser la saisie ouverte sur
+        // une section éteinte permettrait de modifier un chiffre qui
+        // n'entre dans aucun calcul.
+        document.getElementById('value-duration-withdrawal').disabled = !state.withdrawal.enabled;
+        document.getElementById('value-withdrawal').disabled = !state.withdrawal.enabled;
         updateDisplay();
       });
     }
