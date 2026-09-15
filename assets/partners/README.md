@@ -1,48 +1,60 @@
 # Logos des partenaires
 
-Déposer ici un fichier par maison, nommé d'après son **slug** : le nom en
-minuscules, sans accents, chaque suite de caractères non alphanumériques
-remplacée par un tiret.
+Les fichiers se déposent ici **sous le nom qu'ils ont** : `js/partners.js`
+tient la liste exacte (champ `fichier`), espaces, majuscules et suffixes
+d'export compris. Rien à renommer.
 
-`js/partners.js` cherche `<slug>.svg`, puis `<slug>.png`. Dès qu'un fichier
-répond, il remplace le libellé sur la bande — **aucun code à modifier**.
+Pour un partenaire sans `fichier` déclaré, le script retombe sur la
+convention par défaut — le nom en minuscules, sans accents, chaque suite de
+caractères non alphanumériques remplacée par un tiret — et essaie dans
+l'ordre `<slug>.svg`, `.png`, `.webp`, `.jpg`, `.jpeg`. Déposer
+`ethenea.svg` suffit donc ; pour un nom de fichier qui ne suit pas cette
+forme, ajouter son `fichier` dans `js/partners.js`.
 
-| Partenaire | Fichier attendu |
+| Partenaire | Fichier en place |
 |---|---|
-| DWS | `dws.svg` |
-| ETHENEA | `ethenea.svg` |
-| Flossbach von Storch | `flossbach-von-storch.svg` |
-| Gerifonds | `gerifonds.svg` |
-| LLB Swiss | `llb-swiss.svg` |
-| Pictet | `pictet.svg` |
-| Schroders | `schroders.svg` |
-| Swiss Life | `swiss-life.svg` |
-| Swisscanto | `swisscanto.svg` |
-| UBS | `ubs.svg` |
-| J.P. Morgan | `j-p-morgan.svg` |
-| LGT | `lgt.svg` |
-| T. Rowe Price | `t-rowe-price.svg` |
-| Hauck Aufhäuser | `hauck-aufhauser.svg` |
-| Fidelity | `fidelity.svg` |
-| J. Safra Sarasin | `j-safra-sarasin.svg` |
-| Maveris | `maveris.svg` |
-| HBM Asset Management | `hbm-asset-management.svg` |
-| Valitas | `valitas.svg` |
-| BCV | `bcv.svg` |
-| IST | `ist.svg` |
-| BLKB | `blkb.svg` |
-| Valiant | `valiant.svg` |
-| OLZ | `olz.svg` |
-| SSGA | `ssga.svg` |
-| BlackRock | `blackrock.svg` |
-| zCapital | `zcapital.svg` |
-| Zweiplus | `zweiplus.svg` |
-| Zwei Wealth | `zwei-wealth.svg` |
+| DWS | `DWS.svg` |
+| ETHENEA | — **manquant** |
+| Flossbach von Storch | `Flossbach von Storch.svg` |
+| Gerifonds | `Gerifonds.svg` |
+| LLB Swiss | `LLB Swiss.svg` |
+| Pictet | `Pictet.svg` |
+| Schroders | `Schroders.svg` |
+| Swiss Life | `Swiss Life.jpg` |
+| Swisscanto | `Swisscanto.svg` |
+| UBS | `UBS.png` |
+| J.P. Morgan | `J.P. Morgan.svg` |
+| LGT | `LGT.svg` |
+| T. Rowe Price | `T.Rowe Price.png` |
+| Hauck Aufhäuser | `Hauck Aufhauser.svg` |
+| Fidelity | `Fidelity.svg` |
+| J. Safra Sarasin | `J. Safra Sarasin.svg` |
+| Maveris | — **manquant** |
+| HBM Partners | `HBM Partners.svg` |
+| Valitas | `Valitas.png` |
+| BCV | `BCV.svg` |
+| IST | — **manquant** |
+| BLKB | `BLKB.svg` |
+| Valiant | `Valiant_RGB.png` |
+| OLZ | `OLZ.png` |
+| SSGA | `SSGA.svg` |
+| BlackRock | `BlackRock.svg` |
+| zCapital | `zCapital.png` |
+| Zweiplus | `Zweiplus.svg` |
+| Zwei Wealth | `Zwei Wealth.png` |
+
+Tant qu'un fichier manque, le partenaire s'affiche en toutes lettres sur la
+bande : rien ne casse, la case est simplement écrite au lieu d'être dessinée.
 
 ## Ce qui rend bien sur la bande
 
-- **SVG de préférence**, sinon PNG sur fond transparent. Un PNG sur fond
-  blanc se verra comme un rectangle dès que la page n'est pas blanche.
+- **SVG de préférence** : net à toute taille et léger. Sinon PNG ou WebP
+  détourés.
+- **Le JPEG fonctionne aussi**, mais il n'a pas de transparence : il arrive
+  avec son fond. La bande le compose en `multiply`, ce qui fait disparaître
+  un fond blanc dans le crème de la page — le tracé seul subsiste. Un fond
+  de couleur, lui, resterait visible : dans ce cas, préférez un autre
+  format ou détourez le fichier.
 - Les logos sont affichés en **niveaux de gris**, colorés au survol. Un
   logo déjà monochrome passe donc très bien.
 - Hauteur de rendu : **44 px**, largeur libre jusqu'à 150 px. Inutile de

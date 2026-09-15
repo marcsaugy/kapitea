@@ -340,6 +340,13 @@
     .partners-piste-cadre {
       position: relative;
       overflow: hidden;
+      /* Un fond explicite, et non hérité : le masque ci-dessous isole la
+         composition, et sans cette couleur le `multiply` des logos n'aurait
+         rien contre quoi se composer — un fond blanc de JPEG resterait
+         blanc, en rectangle sur le crème de la page. C'est ce fond-ci qui
+         sert quand l'animation est coupée (mouvement réduit) : la piste
+         n'est alors plus transformée, donc plus isolante. */
+      background-color: var(--bg);
       -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
       mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     }
@@ -347,6 +354,11 @@
     .partners-track {
       display: flex;
       width: max-content;
+      /* C'est ICI que le fond compte, pas seulement sur le cadre : la piste
+         est transformée par son animation, ce qui en fait le groupe
+         d'isolation le plus proche des logos. C'est contre CE fond que leur
+         `multiply` se compose — sans lui, un blanc de JPEG reste blanc. */
+      background-color: var(--bg);
       /* 29 partenaires par copie : au-delà d'une minute le défilement
          paraît figé, en deçà de trente secondes il fatigue. */
       animation: partners-defile 75s linear infinite;
@@ -390,6 +402,12 @@
       filter: grayscale(1);
       opacity: 0.65;
       transition: filter var(--transition-base), opacity var(--transition-base);
+      /* Un JPEG n'a pas de transparence : il arrive avec son fond blanc, qui
+         se découperait en rectangle sur le crème de la page. En multipliant,
+         le blanc disparaît dans le fond et seul le tracé subsiste. Sans
+         effet visible sur un SVG ou un PNG détouré — multiplier par un fond
+         quasi blanc ne change presque rien. */
+      mix-blend-mode: multiply;
     }
 
     .partner:hover .partner-logo {
