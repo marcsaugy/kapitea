@@ -129,6 +129,20 @@
       animation-fill-mode: both;
     }
 
+    /* La colonne de texte fait 700px, ce qui est bon pour lire mais étroit
+       pour un calendrier : Bookings y empile ses jours et ses créneaux en
+       une bande fine, entourée de son propre fond gris. On laisse donc la
+       section déborder la colonne dès que la fenêtre le permet.
+
+       Des marges négatives plutôt qu'un translateX : la section porte déjà
+       une animation d'entrée en transform, qui écraserait le décalage. */
+    @media (min-width: 1040px) {
+      .booking-section {
+        margin-left: -140px;
+        margin-right: -140px;
+      }
+    }
+
     .booking-header {
       margin-bottom: var(--spacing-lg);
     }
@@ -254,8 +268,10 @@
            absent en production. -->
       <div class="booking-section">
         <div class="booking-header">
-          <h2>Réservez 30 minutes</h2>
-          <p>Faites le point sur votre capital avec un conseiller</p>
+          <h2>Pas envie d'attendre&#8239;? Choisissez votre créneau.</h2>
+          <p>30&nbsp;minutes avec un conseiller FINMA indépendant, à l'heure qui vous
+             arrange. Vous raccrochez en sachant quoi faire de votre capital — et
+             ce qu'il vaut mieux éviter.</p>
         </div>
         <div class="booking-container">
           <iframe
@@ -265,9 +281,18 @@
         </div>
       </div>
 
-      <!-- Reassurance banner -->
+      <!-- Le rappel sous 24 h.
+           L'ancienne version disait « on vous rappelle SI vous ne réservez
+           pas » : elle donnait une raison de ne pas réserver. Celle-ci
+           annonce l'appel comme certain, et sert surtout à ce qu'on
+           décroche — qui appelle, d'où, combien de temps, pour quoi faire.
+           Le prénom du conseiller est posé par JS quand il est connu. -->
       <div class="reassurance-banner">
-        <p>Un conseiller FINMA vous contactera <strong>sous 24h</strong> si vous ne réservez pas de créneau maintenant.</p>
+        <p><strong><span id="advisor-name">Un conseiller</span> vous appelle dans les
+           24&nbsp;heures</strong>, depuis un numéro suisse. Comptez dix minutes&nbsp;: le
+           temps de comprendre votre situation et de vous dire ce qui mérite d'être
+           creusé. Si ce moment ne vous convient pas, prenez plutôt un créneau
+           ci-dessus.</p>
       </div>
     </div>
   </div>
@@ -395,8 +420,20 @@
         body: JSON.stringify({ p_lead_id: leadId }),
       })
         .then((r) => (r.ok ? r.json() : null))
-        .then((url) => {
-          // La fonction rend null quand le conseiller n'a pas encore de page.
+        .then((lignes) => {
+          // La fonction rend une table : PostgREST renvoie donc un tableau,
+          // vide quand le lead est inconnu ou trop ancien.
+          const ligne = Array.isArray(lignes) ? lignes[0] : null;
+          if (!ligne) {
+            return;
+          }
+
+          // Le prénom d'abord : il vaut même quand l'agenda manque encore.
+          if (ligne.prenom) {
+            document.getElementById('advisor-name').textContent = ligne.prenom;
+          }
+
+          const url = ligne.booking_url;
           if (typeof url !== 'string' || url.indexOf('https://') !== 0) {
             return;
           }

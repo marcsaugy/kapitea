@@ -47,14 +47,27 @@ comment on column public.advisors.booking_url is
 --   · le lead doit dater de moins de deux heures, ce qui réduit la
 --     fonction à son seul usage légitime — le prospect qui vient d'être
 --     redirigé sur /merci.
-create or replace function public.booking_url_for_lead(p_lead_id uuid)
-returns text
+-- Elle rend aussi le prénom du conseiller. La page de remerciement
+-- annonce alors « Samuel vous appelle dans les 24 heures » plutôt qu'« un
+-- conseiller » : sur un numéro inconnu, savoir qui appelle est ce qui
+-- décide qu'on décroche. Ce prénom est de toute façon public — les fiches
+-- de l'équipe le portent déjà.
+-- `create or replace` ne sait pas changer le type de retour d'une fonction
+-- existante : sans ce drop, rejouer la migration sur une base qui porte
+-- déjà une version antérieure échoue sur « cannot change return type ».
+-- Une fonction n'est pas une donnée — la supprimer pour la recréer dans la
+-- même transaction ne coûte rien.
+drop function if exists public.booking_url_for_lead(uuid);
+
+create function public.booking_url_for_lead(p_lead_id uuid)
+returns table (booking_url text, prenom text)
 language sql
 security definer
 set search_path = public
 stable
 as $$
-  select a.booking_url
+  select a.booking_url,
+         split_part(a.full_name, ' ', 1)
   from public.leads l
   join public.advisors a on a.id = l.advisor_id
   where l.id = p_lead_id
