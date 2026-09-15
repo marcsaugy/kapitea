@@ -190,7 +190,13 @@
          gris à couper, et recadrer amputerait le contenu. Le JS n'élargit
          donc pas l'iframe sous ce seuil — seule la hauteur change ici,
          parce que tout s'y empile sur une colonne. */
-      .booking-container { --embed-h: 1400px; }
+      /* Assez haut pour que Bookings n'ait pas à défiler à l'intérieur du
+         cadre. Sur téléphone il empile date, heures, puis le formulaire :
+         si le cadre est plus court, on se retrouve à faire défiler une
+         zone à l'intérieur d'une page qui défile aussi — le geste part
+         dans l'un ou dans l'autre selon l'endroit où le doigt se pose. Une
+         seule page qui défile vaut mieux qu'un cadre plus compact. */
+      .booking-container { --embed-h: 1900px; }
     }
 
     /* Le rappel sous 24 h, désormais avant la réservation : il faut que le
@@ -441,6 +447,41 @@
       clearTimeout(redimTimer);
       redimTimer = setTimeout(recadrerEmbed, 150);
     }, { passive: true });
+
+    /* Caler le calendrier en haut de l'écran dès qu'on entre dedans.
+     *
+     * Ce qui se passe à l'intérieur de l'iframe nous est inaccessible :
+     * Bookings est servi par Microsoft, le même-origine interdit d'y voir
+     * un clic, d'y lire une position de défilement ou de l'y déplacer.
+     * Impossible, donc, d'enchaîner date → heures → formulaire depuis ici.
+     *
+     * Une seule chose traverse la frontière : le fait que l'iframe prenne
+     * le focus. La fenêtre parente perd alors le sien, et activeElement
+     * devient l'iframe — sans rien révéler de ce qui s'y trouve. On s'en
+     * sert pour remonter le cadre en haut de l'écran : le calendrier
+     * dispose de toute la hauteur, au lieu de commencer à mi-page avec le
+     * récapitulatif encore visible au-dessus.
+     */
+    function calerSurLeCalendrier() {
+      const boite = document.querySelector('.booking-container');
+      if (!boite || document.activeElement !== document.getElementById('booking-frame')) {
+        return;
+      }
+      const haut = boite.getBoundingClientRect().top + window.scrollY;
+      // Déjà en place à quelques pixels près : ne pas bouger pour rien.
+      if (Math.abs(window.scrollY - haut) < 40) {
+        return;
+      }
+      const doux = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'auto' : 'smooth';
+      window.scrollTo({ top: haut, behavior: doux });
+    }
+
+    // Le focus part vers l'iframe : la fenêtre, elle, le perd.
+    window.addEventListener('blur', () => {
+      // Au tour suivant, activeElement a fini de basculer.
+      setTimeout(calerSurLeCalendrier, 0);
+    });
 
 
     /* L'agenda du conseiller à qui le lead a été attribué.
