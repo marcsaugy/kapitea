@@ -99,15 +99,49 @@ update public.advisors set booking_url =
   'https://bookings.cloud.microsoft/book/Kapitea1@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
  where slug = 'brahim-dutruit';
 
+-- « …30min », sans le « utes » de celle de Marc Saugy : deux boîtes
+-- distinctes dont les noms ne diffèrent que par la fin. Copiées telles
+-- qu'elles ont été fournies ; la vérification ci-dessous s'assure qu'aucun
+-- conseiller ne se retrouve avec l'agenda d'un autre.
+update public.advisors set booking_url =
+  'https://bookings.cloud.microsoft/book/Analysedevotrecapital30min@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
+ where slug = 'alessio-troiano';
+
 -- L'hôte est bookings.cloud.microsoft : c'est celui vers lequel
 -- outlook.office.com redirige, une redirection de moins à traverser.
 --
--- Alessio Troiano rejoint Kapitea sans page de réservation pour l'instant :
--- ses leads lui sont bien attribués, et /merci leur propose la page
--- générique du site plutôt que l'agenda de quelqu'un d'autre. Une ligne
--- suffira le jour venu, sans toucher au reste :
+-- Les cinq conseillers Kapitea ont désormais leur page. Pour un sixième,
+-- une ligne suffira, sans toucher au reste :
 --   update public.advisors set booking_url = 'https://bookings.cloud.microsoft/book/…'
---    where slug = 'alessio-troiano';
+--    where slug = '...';
+
+-- ============================================================
+-- 3 bis. GARDE-FOU
+-- ============================================================
+-- Deux conseillers qui partagent une page de réservation, c'est un
+-- prospect qui prend rendez-vous avec quelqu'un qui n'a pas son dossier —
+-- et rien, ni dans le CRM ni sur le site, ne le signalerait. Vu que les
+-- adresses fournies se ressemblent à quatre caractères près
+-- (…30min / …30minutes), la migration refuse de s'appliquer plutôt que de
+-- laisser passer une ligne collée au mauvais endroit. Le `begin` du haut
+-- fait le reste : tout est annulé.
+do $$
+declare
+  v_doublon text;
+begin
+  select string_agg(full_name, ' et ') into v_doublon
+    from public.advisors
+   where 'kapitea' = any(brands) and booking_url is not null
+   group by booking_url
+  having count(*) > 1
+   limit 1;
+
+  if v_doublon is not null then
+    raise exception
+      'Deux conseillers Kapitea partagent la meme page de reservation : %. '
+      'Verifiez les adresses avant de rejouer la migration.', v_doublon;
+  end if;
+end $$;
 
 commit;
 
