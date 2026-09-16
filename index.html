@@ -306,6 +306,10 @@
       display: none;
       padding: clamp(2.5rem, 7vw, 4rem) 0 clamp(2rem, 6vw, 3.5rem);
       overflow: hidden;
+      /* La case de chaque logo. Portée par la section pour que l'item et
+         l'image ne puissent pas diverger : c'est de cette hauteur que la
+         largeur des SVG sans dimensions est déduite. */
+      --partner-h: 44px;
     }
 
     .partners--anime {
@@ -388,19 +392,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 44px;
+      height: var(--partner-h);
       flex-shrink: 0;
     }
 
     /* Gris au repos, couleur au survol : la couleur récompense l'attention
        plutôt que de réclamer la sienne sur vingt-neuf marques à la fois. */
     .partner-logo {
-      max-height: 100%;
+      /* Hauteur DÉFINIE, et non `max-height: 100%`. Neuf des SVG livrés ne
+         déclarent qu'un `viewBox`, sans width ni height : ils n'ont donc
+         pas de taille propre, seulement un rapport. Sans hauteur ferme,
+         `width: auto` n'a rien à quoi appliquer ce rapport et le logo se
+         replie sur zéro — invisible, alors que le fichier est bien chargé.
+         Avec 44 px fermes, la largeur se déduit du rapport, et `max-width`
+         rattrape les logotypes très allongés (que `contain` recentre). */
+      height: var(--partner-h);
       width: auto;
       max-width: 150px;
       object-fit: contain;
       filter: grayscale(1);
       opacity: 0.65;
+      /* Rattrape les marges internes d'un fichier dont le tracé flotte au
+         milieu de sa toile. Sans valeur, l'échelle vaut 1 et la règle ne
+         coûte rien. */
+      transform: scale(var(--zoom, 1));
       transition: filter var(--transition-base), opacity var(--transition-base);
       /* Un JPEG n'a pas de transparence : il arrive avec son fond blanc, qui
          se découperait en rectangle sur le crème de la page. En multipliant,
@@ -413,6 +428,16 @@
     .partner:hover .partner-logo {
       filter: grayscale(0);
       opacity: 1;
+    }
+
+    /* Trois maisons n'ont fourni que la version blanche de leur logo,
+       celle qui est faite pour un fond sombre : sur le crème, elle est
+       invisible. On l'inverse — le blanc devient noir, le tracé
+       réapparaît. Au survol, pas de couleur à révéler : un logo blanc
+       n'en a pas. À supprimer le jour où la version foncée arrive. */
+    .partner-logo--clair,
+    .partner:hover .partner-logo--clair {
+      filter: invert(1) grayscale(1);
     }
 
     /* Le libellé, tant que le fichier du logo n'est pas là. Il tient la
@@ -437,6 +462,13 @@
       .partner-logo {
         filter: none;
         opacity: 1;
+      }
+
+      /* Sauf les blancs : sans inversion ils disparaîtraient, et ce bloc
+         passe après la règle générale. Pas de grayscale ici — au doigt,
+         tout est en couleur. */
+      .partner-logo--clair {
+        filter: invert(1);
       }
 
       .partner-nom {

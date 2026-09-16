@@ -26,17 +26,27 @@
    * <slug>.svg, puis .png, .webp, .jpg, .jpeg. C'est le cas des trois
    * logos encore manquants — il suffira de déposer le fichier, ou
    * d'ajouter ici son nom exact s'il ne suit pas la convention.
+   *
+   * `clair` : le fichier est la version blanche du logo, prévue pour un
+   * fond sombre. Sur le crème de la page, elle est invisible ; on
+   * l'inverse. Mesuré sur canvas, luminance moyenne de l'encre :
+   * Gerifonds 1.00, Zwei Wealth 1.00, LLB Swiss 0.96 — contre 0.10 à 0.56
+   * pour tous les autres. À retirer le jour où la version foncée arrive.
+   *
+   * `zoom` : le tracé ne remplit que 60 % de la hauteur de sa toile, le
+   * logo paraît deux fois plus petit que ses voisins à cadre égal. On
+   * rattrape les marges du fichier plutôt que de le recadrer.
    */
   var PARTENAIRES = [
     { nom: 'DWS', fichier: 'DWS.svg' },
     { nom: 'ETHENEA' },
     { nom: 'Flossbach von Storch', fichier: 'Flossbach von Storch.svg' },
-    { nom: 'Gerifonds', fichier: 'Gerifonds.svg' },
-    { nom: 'LLB Swiss', fichier: 'LLB Swiss.svg' },
+    { nom: 'Gerifonds', fichier: 'Gerifonds.svg', clair: true },
+    { nom: 'LLB Swiss', fichier: 'LLB Swiss.svg', clair: true },
     { nom: 'Pictet', fichier: 'Pictet.svg' },
     { nom: 'Schroders', fichier: 'Schroders.svg' },
-    { nom: 'Swiss Life', fichier: 'Swiss Life.jpg' },
-    { nom: 'Swisscanto', fichier: 'Swisscanto.svg' },
+    { nom: 'Swiss Life', fichier: 'Swiss Life.jpg', zoom: 1.45 },
+    { nom: 'Swisscanto', fichier: 'Swisscanto.svg', zoom: 1.2 },
     { nom: 'UBS', fichier: 'UBS.png' },
     { nom: 'J.P. Morgan', fichier: 'J.P. Morgan.svg' },
     { nom: 'LGT', fichier: 'LGT.svg' },
@@ -58,7 +68,7 @@
     { nom: 'BlackRock', fichier: 'BlackRock.svg' },
     { nom: 'zCapital', fichier: 'zCapital.png' },
     { nom: 'Zweiplus', fichier: 'Zweiplus.svg' },
-    { nom: 'Zwei Wealth', fichier: 'Zwei Wealth.png' },
+    { nom: 'Zwei Wealth', fichier: 'Zwei Wealth.png', clair: true },
   ];
 
   /* Essayées dans cet ordre, du meilleur au plus contraint :
@@ -149,11 +159,14 @@
 
     chercherLogo(partenaire, function (src) {
       var img = document.createElement('img');
-      img.className = 'partner-logo';
+      img.className = 'partner-logo' + (partenaire.clair ? ' partner-logo--clair' : '');
       img.src = src;
       img.alt = decoratif ? '' : partenaire.nom;
       img.loading = 'lazy';
       img.decoding = 'async';
+      if (partenaire.zoom) {
+        img.style.setProperty('--zoom', partenaire.zoom);
+      }
       item.replaceChild(img, texte);
     });
 
