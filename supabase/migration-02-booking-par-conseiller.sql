@@ -91,14 +91,18 @@ update public.advisors set booking_url =
   'https://bookings.cloud.microsoft/book/Analysedevotrecapital30minutes1@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
  where slug = 'samuel-moyo';
 
+update public.advisors set booking_url =
+  'https://bookings.cloud.microsoft/book/Kapitea@SwissLife.onmicrosoft.com/?ismsaljsauthenabled'
+ where slug = 'julien-schaedgen';
+
 -- L'hôte est bookings.cloud.microsoft : c'est celui vers lequel
 -- outlook.office.com redirige, une redirection de moins à traverser.
 --
--- Julien Schaedgen et Brahim Dutruit n'ont pas encore de page : leurs
--- leads tombent sur la page générique du site jusqu'à ce qu'on remplisse
--- leur case. Une ligne suffira :
+-- Brahim Dutruit n'a pas encore de page : ses leads tombent sur la page
+-- générique du site jusqu'à ce qu'on remplisse sa case. Une ligne suffira,
+-- sans toucher au reste :
 --   update public.advisors set booking_url = 'https://bookings.cloud.microsoft/book/…'
---    where slug = 'julien-schaedgen';
+--    where slug = 'brahim-dutruit';
 
 commit;
 
