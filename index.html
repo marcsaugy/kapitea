@@ -809,6 +809,99 @@
     /* La réassurance alterne avec la bande sombre qui la précède */
     .reassurance {
       background-color: var(--bg);
+      padding: clamp(3rem, 8vw, 6rem) var(--spacing-md);
+    }
+
+    .reassurance-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .reassurance-title {
+      font-size: clamp(1.75rem, 5vw, 2rem);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: clamp(2rem, 6vw, 3.5rem);
+      color: var(--text);
+    }
+
+    .reassurance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .reassurance-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      border: 1px solid rgba(156, 74, 46, 0.15);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.05) 0%, rgba(156, 74, 46, 0.02) 100%);
+      transition: all var(--transition-base);
+    }
+
+    .reassurance-item:nth-child(2) {
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.08) 0%, rgba(156, 74, 46, 0.03) 100%);
+    }
+
+    .reassurance-item:nth-child(3) {
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.05) 0%, rgba(156, 74, 46, 0.02) 100%);
+    }
+
+    .reassurance-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(156, 74, 46, 0.12);
+      border-color: rgba(156, 74, 46, 0.3);
+    }
+
+    .reassurance-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.1) 0%, rgba(156, 74, 46, 0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: clamp(1rem, 3vw, 1.5rem);
+      font-size: 2rem;
+    }
+
+    .reassurance-item h4 {
+      font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.3;
+    }
+
+    .reassurance-item p {
+      font-size: clamp(0.95rem, 2vw, 1rem);
+      color: var(--text2);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .reassurance-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .reassurance {
+        padding: clamp(2rem, 5vw, 3rem) var(--spacing-lg);
+      }
+
+      .reassurance-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reassurance-title {
+        margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+      }
     }
 
     /* Pas d'entrée sur le titre. Le site n'a qu'un seul moment orchestré,
@@ -968,18 +1061,22 @@
     <!-- Reassurance section -->
     <section class="reassurance">
       <div class="reassurance-container">
+        <h3 class="reassurance-title">Ce que nous offrons</h3>
         <div class="reassurance-grid">
           <div class="reassurance-item">
+            <div class="reassurance-icon">🎓</div>
             <h4>Conseiller FINMA indépendant</h4>
             <p>Nous agissons exclusivement dans votre intérêt, sans conflits de tiers.</p>
           </div>
 
           <div class="reassurance-item">
+            <div class="reassurance-icon">✓</div>
             <h4>Sans engagement</h4>
             <p>Répondez à quelques questions. Les conseils suivent uniquement si vous le souhaitez.</p>
           </div>
 
           <div class="reassurance-item">
+            <div class="reassurance-icon">⚡</div>
             <h4>Réponse sous 24h</h4>
             <p>Nous étudions votre situation et vous revenons rapidement avec des recommandations concrètes.</p>
           </div>

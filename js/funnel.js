@@ -471,6 +471,26 @@ function calculateScoreVenteEntreprise(state) {
   return withLeadTemp(score_valeur, score_urgence);
 }
 
+// Update Q_CHOIX_PRESENTE options based on Q_HORIZON
+function updateChoixPresenteOptions() {
+  if (state.segment !== 'lpp') {
+    return;
+  }
+  const notYetOption = document.getElementById('choix-not-yet-option');
+  const tookCapitalOption = document.getElementById('choix-took-capital-option');
+  if (!notYetOption || !tookCapitalOption) {
+    return;
+  }
+  const horizon = state.answers.Q_HORIZON;
+  if (horizon === 'already_retired') {
+    notYetOption.hidden = true;
+    tookCapitalOption.hidden = false;
+  } else {
+    notYetOption.hidden = false;
+    tookCapitalOption.hidden = true;
+  }
+}
+
 // Update urgence flag based on Q_HORIZON
 function updateUrgenceFlag(horizon) {
   if (horizon === 'already_retired' || horizon === 'less_than_2') {
@@ -555,6 +575,7 @@ function showScreen(screenIndex) {
   clearFormErrors();
 
   applyPrenomToTitles();
+  updateChoixPresenteOptions();
 
   window.scrollTo(0, 0);
 }
@@ -623,9 +644,10 @@ function validateCurrentScreen() {
   }
   state.answers[screen.key] = selected.value;
 
-  // Q_HORIZON drives the LPP urgency flag
+  // Q_HORIZON drives the LPP urgence flag and Q_CHOIX_PRESENTE options
   if (screen.key === 'Q_HORIZON') {
     updateUrgenceFlag(selected.value);
+    updateChoixPresenteOptions();
   }
 
   state.scores = calculateScore(state);

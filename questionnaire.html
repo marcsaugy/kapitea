@@ -557,9 +557,13 @@
             <input type="radio" id="choix-not-understood" name="choix-presente" value="not_understood">
             <label for="choix-not-understood">Oui, mais je n'ai pas tout compris</label>
           </div>
-          <div class="option">
+          <div class="option" id="choix-not-yet-option">
             <input type="radio" id="choix-not-yet" name="choix-presente" value="not_yet">
             <label for="choix-not-yet">Pas encore</label>
+          </div>
+          <div class="option" id="choix-took-capital-option" hidden>
+            <input type="radio" id="choix-took-capital" name="choix-presente" value="took_capital">
+            <label for="choix-took-capital">Oui j'ai pris le capital</label>
           </div>
         </div>
       </div>
@@ -631,10 +635,6 @@
           <div class="option">
             <input type="radio" id="situation-married" name="situation" value="married">
             <label for="situation-married">Marié(e)</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="situation-children" name="situation" value="with_children">
-            <label for="situation-children">Avec enfants à charge</label>
           </div>
         </div>
       </div>
