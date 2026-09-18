@@ -146,65 +146,115 @@
 
     /* Reassurance section */
     .reassurance {
-      padding: clamp(2rem, 8vw, 4rem) var(--spacing-md);
+      padding: clamp(3rem, 10vw, 5rem) var(--spacing-md);
       background-color: var(--bg);
     }
 
     .reassurance-container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
+    }
+
+    .reassurance-title {
+      font-size: clamp(1.75rem, 5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+      letter-spacing: -0.01em;
     }
 
     .reassurance-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: clamp(1.5rem, 4vw, 2.5rem);
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    @media (max-width: 768px) {
+      .reassurance-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 640px) {
       .reassurance-grid {
         grid-template-columns: 1fr;
+        gap: clamp(1.25rem, 2.5vw, 1.5rem);
       }
     }
 
     .reassurance-item {
       display: flex;
-      gap: var(--spacing-lg);
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(1.75rem, 4vw, 2.5rem);
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      transition: all var(--transition-base);
+      gap: var(--spacing-md);
+    }
+
+    .reassurance-item:nth-child(1) {
+      border-color: rgba(156, 74, 46, 0.3);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(156, 74, 46, 0.05) 100%);
+    }
+
+    .reassurance-item:nth-child(2) {
+      border-color: rgba(156, 74, 46, 0.3);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(156, 74, 46, 0.08) 100%);
+    }
+
+    .reassurance-item:nth-child(3) {
+      border-color: rgba(156, 74, 46, 0.3);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(156, 74, 46, 0.05) 100%);
+    }
+
+    .reassurance-item:hover {
+      border-color: var(--terracotta);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(156, 74, 46, 0.12);
     }
 
     .reassurance-icon {
-      width: 48px;
-      height: 48px;
+      width: 64px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(156, 74, 46, 0.1);
-      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.15) 0%, rgba(156, 74, 46, 0.08) 100%);
+      border-radius: 14px;
       flex-shrink: 0;
+      transition: all var(--transition-base);
+    }
+
+    .reassurance-item:hover .reassurance-icon {
+      background: linear-gradient(135deg, rgba(156, 74, 46, 0.25) 0%, rgba(156, 74, 46, 0.15) 100%);
+      transform: scale(1.08);
     }
 
     .reassurance-icon svg {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       stroke: var(--terracotta);
-      stroke-width: 2;
+      stroke-width: 1.5;
       fill: none;
     }
 
     .reassurance-text h4 {
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      font-weight: 600;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 700;
       color: var(--text);
-      margin-bottom: var(--spacing-xs);
+      margin: 0;
       line-height: 1.4;
     }
 
     .reassurance-text p {
-      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      font-size: clamp(0.875rem, 2vw, 0.975rem);
       color: var(--text2);
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     /* Footer */
@@ -377,6 +427,7 @@
     <!-- Reassurance section -->
     <section class="reassurance">
       <div class="reassurance-container">
+        <h2 class="reassurance-title">Ce que nous offrons</h2>
         <div class="reassurance-grid">
           <div class="reassurance-item">
             <div class="reassurance-icon">
@@ -388,7 +439,7 @@
               <h4>Conseiller FINMA indépendant</h4>
               <p>Nous agissons exclusivement dans votre intérêt, sans conflits de tiers.</p>
             </div>
-          </div>
+          </div><!-- /reassurance-item -->
 
           <div class="reassurance-item">
             <div class="reassurance-icon">
@@ -400,7 +451,7 @@
               <h4>Sans engagement</h4>
               <p>Répondez à quelques questions. Les conseils suivent uniquement si vous le souhaitez.</p>
             </div>
-          </div>
+          </div><!-- /reassurance-item -->
 
           <div class="reassurance-item">
             <div class="reassurance-icon">
@@ -412,7 +463,7 @@
               <h4>Réponse sous 24h</h4>
               <p>Nous étudions votre situation et vous revenons rapidement avec des recommandations concrètes.</p>
             </div>
-          </div>
+          </div><!-- /reassurance-item -->
         </div>
       </div>
     </section>
