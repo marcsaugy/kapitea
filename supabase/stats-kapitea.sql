@@ -21,8 +21,10 @@
 --   numero_suspect      le numéro lui-même a l'air inventé : vide, six
 --                       chiffres identiques d'affilée en fin de numéro
 --                       (079 000 00 00), une suite complète (079 123 45
---                       67), ou l'exemple affiché dans le champ du
---                       questionnaire (078 919 08 53), recopié tel quel.
+--                       67), ou un exemple affiché dans le champ du
+--                       questionnaire recopié tel quel : 078 919 08 53
+--                       jusqu'au 13.10, 079 123 45 67 depuis (déjà pris
+--                       par la règle des suites).
 --   numero_en_double    le même numéro a servi pour plusieurs leads.
 --   email_suspect       test, example, fake, asdf, a@a…
 -- ============================================================

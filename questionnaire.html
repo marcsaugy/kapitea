@@ -323,6 +323,169 @@
       box-shadow: 0 0 0 3px var(--brique-wash);
     }
 
+    /* Téléphone : l'indicatif et le numéro forment un seul champ
+       (js/phone-input.js). C'est le cadre qui porte la bordure et le
+       focus ; le champ lui-même devient transparent à l'intérieur. */
+    .phone-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      border: 2px solid var(--border);
+      border-radius: var(--r-input);
+      background-color: var(--bg-card);
+      transition: border-color var(--transition-fast);
+    }
+
+    .phone-input-wrap:focus-within {
+      border-color: var(--terracotta);
+      box-shadow: 0 0 0 3px var(--brique-wash);
+    }
+
+    .form-group.error .phone-input-wrap {
+      border-color: var(--err);
+    }
+
+    .form-group .phone-input-wrap input.phone-input-field,
+    .form-group .phone-input-wrap input.phone-input-field:focus {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      border-radius: 0 var(--r-input) var(--r-input) 0;
+      box-shadow: none;
+      background: transparent;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .phone-input-prefix {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 48px;
+      padding: 0 12px 0 var(--spacing-md);
+      border: none;
+      border-right: 1px solid var(--border);
+      border-radius: var(--r-input) 0 0 var(--r-input);
+      background: transparent;
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--text);
+      cursor: pointer;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .phone-input-prefix:focus-visible {
+      outline: 2px solid var(--terracotta);
+      outline-offset: -2px;
+    }
+
+    .phone-prefix-code {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    .phone-prefix-caret {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: var(--text3);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke var(--transition-fast);
+    }
+
+    .phone-input-prefix:hover .phone-prefix-caret,
+    .phone-input-prefix[aria-expanded="true"] .phone-prefix-caret {
+      stroke: var(--terracotta);
+    }
+
+    /* Seul élément flottant de la page : il a droit à l'ombre (design.md, §5). */
+    .phone-country-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: -2px;
+      z-index: 40;
+      width: 300px;
+      max-width: calc(100vw - 48px);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-input);
+      box-shadow: 0 12px 32px -8px rgba(36, 26, 21, 0.14);
+      overflow: hidden;
+    }
+
+    .form-group .phone-country-dropdown input.phone-country-search,
+    .form-group .phone-country-dropdown input.phone-country-search:focus {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      box-shadow: none;
+      outline: none;
+      background: transparent;
+    }
+
+    .phone-country-list {
+      max-height: 264px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+
+    .phone-country-group-label {
+      padding: 10px 10px 4px;
+      font-size: var(--font-size-micro);
+      color: var(--text3);
+    }
+
+    .phone-country-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px;
+      border: none;
+      border-radius: var(--r-card);
+      background: transparent;
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .phone-country-option:hover,
+    .phone-country-option:focus-visible {
+      background-color: var(--surface-2);
+      outline: none;
+    }
+
+    .phone-country-code {
+      width: 24px;
+      font-size: var(--font-size-micro);
+      font-weight: 600;
+      color: var(--text3);
+    }
+
+    .phone-country-name {
+      flex: 1;
+    }
+
+    .phone-country-dial {
+      color: var(--text2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .phone-country-empty {
+      padding: var(--spacing-md);
+      text-align: center;
+      font-size: var(--font-size-sm);
+      color: var(--text2);
+    }
+
     .form-group input::placeholder {
       color: var(--text3);
     }
@@ -1222,12 +1385,11 @@
 
           <div class="form-group">
             <label for="phone">Téléphone *</label>
-            <!-- L'exemple montre la forme nationale : c'est ainsi qu'on
-                 écrit son propre numéro, et l'ancien « +41 XX XXX XX XX »
-                 laissait croire qu'elle serait refusée. Les deux passent. -->
-            <input type="tel" id="phone" name="phone" placeholder="078 919 08 53"
+            <!-- L'indicatif est posé devant par js/phone-input.js : l'exemple
+                 montre le numéro tel qu'on l'écrit en Suisse, 0 compris. -->
+            <input type="tel" id="phone" name="phone" placeholder="079 123 45 67"
                    inputmode="tel" autocomplete="tel" required>
-            <div class="error-message">Numéro suisse attendu, par exemple 078 919 08 53 ou +41 78 919 08 53</div>
+            <div class="error-message">Un numéro suisse compte 10 chiffres, par exemple 079 123 45 67.</div>
           </div>
 
           <div class="form-group">
@@ -1261,6 +1423,7 @@
   <script src="js/crm/supabase-client.js" defer></script>
   <script src="js/crm/lead-ingest.js" defer></script>
   <script src="js/crm/emailjs-sender.js" defer></script>
+  <script src="js/phone-input.js" defer></script>
   <script src="js/funnel.js" defer></script>
 </body>
 </html>

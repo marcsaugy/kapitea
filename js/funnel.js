@@ -11,41 +11,6 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
-/* Le numéro de téléphone, tel qu'on l'écrit vraiment.
- *
- * L'ancienne règle exigeait le préfixe international : « 078 919 08 53 »,
- * la forme sous laquelle un Suisse écrit son propre numéro, était refusée.
- * Sur le dernier écran du questionnaire, un refus sans raison évidente est
- * un lead perdu.
- *
- * On accepte donc les trois écritures courantes, et on les ramène toutes à
- * la même : +41789190853. Le CRM reçoit une forme unique et composable,
- * quelle que soit la manière dont elle a été saisie.
- */
-function normalizePhone(phone) {
-  if (!phone) return null;
-
-  // Espaces, points, tirets, barres obliques, parenthèses : du décor.
-  let brut = String(phone).replace(/[\s.\-/()]/g, '');
-  if (brut.startsWith('0041')) {
-    brut = '+41' + brut.slice(4);
-  } else if (brut.startsWith('41') && !brut.startsWith('+')) {
-    brut = '+' + brut;
-  } else if (brut.startsWith('0')) {
-    // Forme nationale : le 0 initial cède la place à l'indicatif pays.
-    brut = '+41' + brut.slice(1);
-  }
-
-  // Neuf chiffres après +41, et un premier chiffre non nul : aucun numéro
-  // suisse ne commence par 0 une fois l'indicatif posé.
-  return /^\+41[1-9]\d{8}$/.test(brut) ? brut : null;
-}
-
-function validatePhone(phone) {
-  if (!phone) return true; // Optional field
-  return normalizePhone(phone) !== null;
-}
-
 // State management
 const initialState = {
   segment: null,
@@ -659,7 +624,6 @@ function validateContact() {
   // Every segment collects the firstname earlier, on its own screen
   const firstname = state.answers.Q_PRENOM || '';
   const email = document.getElementById('email').value.trim();
-  const phone = document.getElementById('phone').value.trim();
   const contactConsent = document.getElementById('contact-consent').checked;
 
   let isValid = true;
@@ -673,9 +637,13 @@ function validateContact() {
     emailGroup.classList.remove('error');
   }
 
-  // Validate phone (now required)
-  const phoneGroup = document.getElementById('phone').parentElement;
-  if (!phone || !validatePhone(phone)) {
+  // Le champ vit dans le cadre de l'indicatif : son groupe est plus haut.
+  const phoneEl = document.getElementById('phone');
+  const phoneGroup = phoneEl.closest('.form-group');
+  if (!PhoneInput.isValid(phoneEl)) {
+    phoneGroup.querySelector('.error-message').textContent = PhoneInput.isSwiss(phoneEl)
+      ? 'Un numéro suisse compte 10 chiffres, par exemple 079 123 45 67.'
+      : "Ce numéro semble incomplet pour l'indicatif choisi.";
     phoneGroup.classList.add('error');
     isValid = false;
   } else {
@@ -695,9 +663,9 @@ function validateContact() {
     state.answers.Q_CONTACT = {
       firstname,
       email,
-      // La forme internationale, quelle que soit celle saisie : le
-      // conseiller compose depuis son CRM sans avoir à la reconstituer.
-      phone: normalizePhone(phone) || phone,
+      // « +41 79 123 45 67 », comme les leads Hypoteka : le conseiller
+      // compose depuis le CRM sans reconstituer l'indicatif.
+      phone: PhoneInput.fullValue(phoneEl),
       contactConsent,
     };
   }
@@ -1164,7 +1132,9 @@ function init() {
 
   // Restore form values on the contact screen
   document.getElementById('email').value = state.answers.Q_CONTACT.email || '';
-  document.getElementById('phone').value = state.answers.Q_CONTACT.phone || '';
+  const phoneEl = document.getElementById('phone');
+  PhoneInput.mount(phoneEl);
+  PhoneInput.setValue(phoneEl, state.answers.Q_CONTACT.phone || '');
 }
 
 // Run on page load
